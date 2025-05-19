@@ -9,5 +9,5 @@ public class EpisodeRequest {
     private String episodeName;
     private Integer episodeNumber;
     private String episodeDescription;
-    private Long seasonId;
+    private Integer seasonNumber;
 }

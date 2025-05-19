@@ -43,10 +43,14 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .cors()
+                .and()
                 .csrf().disable()
+
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**", "/api/category/**", "/api/movie/**", "/api/series/**", 
-                        "/api/season/**", "/api/episode/**", "/api/users/**").permitAll() // Izinkan tanpa token
+                        .requestMatchers("/api/auth/**", "/api/category/**", "/api/movie/**", "/api/series/**",
+                                "/api/season/**", "/api/episode/**", "/api/users/**")
+                        .permitAll() // Izinkan tanpa token
                         .anyRequest().authenticated() // Selain itu tetap perlu autentikasi
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -55,5 +59,3 @@ public class SecurityConfig {
         return http.build();
     }
 }
-
-

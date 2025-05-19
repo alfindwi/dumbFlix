@@ -29,10 +29,17 @@ public class SeasonService {
         this.seriesRepository = seriesRepository;
     }
 
-    public SeasonResponse addSeason(Long seriesId, SeasonRequest seasonRequest) {
+    public SeasonResponse addSeason(String seriesName, SeasonRequest seasonRequest) {
         try {
-            Series series = seriesRepository.findById(seriesId)
+            Series series = seriesRepository.findBySeriesName(seriesName)
                     .orElseThrow(() -> new FuncErrorException("Series not found"));
+
+            int requesSeasonNumber = seasonRequest.getSeasonNumber();
+
+            boolean seasonExist = seasonRepository.existsBySeriesAndSeasonNumber(series, requesSeasonNumber);
+            if (seasonExist) {
+                throw new FuncErrorException("Season " + requesSeasonNumber + " already exist");
+            }
 
             Season season = new Season();
             season.setSeries(series);
@@ -49,9 +56,9 @@ public class SeasonService {
         }
     }
 
-    public List<SeasonResponse> getSeasonBySeriesId(Long seriesId) {
+    public List<SeasonResponse> getSeasonBySeriesName(String seriesName) {
         try {
-            List<Season> seasons = seasonRepository.findBySeriesId(seriesId);
+            List<Season> seasons = seasonRepository.findBySeries_SeriesName(seriesName);
 
             return seasons.stream().map(season -> {
                 List<EpisodeResponse> episodeResponses = season.getEpisodes().stream()

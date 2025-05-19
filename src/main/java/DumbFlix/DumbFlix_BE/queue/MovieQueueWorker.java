@@ -33,12 +33,9 @@ public class MovieQueueWorker {
 
     @Scheduled(fixedDelay = 5000)
     public void processQueue() {
-        System.out.println("[Queue] Mengecek antrian Redis...");
-
         String json = (String) redisTemplate.opsForList().leftPop("movie:queue");
 
         if (json == null) {
-            System.out.println("[Queue] Tidak ada data di antrian.");
             return;
         }
 
@@ -48,19 +45,16 @@ public class MovieQueueWorker {
             Map<String, Object> map = mapper.readValue(json, new TypeReference<>() {
             });
 
-            // Konversi map.get("request") ke MovieRequest
             MovieRequest request = mapper.convertValue(map.get("request"), MovieRequest.class);
 
             String thumbnailBase64 = (String) map.get("thumbnail");
             String videoBase64 = (String) map.get("video");
             String posterBase64 = (String) map.get("poster");
 
-            // Decode base64 ke byte[]
             byte[] thumbnailBytes = Base64.getDecoder().decode(thumbnailBase64);
             byte[] videoBytes = Base64.getDecoder().decode(videoBase64);
             byte[] posterBytes = Base64.getDecoder().decode(posterBase64);
 
-            // Buat MultipartFile dari byte[]
             MultipartFile thumbnailFile = new MockMultipartFile("thumbnail", "thumbnail.jpg", "image/jpeg",
                     thumbnailBytes);
             MultipartFile videoFile = new MockMultipartFile("video", "video.mp4", "video/mp4", videoBytes);
@@ -71,10 +65,7 @@ public class MovieQueueWorker {
             CloudinaryResponse video = cloudinaryService.uploadVideo(videoFile);
             CloudinaryResponse poster = cloudinaryService.uploadThumbnail(postersFile, "poster");
 
-            // Simpan ke database
-            System.out.println("[Queue] Memanggil movieService.createMovie()...");
             movieService.createMovie(request, thumbnail.getUrl(), video.getUrl(), poster.getUrl());
-            System.out.println("[Queue] Movie berhasil disimpan ke database.");
 
         } catch (Exception e) {
             System.out.println("[Queue] Terjadi error saat memproses queue:");

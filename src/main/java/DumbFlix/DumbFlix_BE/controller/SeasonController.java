@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,18 +28,22 @@ public class SeasonController {
         this.seasonService = seasonService;
     }
 
-    @GetMapping("/{seriesId}")
-    public ResponseEntity<List<SeasonResponse>> getSeasonBySeriesId(@PathVariable("seriesId") Long seriesId) {
-        List<SeasonResponse> seasons = seasonService.getSeasonBySeriesId(seriesId);
+    @GetMapping("/{seriesName}")
+    public ResponseEntity<List<SeasonResponse>> getSeasonByName(@PathVariable("seriesName") String seriesName) {
+        String decodedSeriesName = seriesName.replace("-", " ");
+
+        List<SeasonResponse> seasons = seasonService.getSeasonBySeriesName(decodedSeriesName);
         return ResponseEntity.ok(seasons);
     }
 
-    @PostMapping("/{seriesId}")
+    @PostMapping("/{seriesName}")
     public ResponseEntity<SeasonResponse> createSeason(
-            @PathVariable Long seriesId,
+            @PathVariable String seriesName,
             @RequestBody @Valid SeasonRequest seasonRequest) {
 
-        SeasonResponse season = seasonService.addSeason(seriesId, seasonRequest);
+        String decodedSeriesName = seriesName.replace("-", " ");
+
+        SeasonResponse season = seasonService.addSeason(decodedSeriesName, seasonRequest);
         return ResponseEntity.ok(season);
     }
 

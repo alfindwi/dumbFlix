@@ -42,29 +42,50 @@ public class EpisodeController {
         return ResponseEntity.ok(episodeResponse);
     }
 
-    @PostMapping
-    public ResponseEntity<String> addEpisode(@ModelAttribute EpisodeRequest episodeRequest,
-            @RequestParam("thumbnail") MultipartFile thumbnail, @RequestParam("video") MultipartFile video)
-            throws IOException {
+    @PostMapping("/{seriesName}")
+    public ResponseEntity<String> addEpisode(
+            @PathVariable("seriesName") String seriesName,
+            @ModelAttribute EpisodeRequest episodeRequest,
+            @RequestParam("thumbnail") MultipartFile thumbnail,
+            @RequestParam("video") MultipartFile video) {
 
         try {
+            String decodedSeriesName = seriesName.replace("-", " ");
+
+            if (episodeRequest == null) {
+                return ResponseEntity.badRequest().body("Episode request cannot be null.");
+            }
+            if (thumbnail.isEmpty() || video.isEmpty()) {
+                return ResponseEntity.badRequest().body("Thumbnail and video files are required.");
+            }
+
+            if (episodeRequest.getSeasonNumber() <= 0) {
+                return ResponseEntity.badRequest().body("Invalid season number.");
+            }
+
             String thumbnailBase64 = Base64.getEncoder().encodeToString(thumbnail.getBytes());
             String videoBase64 = Base64.getEncoder().encodeToString(video.getBytes());
 
             Map<String, Object> payload = new HashMap<>();
-            payload.put("request", episodeRequest);
+            payload.put("seriesName", decodedSeriesName);
+            payload.put("seasonNumber", episodeRequest.getSeasonNumber());
+            payload.put("episodeName", episodeRequest.getEpisodeName());
+            payload.put("episodeNumber", episodeRequest.getEpisodeNumber());
+            payload.put("episodeDescription", episodeRequest.getEpisodeDescription());
             payload.put("thumbnail", thumbnailBase64);
             payload.put("video", videoBase64);
 
             Long result = redisTemplate.opsForList().rightPush("episode:queue", payload);
 
-            if (result != null) {
-                return ResponseEntity.ok("File disimpan di Redis dan antrian berhasil dibuat.");
-            } else {
-                return ResponseEntity.status(500).body("Gagal menyimpan data ke Redis.");
+            if (result == null) {
+                return ResponseEntity.status(500).body("Failed to save data to Redis queue.");
             }
+
+            return ResponseEntity.ok("Episode added to Redis queue successfully.");
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body("Failed to process files: " + e.getMessage());
         } catch (Exception e) {
-            throw new FuncErrorException("Failed to add episode: " + e.getMessage());
+            return ResponseEntity.status(500).body("Failed to add episode: " + e.getMessage());
         }
     }
 

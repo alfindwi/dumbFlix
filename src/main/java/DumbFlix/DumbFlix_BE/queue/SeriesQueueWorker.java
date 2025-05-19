@@ -41,7 +41,6 @@ public class SeriesQueueWorker {
         String json = (String) redisTemplate.opsForList().leftPop("series:queue");
 
         if (json == null) {
-            System.out.println("[Queue] Tidak ada data di antrian.");
             return;
         }
 

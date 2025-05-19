@@ -4,15 +4,18 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import DumbFlix.DumbFlix_BE.dto.request.EpisodeRequest;
 import DumbFlix.DumbFlix_BE.dto.response.EpisodeResponse;
 import DumbFlix.DumbFlix_BE.entity.series.Episode;
 import DumbFlix.DumbFlix_BE.entity.series.Season;
+import DumbFlix.DumbFlix_BE.entity.series.Series;
 import DumbFlix.DumbFlix_BE.exception.FuncErrorException;
 import DumbFlix.DumbFlix_BE.repository.EpisodeRepository;
 import DumbFlix.DumbFlix_BE.repository.SeasonRepository;
+import DumbFlix.DumbFlix_BE.repository.SeriesRepository;
 
 @Service
 public class EpisodeService {
@@ -20,8 +23,13 @@ public class EpisodeService {
     private final EpisodeRepository episodeRepository;
     private final SeasonRepository seasonRepository;
 
-    public EpisodeService(EpisodeRepository episodeRepository, SeasonRepository seasonRepository) {
+    @Autowired
+    private final SeriesRepository seriesRepository;
+
+    public EpisodeService(EpisodeRepository episodeRepository, SeasonRepository seasonRepository,
+            SeriesRepository seriesRepository) {
         this.episodeRepository = episodeRepository;
+        this.seriesRepository = seriesRepository;
         this.seasonRepository = seasonRepository;
     }
 
@@ -33,21 +41,25 @@ public class EpisodeService {
                 episode.getEpisodeDescription(), episode.getEpisodeImage(), episode.getEpisodeVideo());
     }
 
-    public EpisodeResponse addEpisode(EpisodeRequest episodeRequest, String thumbnail, String video) {
+    public EpisodeResponse addEpisode(String seriesName, EpisodeRequest episodeRequest, String thumbnail,
+            String video) {
         try {
+            Series series = seriesRepository.findBySeriesName(seriesName)
+                    .orElseThrow(() -> new FuncErrorException("Series not found"));
 
-            Season season = seasonRepository.findById(episodeRequest.getSeasonId())
+            // Cari season berdasarkan series dan seasonNumber
+            Season season = seasonRepository.findBySeriesAndSeasonNumber(series, episodeRequest.getSeasonNumber())
                     .orElseThrow(() -> new FuncErrorException("Season not found"));
 
-            Episode savedEpisode = new Episode();
-            savedEpisode.setEpisodeName(episodeRequest.getEpisodeName());
-            savedEpisode.setEpisodeNumber(episodeRequest.getEpisodeNumber());
-            savedEpisode.setEpisodeDescription(episodeRequest.getEpisodeDescription());
-            savedEpisode.setEpisodeImage(thumbnail);
-            savedEpisode.setEpisodeVideo(video);
-            savedEpisode.setSeason(season);
+            Episode episode = new Episode();
+            episode.setEpisodeName(episodeRequest.getEpisodeName());
+            episode.setEpisodeNumber(episodeRequest.getEpisodeNumber());
+            episode.setEpisodeDescription(episodeRequest.getEpisodeDescription());
+            episode.setEpisodeImage(thumbnail);
+            episode.setEpisodeVideo(video);
+            episode.setSeason(season);
 
-            Episode saved = episodeRepository.save(savedEpisode);
+            Episode saved = episodeRepository.save(episode);
 
             return new EpisodeResponse(saved.getId(), saved.getEpisodeName(), saved.getEpisodeNumber(),
                     saved.getEpisodeDescription(), saved.getEpisodeImage(), saved.getEpisodeVideo());
