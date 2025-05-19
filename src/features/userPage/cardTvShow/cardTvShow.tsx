@@ -3,16 +3,10 @@ import React, { useMemo, useState } from "react";
 import { MdPlayArrow } from "react-icons/md";
 import { Link } from "react-router-dom";
 import Pagination from "../Paggination";
-
-interface Series {
-  id: number;
-  year: string;
-  image: string;
-  title: string;
-}
+import { ISeries } from "../../../types/series";
 
 interface SeriesListProps {
-  series: Series[];
+  series: ISeries[];
 }
 
 const seriesPage = 28;
@@ -44,6 +38,7 @@ export const CardTvShow: React.FC<SeriesListProps> = ({ series }) => {
               as={Link}
               to={`/tvshow/${series.id}`}
               display="block"
+              overflow="hidden" 
             >
               <Box
                 position="relative"
@@ -59,13 +54,13 @@ export const CardTvShow: React.FC<SeriesListProps> = ({ series }) => {
                 }}
               >
                 <Img
-                  src={series.image}
+                  src={series.poster}
                   w="100%"
                   h="200px"
                   objectFit="cover"
                   transition="transform 0.3s ease, filter 0.3s ease"
-                  borderTopRadius="md"
                   className="image"
+                  borderRadius="md"
                 />
                 <Box
                   className="play-icon"
@@ -87,10 +82,10 @@ export const CardTvShow: React.FC<SeriesListProps> = ({ series }) => {
                 </Box>
               </Box>
               <Text fontSize="15px" mt={2} fontWeight="semibold" isTruncated>
-                {series.title}
+                {series.seriesName}
               </Text>
               <Text fontSize="12px" mt={1} fontWeight="medium" color="#929292">
-                {series.year}
+                {series.seriesYear}
               </Text>
             </Box>
           </WrapItem>

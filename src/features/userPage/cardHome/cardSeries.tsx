@@ -4,16 +4,20 @@ import { MdArrowBack, MdArrowForward, MdPlayArrow } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { useAppDispatch, useAppSelector } from "../../../store";
+import { getSeries } from "../../../store/series/async";
 
 export function CardSeries() {
-  const [tvSeries, setSeries] = useState([]);
+  const dispatch = useAppDispatch();
+  const { series: tvSeries } = useAppSelector((state) => state.series);
+  const [page, setPage] = useState(0);
+  const pageSize = 10;
 
   useEffect(() => {
-    fetch("https://api.npoint.io/d7e4a37b3471d3f38adc")
-      .then((response) => response.json())
-      .then((data) => setSeries(data))
-      .catch((error) => console.error("Error fetching seriess:", error));
-  }, []);
+    dispatch(getSeries());
+  }, [dispatch]);
+
+  const paginateSeries = tvSeries.slice(page * pageSize, (page + 1) * pageSize);
 
   return (
     <Box p={6}>
@@ -82,7 +86,7 @@ export function CardSeries() {
           modules={[Navigation]}
           style={{ padding: "10px" }}
         >
-          {tvSeries.map((series, index) => (
+          {paginateSeries.map((series, index) => (
             <SwiperSlide key={index} style={{ width: "auto" }}>
               <Box
                 mt={4}
@@ -112,7 +116,7 @@ export function CardSeries() {
                 >
                   {/* Image */}
                   <Img
-                    src={series.image}
+                    src={series.poster}
                     w="100%"
                     h="100%"
                     objectFit="cover"
@@ -142,7 +146,7 @@ export function CardSeries() {
                   </Box>
                 </Box>
                 <Text fontSize="15px" mt={2} fontWeight="semibold">
-                  {series.title}
+                  {series.seriesName}
                 </Text>
                 <Text
                   fontSize="12px"
@@ -150,7 +154,7 @@ export function CardSeries() {
                   fontWeight="medium"
                   color="#929292"
                 >
-                  {series.year}
+                  {series.seriesYear}
                 </Text>
               </Box>
             </SwiperSlide>

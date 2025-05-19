@@ -5,6 +5,8 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Footer } from "../footer/footer";
 import { buttonStyle } from "../../../assets/style/buttonStyle";
+import { useAppDispatch, useAppSelector } from "../../../store";
+import { getSeries } from "../../../store/series/async";
 
 export function TvShow() {
   return (
@@ -17,14 +19,12 @@ export function TvShow() {
 }
 
 export function TvShowContent() {
-  const [tvShow, setTvShow] = useState([]);
+  const dispatch = useAppDispatch();
+  const { series } = useAppSelector((state) => state.series);
 
   useEffect(() => {
-    fetch("https://api.npoint.io/41b568be1e5e8068ce7a")
-      .then((response) => response.json())
-      .then((data) => setTvShow(data))
-      .catch((error) => console.error("Error fetching tvShow:", error));
-  }, []);
+    dispatch(getSeries());
+  }, [dispatch]);
   return (
     <Box>
       <Img
@@ -89,7 +89,7 @@ export function TvShowContent() {
         </Box>
       </Box>
 
-      <CardTvShow series={tvShow} />
+      <CardTvShow series={series} />
     </Box>
   );
 }

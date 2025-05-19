@@ -1,12 +1,11 @@
-import { Box, Center, Flex, Icon, Img, Spinner, Text } from "@chakra-ui/react";
-import { MdPlayArrow } from "react-icons/md";
-import { NavbarAdmin } from "../../navbarAdmin/navbarAdmin";
-import { ModalButtonSeries } from "./modalButton";
+import { Box, Center, Flex, Img, Spinner, Text } from "@chakra-ui/react";
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../store";
-import { useEffect } from "react";
 import { getSeriesByName } from "../../../store/series/async";
+import { NavbarAdmin } from "../../navbarAdmin/navbarAdmin";
 import { SeasonAdmin } from "./seasonAdmin";
+import { ModalButton } from "./modalButtonSeason";
 
 export function DetailSeriesAdmin() {
   return (
@@ -57,7 +56,7 @@ export function DetailSeriesTrailer() {
   }
   return (
     <Box>
-      <ModalButtonSeries />
+      <ModalButton />
       <Box ml={"40px"} mt={"20px"} mb={"50px"}>
         <Flex align="flex-start" direction={"row"}>
           <Img

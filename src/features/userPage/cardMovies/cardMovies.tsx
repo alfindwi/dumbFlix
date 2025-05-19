@@ -21,7 +21,6 @@ export const CardMovies: React.FC<MoviesListProps> = ({ movies }) => {
     return movies.slice(startIndex, endIndex);
   }, [movies, currentPage]);
 
-
   console.log(
     `Current Page: ${currentPage}, Movies on page: ${paginatedMovies.length}`
   );
@@ -44,6 +43,7 @@ export const CardMovies: React.FC<MoviesListProps> = ({ movies }) => {
               as={Link}
               to={`/movie/${movie.title}`}
               display="block"
+              overflow="hidden"
             >
               <Box
                 position="relative"
@@ -64,8 +64,8 @@ export const CardMovies: React.FC<MoviesListProps> = ({ movies }) => {
                   h="200px"
                   objectFit="cover"
                   transition="transform 0.3s ease, filter 0.3s ease"
-                  borderTopRadius="md"
                   className="image"
+                  borderRadius="md"
                 />
                 <Box
                   className="play-icon"
