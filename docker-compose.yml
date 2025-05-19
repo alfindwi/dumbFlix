@@ -1,0 +1,44 @@
+version: "3.8"
+# belom bisa buat docker masih error anjay
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dumbflix-backend
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - redis
+    ports:
+      - "8080:8080"
+    networks:
+      - dumbflix_network
+
+  db:
+    image: postgres:15-alpine
+    container_name: db
+    environment:
+      POSTGRES_DB: dumbflix
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - dumbflix_network
+
+  redis:
+    image: redis:alpine
+    container_name: redis
+    command: ["redis-server", "--requirepass", "gajahpesek"]
+    ports:
+      - "6379:6379"
+    networks:
+      - dumbflix_network
+
+networks:
+  dumbflix_network:
+
+volumes:
+  db_data:
