@@ -1,11 +1,11 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../../libs/api";
 
-export const getSeason = createAsyncThunk(
+export const getSeasonByName = createAsyncThunk(
   "season/getSeason",
-  async (id: number, thunkAPI) => {
+  async (seriesName: string, thunkAPI) => {
     try {
-      const res = await api.get(`/api/season/${id}`);
+      const res = await api.get(`/api/season/${seriesName}`);
       return res.data;
     } catch (error) {
       console.error("Error:", error);
@@ -15,18 +15,21 @@ export const getSeason = createAsyncThunk(
 );
 
 export const createSeason = createAsyncThunk(
-  "season/createSeason",
-  async (payload: { seasonNumber: number }, thunkAPI) => {
+  "series/createSeason",
+  async (
+    { namaSeries, seasonNumber }: { namaSeries: string; seasonNumber: number },
+    thunkAPI
+  ) => {
     try {
-      const res = await api.post("/api/season", payload, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+      const res = await api.post(`/api/season/${namaSeries}`, {
+        seasonNumber,
       });
       return res.data;
-    } catch (error) {
-      console.error("Error:", error);
-      return thunkAPI.rejectWithValue("Failed to create season.");
+    } catch (error: any) {
+      const message =
+        error.response?.data?.message || "Failed to create season.";
+
+      return thunkAPI.rejectWithValue(message);
     }
   }
 );

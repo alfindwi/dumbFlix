@@ -16,7 +16,6 @@ import { Footer } from "../footer/footer";
 import { useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { getMovieByName } from "../../../store/movie/async";
-import { DescTrailerMovie } from "./descTrailer";
 
 export function DetailMovie() {
   return (
@@ -61,19 +60,7 @@ export function DetailMovieContent() {
     };
   }, [movie?.title]);
 
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (videoRef.current) {
-        if (document.fullscreenElement) {
-          document.exitFullscreen();
-        } else {
-          videoRef.current.requestFullscreen();
-        }
-      }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+ 
 
   if (loading || !movie) {
     return (
@@ -176,7 +163,6 @@ export function DetailMovieContent() {
               </Flex>
             </Flex>
 
-            {/* Deskripsi */}
             <Text
               fontSize={{ base: "11px", md: "14px", lg: "sm" }}
               mt={3}

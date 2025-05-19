@@ -50,6 +50,7 @@ export function Content() {
         </Button>
       </Flex>
       <SeriesList  series={series}/>
+      
     </Box>
   );
 }

@@ -33,7 +33,10 @@ export const SeriesList: React.FC<SeriesListProps> = ({ series }) => {
               w="160px"
               transition="transform 0.5s ease, box-shadow 0.2s ease"
               as={Link}
-              to={`/admin/detail-series/${series.seriesName}`}
+              to={`/admin/detail-series/${series.seriesName.replace(
+                / /g,
+                "-"
+              )}`}
               display="block"
             >
               <Box

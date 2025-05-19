@@ -6,6 +6,7 @@ import { useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { useEffect } from "react";
 import { getSeriesByName } from "../../../store/series/async";
+import { SeasonAdmin } from "./seasonAdmin";
 
 export function DetailSeriesAdmin() {
   return (
@@ -30,11 +31,13 @@ export function DetailSeriesTrailer() {
     return match ? match[1] : "";
   };
 
+  const decodedSeriesName = seriesName?.replace(/-/g, " ");
+
   useEffect(() => {
-    if (seriesName) {
-      dispatch(getSeriesByName(seriesName));
+    if (decodedSeriesName) {
+      dispatch(getSeriesByName(decodedSeriesName));
     }
-  }, [seriesName, dispatch]);
+  }, [decodedSeriesName, dispatch]);
 
   useEffect(() => {
     if (seriesDetail?.seriesName) {
@@ -45,7 +48,7 @@ export function DetailSeriesTrailer() {
     };
   }, [seriesDetail?.seriesName]);
 
-  if (loading || !series) {
+  if (loading || !seriesDetail) {
     return (
       <Center h="100vh">
         <Spinner size="xl" thickness="4px" speed="0.65s" color="red.500" />
@@ -119,6 +122,7 @@ export function DetailSeriesTrailer() {
           </Box>
         </Flex>
       </Box>
+      <SeasonAdmin />
     </Box>
   );
 }

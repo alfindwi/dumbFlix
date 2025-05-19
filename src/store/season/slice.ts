@@ -1,6 +1,6 @@
-import { Action, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ISeason } from "../../types/season";
-import { createSeason, getSeason } from "./async";
+import { createSeason, getSeasonByName } from "./async";
 
 interface SeasonState {
   seasons: ISeason[];
@@ -20,15 +20,15 @@ const seasonSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(getSeason.pending, (state) => {
+      .addCase(getSeasonByName.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(getSeason.fulfilled, (state, action) => {
+      .addCase(getSeasonByName.fulfilled, (state, action) => {
         state.loading = false;
         state.seasons = action.payload;
       })
-      .addCase(getSeason.rejected, (state, action) => {
+      .addCase(getSeasonByName.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       });

@@ -15,29 +15,50 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IoAttachSharp } from "react-icons/io5";
 import { MdFileUpload } from "react-icons/md";
 import { useAppDispatch } from "../../../store";
 import { createSeason } from "../../../store/season/async";
+import { useParams } from "react-router-dom";
 
 export function ModalButtonSeries() {
   const dispatch = useAppDispatch();
   const toast = useToast();
+  const { seriesName } = useParams();
 
-  const [seriesId, setSeriesId] = useState<number>(0);
-  const [seasonNumber, setSeasonNumber] = useState<number>(0);
+  const [namaSeries, setNamaSeries] = useState<string | undefined>();
+  const [seasonNumber, setSeasonNumber] = useState<string>("");
+
+  useEffect(() => {
+    if (seriesName) {
+      const decoded = seriesName.replace(/-/g, " ");
+      setNamaSeries(decoded);
+    }
+  }, [seriesName]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const payload = {
-      seriesId,
-      seasonNumber,
-    };
+    if (!namaSeries || !seasonNumber) {
+      toast({
+        title: "Invalid Input",
+        description: "Series ID and Season Number are required.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
 
     try {
-      const resultAction = await dispatch(createSeason(payload));
+      const resultAction = await dispatch(
+        createSeason({
+          namaSeries: namaSeries,
+          seasonNumber: Number(seasonNumber),
+        })
+      );
+
       if (createSeason.fulfilled.match(resultAction)) {
         toast({
           title: "Season added.",
@@ -47,10 +68,12 @@ export function ModalButtonSeries() {
           isClosable: true,
           position: "top",
         });
-        setSeriesId(0);
-        setSeasonNumber(0);
+        setSeasonNumber("");
+        onCloseSsn();
       } else {
-        throw new Error("Failed to add season");
+        const errorMsg =
+          (resultAction.payload as string) || "Failed to add season";
+        throw new Error(errorMsg);
       }
     } catch (error) {
       toast({
@@ -223,29 +246,31 @@ export function ModalButtonSeries() {
           <ModalHeader fontWeight={"bold"}>Add Season</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <Input
-              type="number"
-              placeholder="Season Number"
-              _placeholder={{ color: "#B1B1B1" }}
-              bgColor={"#343434"}
-              border={"2px solid #D2D2D2"}
-              w={"37rem"}
-              value={seasonNumber}
-              onChange={(e) => setSeasonNumber(Number(e.target.value))}
-            />
+            <form onSubmit={handleSubmit}>
+              <Input
+                type="number"
+                placeholder="Season Number"
+                _placeholder={{ color: "#B1B1B1" }}
+                bgColor={"#343434"}
+                border={"2px solid #D2D2D2"}
+                w={"37rem"}
+                value={seasonNumber}
+                onChange={(e) => setSeasonNumber(e.target.value)}
+              />
 
-            <Flex justifyContent={"flex-end"}>
-              <Button
-                bgColor={"#E50914"}
-                _hover={{ bgColor: "#E50914" }}
-                w={"200px"}
-                mb={2}
-                onClick={onCloseEps}
-                mt={4}
-              >
-                Save
-              </Button>
-            </Flex>
+              <Flex justifyContent={"flex-end"}>
+                <Button
+                  bgColor={"#E50914"}
+                  _hover={{ bgColor: "#E50914" }}
+                  w={"200px"}
+                  type="submit"
+                  mb={2}
+                  mt={4}
+                >
+                  Save
+                </Button>
+              </Flex>
+            </form>
           </ModalBody>
         </ModalContent>
       </Modal>
