@@ -34,11 +34,16 @@ public class EpisodeService {
     }
 
     public EpisodeResponse getEpisodeByName(String episodeName) {
-        Episode episode = episodeRepository.findByEpisodeName(episodeName)
+        Episode episode = episodeRepository.findFirstByEpisodeName(episodeName)
                 .orElseThrow(() -> new FuncErrorException("Episode not found"));
 
-        return new EpisodeResponse(episode.getId(), episode.getEpisodeName(), episode.getEpisodeNumber(),
-                episode.getEpisodeDescription(), episode.getEpisodeImage(), episode.getEpisodeVideo());
+        return new EpisodeResponse(
+                episode.getId(),
+                episode.getEpisodeName(),
+                episode.getEpisodeNumber(),
+                episode.getEpisodeDescription(),
+                episode.getEpisodeImage(),
+                episode.getEpisodeVideo());
     }
 
     public EpisodeResponse addEpisode(String seriesName, EpisodeRequest episodeRequest, String thumbnail,

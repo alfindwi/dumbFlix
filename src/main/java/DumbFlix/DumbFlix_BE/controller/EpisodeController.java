@@ -38,7 +38,9 @@ public class EpisodeController {
 
     @GetMapping("/{episodeName}")
     public ResponseEntity<EpisodeResponse> getEpisodeByName(@PathVariable("episodeName") String episodeName) {
-        EpisodeResponse episodeResponse = episodeService.getEpisodeByName(episodeName);
+        String decodedEpisodeName = episodeName.replace("-", " ");
+
+        EpisodeResponse episodeResponse = episodeService.getEpisodeByName(decodedEpisodeName);
         return ResponseEntity.ok(episodeResponse);
     }
 
