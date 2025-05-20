@@ -38,7 +38,6 @@ export function CardSeries() {
       </Flex>
 
       <Box position="relative">
-        {/* Custom Next Button */}
         <Box
           className="swiper-button-next-series"
           position="absolute"
@@ -54,7 +53,6 @@ export function CardSeries() {
           <Icon as={MdArrowForward} color="white" boxSize={10} />
         </Box>
 
-        {/* Custom Prev Button */}
         <Box
           className="swiper-button-prev-series"
           position="absolute"
@@ -97,7 +95,7 @@ export function CardSeries() {
                 transition="transform 0.5s ease, box-shadow 0.2s ease"
                 cursor="pointer"
                 as={Link}
-                to={`/series`}
+                to={`/series/${series.seriesName.replace(/ /g, "-")}`}
                 display="block"
               >
                 <Box

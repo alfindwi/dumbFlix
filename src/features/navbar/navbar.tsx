@@ -78,8 +78,8 @@ export function Navbar() {
           <Text as={Link} to="/" cursor="pointer" color="white">
             Home
           </Text>
-          <Text as={Link} to="/tvshow" cursor="pointer" color="white">
-            TV Shows
+          <Text as={Link} to="/tvSeries" cursor="pointer" color="white">
+            TV Series
           </Text>
           <Text as={Link} to="/movies" cursor="pointer" color="white">
             Movies

@@ -1,17 +1,55 @@
-import {
-    Box,
-    Flex,
-    Img,
-    Text
-} from "@chakra-ui/react";
+import { Box, Center, Flex, Img, Spinner, Text } from "@chakra-ui/react";
+import { useEffect } from "react";
 import ReactPlayer from "react-player";
+import { useParams } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../../store";
+import { getSeriesByName } from "../../../store/series/async";
 
 export function DescTrailer() {
+  const { seriesName } = useParams();
+  const dispatch = useAppDispatch();
+  const { selectedSeries: seriesDetail, loading } = useAppSelector(
+    (state) => state.series
+  );
+
+  const extractYouTubeId = (url: string): string => {
+    const regExp =
+      /(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/))([\w-]{11})/;
+    const match = url.match(regExp);
+    return match ? match[1] : "";
+  };
+
+  useEffect(() => {
+    if (seriesName) {
+      const decodedName = seriesName.replace(/-/g, " ");
+      dispatch(getSeriesByName(decodedName));
+    }
+
+    window.scrollTo({ top: 0 });
+  }, [seriesName, dispatch]);
+
+  useEffect(() => {
+    if (seriesDetail?.seriesName) {
+      document.title = `${seriesDetail.seriesName} - ALFLIX`;
+    }
+    return () => {
+      document.title = "ALFLIX";
+    };
+  }, [seriesDetail?.seriesName]);
+
+  if (loading || !seriesDetail) {
+    return (
+      <Center h="100vh">
+        <Spinner size="xl" thickness="4px" speed="0.65s" color="red.500" />
+      </Center>
+    );
+  }
+
   return (
     <Box ml={{ base: "10px", md: "50px", lg: "40ppx" }} mt={"30px"} mb={"50px"}>
       <Flex align="flex-start" direction={"row"}>
         <Img
-          src="https://image.tmdb.org/t/p/w185/ggFHVNu6YYI5L9pCfOacjizRGt.jpg"
+          src={seriesDetail.poster}
           w={{ base: "80px", md: "90px", lg: "100px" }}
           h={{ base: "120px", md: "130px", lg: "150px" }}
           mr="20px"
@@ -19,13 +57,13 @@ export function DescTrailer() {
         <Box>
           {/* Judul */}
           <Text fontSize="lg" fontWeight="bold">
-            Breaking Bad
+            {seriesDetail.seriesName}
           </Text>
 
           {/* Tahun dan Kategori */}
           <Flex align="center" mt={2}>
             <Text fontSize="sm" color="#929292" mr={4}>
-              2013
+              {seriesDetail.seriesYear}
             </Text>
             <Flex
               bgColor="transparent"
@@ -51,21 +89,19 @@ export function DescTrailer() {
             textAlign="justify"
             lineHeight="1.6"
           >
-            Breaking Bad menceritakan kisah seorang guru kimia SMA bernama
-            Walter White (Bryan Cranston) yang didiagnosa kanker paru-paru,
-            bersama mantan muridnya Jesse Pinkman (Aaron Paul), terjun ke dunia
-            kejahatan dengan memproduksi dan menjual kristal metamfetamin untuk
-            menjamin masa depan keuangan keluarganya sebelum ia meninggal.
+            {seriesDetail.description}
           </Text>
         </Box>
-        <Box ml={"150px"} display={{base: "none", md: "block", lg: "block"}}>
+        <Box ml={"150px"} display={{ base: "none", md: "block", lg: "block" }}>
           <ReactPlayer
-            url={"https://youtu.be/HhesaQXLuRY?si=StuZVQLi5a0-kf_W"}
+            url={`https://www.youtube.com/watch?v=${extractYouTubeId(
+              seriesDetail.trailer
+            )}`}
             width={"480px"}
             height={"225px"}
           />
           <Text mt={2} fontSize={"14px"}>
-            Breaking Bad
+            Trailer : {seriesDetail.seriesName}
           </Text>
         </Box>
       </Flex>

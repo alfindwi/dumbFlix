@@ -5,12 +5,14 @@ import { createSeries, getSeries, getSeriesByName } from "./async";
 interface SeriesState {
   series: ISeries[];
   loading: boolean;
+  selectedSeries: ISeries | null;
   error: string | null;
 }
 
 const initialState: SeriesState = {
   series: [],
   loading: false,
+  selectedSeries: null,
   error: null,
 };
 
@@ -40,9 +42,7 @@ const seriesSlice = createSlice({
       })
       .addCase(getSeriesByName.fulfilled, (state, action) => {
         state.loading = false;
-        state.series = Array.isArray(action.payload)
-          ? action.payload
-          : [action.payload];
+        state.selectedSeries = action.payload;
       })
       .addCase(getSeriesByName.rejected, (state, action) => {
         state.loading = false;

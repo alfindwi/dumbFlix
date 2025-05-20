@@ -1,17 +1,28 @@
 import {
   Box,
+  Divider,
   Flex,
   Image,
   List,
   ListItem,
   Text,
-  Divider,
 } from "@chakra-ui/react";
 import { AnimatePresence, motion } from "framer-motion";
-import { useState } from "react";
-import { seasons } from "./jsonSeries";
+import React, { useState } from "react";
+import { ISeries } from "../../../types/series";
+import { IEpisode } from "../../../types/episode";
+import { ISeason } from "../../../types/season";
+import { Link, useParams } from "react-router-dom";
 
-export function Season() {
+interface SeasonProps {
+  seriesName: string;
+  seasons: ISeason[];
+}
+
+export const Season: React.FC<SeasonProps> = ({ seasons, seriesName }) => {
+  const formattedSeriesName = seriesName.replace(/\s+/g, "-");
+  const { episodeName } = useParams();
+  const decodedEpisodeName = decodeURIComponent(episodeName ?? "");
   const [openSeasons, setOpenSeasons] = useState<Record<number, boolean>>({});
 
   const toggleSeason = (seasonNumber: number) => {
@@ -22,12 +33,19 @@ export function Season() {
   };
 
   return (
-    <Box bgColor="black" ml="20px" mr="20px" p="10px" borderRadius="8px" cursor={"pointer"}>
+    <Box
+      bgColor="black"
+      ml="20px"
+      mr="20px"
+      p="10px"
+      borderRadius="8px"
+      cursor={"pointer"}
+    >
       {seasons
         .slice()
         .reverse()
         .map((season) => (
-          <div key={season.season}>
+          <div key={season.seasonNumber}>
             <Box
               cursor="pointer"
               fontWeight="bold"
@@ -35,14 +53,15 @@ export function Season() {
               bg="black"
               border="1px solid white"
               borderRadius="8px"
-              onClick={() => toggleSeason(season.season)}
+              onClick={() => toggleSeason(season.seasonNumber)}
               mb="5px"
             >
-              Season {season.season} {openSeasons[season.season] ? "" : ""}
+              Season {season.seasonNumber}{" "}
+              {openSeasons[season.seasonNumber] ? "" : ""}
             </Box>
 
             <AnimatePresence>
-              {openSeasons[season.season] && (
+              {openSeasons[season.seasonNumber] && (
                 <motion.div
                   initial={{ height: 0, opacity: 0 }}
                   animate={{ height: "auto", opacity: 1 }}
@@ -57,17 +76,16 @@ export function Season() {
                     bg="#0f0e0e"
                     borderRadius="8px"
                   >
-                    {season.episodes.map((episode, index) => (
+                    {season.episodes.map((episode: IEpisode, index: number) => (
                       <ListItem key={index} p={2} borderRadius="5px">
-                        <Flex align="center">
+                        <Flex align="center" role="group">
                           <Image
-                            src={episode.image}
-                            alt={episode.title}
+                            src={episode.episodeImage}
+                            alt={episode.episodeName}
                             borderRadius="5px"
                             w="100px"
                             mr={3}
                           />
-
                           <Divider
                             orientation="vertical"
                             borderColor="#363434"
@@ -75,10 +93,28 @@ export function Season() {
                             mr={3}
                             ml={3}
                           />
-
-                          <Text fontWeight="bold">
-                            Episode {index + 1} : {episode.title}
-                          </Text>
+                          <Box
+                            as={Link}
+                            to={`/episode/${formattedSeriesName}/season-${
+                              season.seasonNumber
+                            }/episode-${encodeURIComponent(
+                              episode.episodeName
+                            )}`}
+                          >
+                            <Text fontSize="sm" color="gray.400" mb={1}>
+                              Season {season.seasonNumber} • Episode
+                              {episode.episodeNumber}
+                            </Text>
+                            <Text
+                              fontWeight="semibold"
+                              fontSize="md"
+                              transition="0.2s"
+                              color="white"
+                              _groupHover={{ color: "#cb0404" }}
+                            >
+                              {episode.episodeName}
+                            </Text>
+                          </Box>
                         </Flex>
                       </ListItem>
                     ))}
@@ -90,4 +126,4 @@ export function Season() {
         ))}
     </Box>
   );
-}
+};

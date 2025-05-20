@@ -36,9 +36,9 @@ export const CardTvShow: React.FC<SeriesListProps> = ({ series }) => {
               w="160px"
               transition="transform 0.5s ease, box-shadow 0.2s ease"
               as={Link}
-              to={`/tvshow/${series.id}`}
+              to={`/series/${series.seriesName.replace(/ /g, "-")}`}
               display="block"
-              overflow="hidden" 
+              overflow="hidden"
             >
               <Box
                 position="relative"

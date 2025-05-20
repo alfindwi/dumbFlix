@@ -13,3 +13,25 @@ export const getEpisodeByName = createAsyncThunk(
     }
   }
 );
+
+export const getSeriesSeasonEpisode = createAsyncThunk(
+  "episode/getSeriesSeasonEpisode",
+  async (
+    {
+      seriesName,
+      seasonNumber,
+      episodeName,
+    }: { seriesName: string; seasonNumber: number; episodeName: string },
+    thunkAPI
+  ) => {
+    try {
+      const res = await api.get(
+        `/api/episode/${seriesName}/season-${seasonNumber}/episode-${episodeName}`
+      );
+      return res.data;
+    } catch (error) {
+      console.error("Error:", error);
+      return thunkAPI.rejectWithValue("Failed to fetch episode.");
+    }
+  }
+);

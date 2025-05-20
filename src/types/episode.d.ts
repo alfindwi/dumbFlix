@@ -3,7 +3,7 @@ export interface IEpisode {
   episodeName: string;
   episodeNumber: number;
   episodeDescription: string;
-  thumbnail: string;
+  episodeImage: string;
   seasonId: number;
   video: string;
 }
