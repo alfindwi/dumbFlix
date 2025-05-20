@@ -44,6 +44,19 @@ public class EpisodeController {
         return ResponseEntity.ok(episodeResponse);
     }
 
+    @GetMapping("/{seriesName}/season-{seasonNumber}/episode-{episodeName}")
+    public ResponseEntity<EpisodeResponse> getSeriesAndSeasonAndEpisode(
+            @PathVariable String seriesName,
+            @PathVariable Integer seasonNumber,
+            @PathVariable String episodeName) {
+        String decodedSeriesName = seriesName.replace("-", " ");
+        String decodedEpisodeName = episodeName.replace("-", " ");
+
+        EpisodeResponse episodeResponse = episodeService.getSeriesAndSeasonAndEpisode(
+                decodedSeriesName, seasonNumber, decodedEpisodeName);
+        return ResponseEntity.ok(episodeResponse);
+    }
+
     @PostMapping("/{seriesName}")
     public ResponseEntity<String> addEpisode(
             @PathVariable("seriesName") String seriesName,

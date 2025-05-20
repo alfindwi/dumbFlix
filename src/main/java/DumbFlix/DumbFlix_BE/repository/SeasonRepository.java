@@ -13,6 +13,8 @@ public interface SeasonRepository extends JpaRepository<Season, Long> {
 
     List<Season> findBySeries_SeriesName(String seriesName);
 
+    Optional<Season> findBySeasonNumberAndSeries(Integer seasonNumber, Series series);
+
     Optional<Season> findBySeriesAndSeasonNumber(Series series, Integer seasonNumber);
 
     boolean existsBySeriesAndSeasonNumber(Series series, int seasonNumber);

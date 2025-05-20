@@ -20,22 +20,38 @@ import DumbFlix.DumbFlix_BE.repository.SeriesRepository;
 @Service
 public class EpisodeService {
 
-    private final EpisodeRepository episodeRepository;
-    private final SeasonRepository seasonRepository;
+    @Autowired
+    private EpisodeRepository episodeRepository;
 
     @Autowired
-    private final SeriesRepository seriesRepository;
+    private SeasonRepository seasonRepository;
 
-    public EpisodeService(EpisodeRepository episodeRepository, SeasonRepository seasonRepository,
-            SeriesRepository seriesRepository) {
-        this.episodeRepository = episodeRepository;
-        this.seriesRepository = seriesRepository;
-        this.seasonRepository = seasonRepository;
-    }
+    @Autowired
+    private SeriesRepository seriesRepository;
 
     public EpisodeResponse getEpisodeByName(String episodeName) {
         Episode episode = episodeRepository.findFirstByEpisodeName(episodeName)
                 .orElseThrow(() -> new FuncErrorException("Episode not found"));
+
+        return new EpisodeResponse(
+                episode.getId(),
+                episode.getEpisodeName(),
+                episode.getEpisodeNumber(),
+                episode.getEpisodeDescription(),
+                episode.getEpisodeImage(),
+                episode.getEpisodeVideo());
+    }
+
+    public EpisodeResponse getSeriesAndSeasonAndEpisode(String seriesName, Integer seasonNumber, String episodeName) {
+
+        Series series = seriesRepository.findBySeriesName(seriesName)
+                .orElseThrow(() -> new FuncErrorException("Series not found"));
+
+        Season season = seasonRepository.findBySeasonNumberAndSeries(seasonNumber, series)
+                .orElseThrow(() -> new FuncErrorException("Season not found for this series"));
+
+        Episode episode = episodeRepository.findByEpisodeNameAndSeason(episodeName, season)
+                .orElseThrow(() -> new FuncErrorException("Episode not found in this season"));
 
         return new EpisodeResponse(
                 episode.getId(),
