@@ -10,7 +10,7 @@ import { getSeries } from "../../../store/series/async";
 export function CardSeries() {
   const dispatch = useAppDispatch();
   const { series: tvSeries } = useAppSelector((state) => state.series);
-  const [page, setPage] = useState(0);
+  const [page] = useState(0);
   const pageSize = 10;
 
   useEffect(() => {

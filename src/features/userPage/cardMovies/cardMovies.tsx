@@ -1,9 +1,9 @@
 import { Box, Icon, Img, Text, Wrap, WrapItem } from "@chakra-ui/react";
-import { useState, useMemo, useRef, useEffect } from "react";
+import { useMemo, useState } from "react";
 import { MdPlayArrow } from "react-icons/md";
 import { Link } from "react-router-dom";
-import Pagination from "../Paggination";
 import { IMovie } from "../../../types/movie";
+import Pagination from "../Paggination";
 
 export interface MoviesListProps {
   movies: IMovie[];

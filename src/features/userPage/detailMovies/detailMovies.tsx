@@ -7,6 +7,7 @@ import {
   Spinner,
   Text,
   useBreakpointValue,
+  useToast,
 } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 import { MdPlayArrow } from "react-icons/md";
@@ -30,8 +31,10 @@ export function DetailMovie() {
 export function DetailMovieContent() {
   const { title } = useParams();
   const dispatch = useAppDispatch();
+  const toast = useToast();
   const [isPlaying, setIsPlaying] = useState(false);
   const { movies, loading } = useAppSelector((state) => state.movie);
+  const { user } = useAppSelector((state) => state.auth);
   const movie = Array.isArray(movies) ? movies[0] : movies;
   const videoRef = useRef<HTMLDivElement>(null);
 
@@ -47,7 +50,8 @@ export function DetailMovieContent() {
 
   useEffect(() => {
     if (title) {
-      dispatch(getMovieByName(title));
+      const decodedName = title.replace(/-/g, " ");
+      dispatch(getMovieByName(decodedName));
     }
   }, [title, dispatch]);
 
@@ -60,7 +64,20 @@ export function DetailMovieContent() {
     };
   }, [movie?.title]);
 
- 
+  const handlePlayClick = () => {
+    if (!user) {
+      toast({
+        title: "Please login first",
+        status: "warning",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
+      return;
+    }
+
+    setIsPlaying(!isPlaying);
+  };
 
   if (loading || !movie) {
     return (
@@ -97,13 +114,13 @@ export function DetailMovieContent() {
                   url={movie.video}
                   width="100%"
                   height="100%"
-                  playing={isPlaying}
+                  playing={!user ? false : isPlaying}
                   controls
                   light={movie.thumbnail}
-                  onClick={() => setIsPlaying(!isPlaying)}
+                  onClick={handlePlayClick}
                   playIcon={
                     <MdPlayArrow
-                      onClick={() => setIsPlaying(!isPlaying)}
+                      onClick={handlePlayClick}
                       style={{
                         color: "white",
                         fontSize: playIconSize,

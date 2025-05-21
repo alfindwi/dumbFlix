@@ -27,7 +27,7 @@ import { FaTv } from "react-icons/fa6";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { MdLocalMovies, MdOutlineLiveTv } from "react-icons/md";
 import { Link } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../../store";
+import { useAppDispatch } from "../../store";
 import { logout } from "../../store/auth/slice";
 
 export function NavbarAdmin() {

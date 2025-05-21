@@ -10,7 +10,7 @@ import { getMovies } from "../../../store/movie/async";
 export function CardMovie() {
   const dispatch = useAppDispatch();
   const { movies } = useAppSelector((state) => state.movie);
-  const [page, setPage] = useState(0);
+  const [page] = useState(0);
   const pageSize = 10;
 
   useEffect(() => {
@@ -95,7 +95,7 @@ export function CardMovie() {
                 transition="transform 0.5s ease, box-shadow 0.2s ease"
                 cursor="pointer"
                 as={Link}
-                to={`/movie/${movie.title}`}
+                to={`/movie/${movie.title.replace(/ /g, "-")}`}
                 display="block"
               >
                 <Box
