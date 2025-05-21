@@ -1,8 +1,11 @@
 package DumbFlix.DumbFlix_BE.controller;
 
 import java.io.IOException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,17 +47,28 @@ public class EpisodeController {
         return ResponseEntity.ok(episodeResponse);
     }
 
-    @GetMapping("/{seriesName}/season-{seasonNumber}/episode-{episodeName}")
+    @GetMapping("/{seriesName}/{seasonNumber}/{episodeName}")
     public ResponseEntity<EpisodeResponse> getSeriesAndSeasonAndEpisode(
             @PathVariable String seriesName,
             @PathVariable Integer seasonNumber,
             @PathVariable String episodeName) {
-        String decodedSeriesName = seriesName.replace("-", " ");
-        String decodedEpisodeName = episodeName.replace("-", " ");
+        String decodedSeriesName = URLDecoder.decode(seriesName, StandardCharsets.UTF_8).replace("-", " ");
+        String decodedEpisodeName = URLDecoder.decode(episodeName, StandardCharsets.UTF_8).replace("-", " ");
 
         EpisodeResponse episodeResponse = episodeService.getSeriesAndSeasonAndEpisode(
                 decodedSeriesName, seasonNumber, decodedEpisodeName);
         return ResponseEntity.ok(episodeResponse);
+    }
+
+    @GetMapping("/{seriesName}/{seasonNumber}")
+    public ResponseEntity<List<EpisodeResponse>> getEpisodeBySeason(
+            @PathVariable String seriesName,
+            @PathVariable Integer seasonNumber) {
+
+        String decodedSeriesName = seriesName.replace("-", " ");
+
+        List<EpisodeResponse> episodes = episodeService.getEpisodeBySeason(decodedSeriesName, seasonNumber);
+        return ResponseEntity.ok(episodes);
     }
 
     @PostMapping("/{seriesName}")

@@ -1,8 +1,10 @@
 package DumbFlix.DumbFlix_BE.service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -62,13 +64,33 @@ public class EpisodeService {
                 episode.getEpisodeVideo());
     }
 
+    public List<EpisodeResponse> getEpisodeBySeason(String seriesName, Integer seasonNumber) {
+
+        Series series = seriesRepository.findBySeriesName(seriesName)
+                .orElseThrow(() -> new FuncErrorException("Series not found"));
+
+        Season season = seasonRepository.findBySeasonNumberAndSeries(seasonNumber, series)
+                .orElseThrow(() -> new FuncErrorException("Season not found"));
+
+        List<Episode> episodes = episodeRepository.findBySeason(season);
+
+        return episodes.stream()
+            .map(e -> new EpisodeResponse(
+                    e.getId(),
+                    e.getEpisodeName(),
+                    e.getEpisodeNumber(),
+                    e.getEpisodeDescription(),
+                    e.getEpisodeImage(),
+                    e.getEpisodeVideo()))
+            .collect(Collectors.toList());
+    }
+
     public EpisodeResponse addEpisode(String seriesName, EpisodeRequest episodeRequest, String thumbnail,
             String video) {
         try {
             Series series = seriesRepository.findBySeriesName(seriesName)
                     .orElseThrow(() -> new FuncErrorException("Series not found"));
 
-            // Cari season berdasarkan series dan seasonNumber
             Season season = seasonRepository.findBySeriesAndSeasonNumber(series, episodeRequest.getSeasonNumber())
                     .orElseThrow(() -> new FuncErrorException("Season not found"));
 
