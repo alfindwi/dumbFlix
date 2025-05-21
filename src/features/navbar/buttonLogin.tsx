@@ -26,7 +26,7 @@ export function ButtonLogin() {
   const navigate = useNavigate();
   const toast = useToast();
 
-  const { loading, error } = useAppSelector((state) => state.auth);
+  const { loading } = useAppSelector((state) => state.auth);
 
   const {
     register,

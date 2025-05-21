@@ -1,12 +1,12 @@
 import { Box, Button, Flex, Img, Text } from "@chakra-ui/react";
-import { Navbar } from "../../navbar/navbar";
-import { CardTvShow } from "../cardTvShow/cardTvShow";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { Footer } from "../footer/footer";
 import { buttonStyle } from "../../../assets/style/buttonStyle";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { getSeries } from "../../../store/series/async";
+import { Navbar } from "../../navbar/navbar";
+import { CardTvShow } from "../cardTvShow/cardTvShow";
+import { Footer } from "../footer/footer";
 
 export function TvShow() {
   return (

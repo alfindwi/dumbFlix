@@ -5,5 +5,5 @@ export interface IEpisode {
   episodeDescription: string;
   episodeImage: string;
   seasonId: number;
-  video: string;
+  episodeVideo: string;
 }

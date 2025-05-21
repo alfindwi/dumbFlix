@@ -1,11 +1,10 @@
 import { Box, Button, Flex, Img, Text } from "@chakra-ui/react";
+import { Link } from "react-router-dom";
+import { buttonStyle } from "../../../assets/style/buttonStyle";
 import { Navbar } from "../../navbar/navbar";
 import { CardMovie } from "../cardHome/cardMovie";
 import { CardSeries } from "../cardHome/cardSeries";
-import { Link } from "react-router-dom";
 import { Footer } from "../footer/footer";
-import { useRef, useState } from "react";
-import { buttonStyle } from "../../../assets/style/buttonStyle";
 
 export function Home() {
   return (
@@ -14,7 +13,7 @@ export function Home() {
       <HomeContent />
       <Footer />
     </Box>
-  );
+  );  
 }
 
 export function HomeContent() {

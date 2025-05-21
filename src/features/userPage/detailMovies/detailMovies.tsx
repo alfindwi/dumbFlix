@@ -92,7 +92,7 @@ export function DetailMovieContent() {
             backgroundColor="black"
           >
             <Box width="100vw" ref={videoRef}>
-              <AspectRatio ratio={2.75 / 1}>
+              <AspectRatio ratio={2.2 / 1}>
                 <ReactPlayer
                   url={movie.video}
                   width="100%"

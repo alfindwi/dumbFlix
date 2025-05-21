@@ -84,7 +84,7 @@ export function CardMovie() {
           modules={[Navigation]}
           style={{ padding: "10px" }}
         >
-          {paginateMovies.map((movie, index) => (
+          {paginateMovies.map((movie) => (
             <SwiperSlide key={movie.id} style={{ width: "auto" }}>
               <Box
                 mt={4}

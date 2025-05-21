@@ -1,13 +1,12 @@
-import Router from "./router"
-
-
+import { Routes } from "react-router-dom";
+import Router from "./router";
 
 function App() {
-
   return (
-    <Router/>
-  )
+    <Routes>
+      <Router />
+    </Routes>
+  );
 }
 
-export default App
-  
+export default App;

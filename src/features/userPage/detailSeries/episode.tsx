@@ -2,11 +2,11 @@ import {
   AspectRatio,
   Box,
   Button,
-  Divider,
+  Center,
   Flex,
-  Img,
+  Spinner,
   Text,
-  useBreakpointValue,
+  useBreakpointValue
 } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 import { FaArrowAltCircleRight } from "react-icons/fa";
@@ -19,6 +19,7 @@ import { useAppDispatch, useAppSelector } from "../../../store";
 import { getSeriesSeasonEpisode } from "../../../store/episode/async";
 import { Navbar } from "../../navbar/navbar";
 import { Footer } from "../footer/footer";
+import EpisodeList from "./episodeList";
 
 export function Episode() {
   return (
@@ -31,41 +32,47 @@ export function Episode() {
 }
 
 export function EpisodeContent() {
-  const { episodeName, seriesName, seasonNumber } = useParams<{
-    episodeName: string;
-    seriesName: string;
-    seasonNumber: string;
-  }>();
   const dispatch = useAppDispatch();
+  const { episode, loading } = useAppSelector((state) => state.episode);
+  const { seriesName, seasonNumber, episodeName } = useParams();
+  const decodedEpisodeName = decodeURIComponent(episodeName ?? "");
+
   const [isPlaying, setIsPlaying] = useState(false);
   const videoRef = useRef<HTMLDivElement>(null);
 
-  const { episode, loading } = useAppSelector((state) => state.episode);
+  const playIconSize = useBreakpointValue({ base: "40px", md: "60px" });
+  const playPadding = useBreakpointValue({ base: "8px", md: "12px" });
 
   useEffect(() => {
     if (videoRef.current) {
       videoRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  }, []); // scroll saat mount
+  }, []);
 
   useEffect(() => {
     if (seriesName && seasonNumber && episodeName) {
-      const seasonNum = Number(seasonNumber);
+      console.log("Dispatching getSeriesSeasonEpisode with:", {
+        seriesName,
+        seasonNumber: parseInt(seasonNumber),
+        episodeName: decodedEpisodeName,
+      });
       dispatch(
         getSeriesSeasonEpisode({
           seriesName,
-          seasonNumber: seasonNum,
-          episodeName,
+          seasonNumber: parseInt(seasonNumber),
+          episodeName: decodedEpisodeName,
         })
       );
     }
-  }, [seriesName, seasonNumber, episodeName, dispatch]);
+  }, [seriesName, seasonNumber, decodedEpisodeName, dispatch]);
 
-  if (loading) return <p>Loading...</p>;
-  if (!episode) return <p>Episode not found</p>;
-
-  const playIconSize = useBreakpointValue({ base: "40px", md: "60px" });
-  const playPadding = useBreakpointValue({ base: "8px", md: "12px" });
+  if (loading || !episode) {
+    return (
+      <Center h="100vh">
+        <Spinner size="xl" thickness="4px" speed="0.65s" color="red.500" />
+      </Center>
+    );
+  }
 
   return (
     <Box>
@@ -90,14 +97,14 @@ export function EpisodeContent() {
             flexDirection="column"
           >
             <Box width="100vw" ref={videoRef}>
-              <AspectRatio ratio={2.75 / 1}>
+              <AspectRatio ratio={2.2 / 1}>
                 <ReactPlayer
-                  url={"https://www.youtube.com/watch?v=ysz5S6PUM-U"}
+                  url={episode?.episodeVideo}
                   width="100%"
                   height="100%"
                   playing={isPlaying}
                   controls
-                  light={"https://i.ytimg.com/vi/ysz5S6PUM-U/hqdefault.jpg"}
+                  light={episode?.episodeImage}
                   onClick={() => setIsPlaying(!isPlaying)}
                   playIcon={
                     <MdPlayArrow
@@ -204,10 +211,6 @@ export function EpisodeContent() {
       >
         <Flex align="flex-start" direction={"row"}>
           <Box>
-            <Text fontSize="2xl" color="gray.400" mb={1}>
-              {episode?.seasonId} : Season {episode?.episodeName} • Episode{" "}
-              {episode?.episodeNumber}
-            </Text>
             <Text
               fontWeight="semibold"
               fontSize="xl"
@@ -215,51 +218,15 @@ export function EpisodeContent() {
               color="white"
               _groupHover={{ color: "#cb0404" }}
             >
-              Pilot
+              {episode?.episodeName}
+            </Text>
+            <Text fontSize="sm" color="gray.400" mb={1}>
+              {episode.episodeDescription}
             </Text>
           </Box>
         </Flex>
       </Box>
-      <Flex
-        align="center"
-        backgroundColor="#0f0e0e"
-        p={3}
-        borderTop={"1px solid #363434"}
-        borderBottom={"1px solid #363434"}
-      >
-        <Img
-          src={
-            "https://res.cloudinary.com/db2rr1kej/image/upload/v1747122964/DumbFlix/Thumbnail/thumbnail.jpg"
-          }
-          alt={"wkwkwk"}
-          borderRadius="5px"
-          w="100px"
-          mr={3}
-        />
-
-        <Divider
-          orientation="vertical"
-          borderColor="#363434"
-          height="30px"
-          mr={3}
-          ml={3}
-        />
-
-        <Box>
-          <Text fontSize="sm" color="gray.400" mb={1}>
-            Season 1 • Episode 2
-          </Text>
-          <Text
-            fontWeight="semibold"
-            fontSize="md"
-            transition="0.2s"
-            color="white"
-            _groupHover={{ color: "#cb0404" }}
-          >
-            dwidjwijd
-          </Text>
-        </Box>
-      </Flex>
+      <EpisodeList seriesName={seriesName ?? ""} seasonNumber={seasonNumber ? parseInt(seasonNumber) : 0} />
     </Box>
   );
 }

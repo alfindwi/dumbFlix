@@ -25,9 +25,29 @@ export const getSeriesSeasonEpisode = createAsyncThunk(
     thunkAPI
   ) => {
     try {
+      console.log("Fetching:", seriesName, seasonNumber, episodeName);
       const res = await api.get(
-        `/api/episode/${seriesName}/season-${seasonNumber}/episode-${episodeName}`
+        `/api/episode/${seriesName}/${seasonNumber}/${encodeURIComponent(
+          episodeName
+        )}`
       );
+      console.log("Response:", res.data);
+      return res.data;
+    } catch (error: any) {
+      console.error("Fetch failed:", error.response?.data || error.message);
+      return thunkAPI.rejectWithValue("Failed to fetch episode.");
+    }
+  }
+);
+
+export const getEpisodeBySeason = createAsyncThunk(
+  "episode/getEpisodeBySeason",
+  async (
+    { seriesName, seasonNumber }: { seriesName: string; seasonNumber: number },
+    thunkAPI
+  ) => {
+    try {
+      const res = await api.get(`/api/episode/${seriesName}/${seasonNumber}`);
       return res.data;
     } catch (error) {
       console.error("Error:", error);

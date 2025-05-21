@@ -1,12 +1,12 @@
 import { Box, Button, Flex, Img, Text } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Navbar } from "../../navbar/navbar";
-import { CardMovies } from "../cardMovies/cardMovies";
 import { buttonStyle } from "../../../assets/style/buttonStyle";
-import { Footer } from "../footer/footer";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { getMovies } from "../../../store/movie/async";
+import { Navbar } from "../../navbar/navbar";
+import { CardMovies } from "../cardMovies/cardMovies";
+import { Footer } from "../footer/footer";
 
 export function Movies() {
   return (
