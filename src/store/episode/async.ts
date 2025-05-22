@@ -55,3 +55,23 @@ export const getEpisodeBySeason = createAsyncThunk(
     }
   }
 );
+
+export const createEpisode = createAsyncThunk(
+  "episode/createEpisode",
+  async (
+    { data, seriesName }: { data: FormData; seriesName: string },
+    thunkAPI: any
+  ) => {
+    try {
+      const res = await api.post(`/api/episode/${seriesName}`, data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      return res.data;
+    } catch (error) {
+      console.error("Error:", error);
+      return thunkAPI.rejectWithValue("Failed to create episode.");
+    }
+  }
+);

@@ -22,7 +22,7 @@ import {
 } from "@chakra-ui/react";
 import Cookies from "js-cookie";
 import { BiSolidCameraMovie } from "react-icons/bi";
-import { FaMoneyBill, FaSignOutAlt, FaUser } from "react-icons/fa";
+import { FaSignOutAlt } from "react-icons/fa";
 import { FaMoneyBill1, FaRegUser, FaTv } from "react-icons/fa6";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { ImExit, ImHome } from "react-icons/im";
@@ -37,11 +37,12 @@ export function Navbar() {
   const dispatch = useAppDispatch();
   const toast = useToast();
   const isMobile = useBreakpointValue({ base: true, md: false });
-  const { isLoggedIn, user } = useAppSelector((state) => state.auth);
+  const { isLoggedIn } = useAppSelector((state) => state.auth);
 
   const handleLogout = () => {
     Cookies.remove("token");
     Cookies.remove("user");
+    Cookies.remove("role");
     dispatch(logout());
     toast({
       title: "Logout Berhasil",
@@ -103,7 +104,6 @@ export function Navbar() {
         />
       </Flex>
 
-      {/* Menu Profil */}
       {!isMobile && (
         <Flex gap={2} mr={9} alignItems="center" zIndex={10}>
           {!isLoggedIn ? (
@@ -116,35 +116,11 @@ export function Navbar() {
               <MenuButton as={Box} cursor="pointer">
                 <Avatar
                   src={
-                    user?.image ||
                     "https://i.pinimg.com/736x/4e/d1/c8/4ed1c8ae3c42f348db7eedb18abe2300.jpg"
                   }
                 />
               </MenuButton>
               <MenuList bgColor="black" zIndex="1000">
-                <MenuItem
-                  as={Link}
-                  bgColor={"black"}
-                  to="/profile"
-                  _hover={{ color: "#E50914" }}
-                >
-                  <FaRegUser
-                    style={{ marginRight: "10px", color: "#E50914" }}
-                  />
-                  Profile
-                </MenuItem>
-                <MenuItem
-                  as={Link}
-                  to="/payment"
-                  bgColor={"black"}
-                  _hover={{ color: "#E50914" }}
-                >
-                  <FaMoneyBill1
-                    style={{ marginRight: "10px", color: "#E50914" }}
-                  />
-                  Pay
-                </MenuItem>
-                <Divider borderColor="gray.600" />
                 <MenuItem
                   onClick={handleLogout}
                   _hover={{ color: "red" }}
@@ -159,7 +135,6 @@ export function Navbar() {
         </Flex>
       )}
 
-      {/* Drawer untuk Hamburger Menu di Layar Kecil */}
       <Drawer isOpen={isOpen} placement="left" onClose={onClose}>
         <DrawerOverlay />
         <DrawerContent bg="#1F1F1F" color="white">
@@ -183,7 +158,12 @@ export function Navbar() {
               </Flex>
               <Flex align="center" gap={2}>
                 <FaTv />
-                <Text as={Link} to="/tvshow" onClick={onClose} cursor="pointer">
+                <Text
+                  as={Link}
+                  to="/tvSeries"
+                  onClick={onClose}
+                  cursor="pointer"
+                >
                   TV Shows
                 </Text>
               </Flex>
@@ -195,38 +175,23 @@ export function Navbar() {
               </Flex>
 
               <Divider borderColor="gray.600" />
-
-              <Flex align="center" gap={2}>
-                <FaUser />
-                <Text
-                  as={Link}
-                  to="/profile"
-                  onClick={onClose}
-                  cursor="pointer"
-                >
-                  Profile
-                </Text>
-              </Flex>
-              <Flex align="center" gap={2}>
-                <FaMoneyBill />
-                <Text
-                  as={Link}
-                  to="/payment"
-                  onClick={onClose}
-                  cursor="pointer"
-                >
-                  Pay
-                </Text>
-              </Flex>
-              <Flex
-                align="center"
-                gap={2}
-                cursor="pointer"
-                onClick={() => alert("Logout")}
-              >
-                <FaSignOutAlt />
-                <Text>Logout</Text>
-              </Flex>
+              {!isLoggedIn ? (
+                <>
+                  <Flex align="center" gap={2}>
+                    <ButtonLogin />
+                  </Flex>
+                  <Flex align="center" gap={2}>
+                    <ButtonRegister />
+                  </Flex>
+                </>
+              ) : (
+                <Flex align="center" gap={2}>
+                  <FaSignOutAlt />
+                  <Text onClick={handleLogout} cursor="pointer">
+                    Logout
+                  </Text>
+                </Flex>
+              )}
             </Flex>
           </DrawerBody>
         </DrawerContent>

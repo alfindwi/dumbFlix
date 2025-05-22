@@ -68,7 +68,7 @@ export function DetailMovieContent() {
     if (!user) {
       toast({
         title: "Please login first",
-        status: "warning",
+        status: "info",
         duration: 3000,
         isClosable: true,
         position: "top",
@@ -76,8 +76,12 @@ export function DetailMovieContent() {
       return;
     }
 
-    setIsPlaying(!isPlaying);
+    setIsPlaying(true);
   };
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
 
   if (loading || !movie) {
     return (
@@ -108,36 +112,46 @@ export function DetailMovieContent() {
             zIndex={0}
             backgroundColor="black"
           >
-            <Box width="100vw" ref={videoRef}>
-              <AspectRatio ratio={2.2 / 1}>
-                <ReactPlayer
-                  url={movie.video}
-                  width="100%"
-                  height="100%"
-                  playing={!user ? false : isPlaying}
-                  controls
-                  light={movie.thumbnail}
-                  onClick={handlePlayClick}
-                  playIcon={
-                    <MdPlayArrow
-                      onClick={handlePlayClick}
-                      style={{
-                        color: "white",
-                        fontSize: playIconSize,
-                        backgroundColor: "rgba(0, 0, 0, 0.5)",
-                        border: "4px solid white",
-                        padding: playPadding,
-                        borderRadius: "50%",
-                        cursor: "pointer",
-                        position: "absolute",
-                        top: "50%",
-                        left: "50%",
-                        transform: "translate(-50%, -50%)",
-                      }}
-                    />
-                  }
-                />
-              </AspectRatio>
+            <Box width="100vw">
+              {isPlaying ? (
+                <AspectRatio ratio={2.2 / 1}>
+                  <ReactPlayer
+                    url={movie.video}
+                    width="100%"
+                    height="100%"
+                    playing
+                    controls
+                  />
+                </AspectRatio>
+              ) : (
+                <Box position="relative" width="100%" aspectRatio={2.2}>
+                  <Img
+                    src={movie.thumbnail}
+                    alt={movie.title}
+                    width="100%"
+                    height="100%"
+                    objectFit="cover"
+                    cursor="pointer"
+                    onClick={handlePlayClick}
+                  />
+                  <MdPlayArrow
+                    onClick={handlePlayClick}
+                    style={{
+                      color: "white",
+                      fontSize: playIconSize,
+                      backgroundColor: "rgba(0, 0, 0, 0.5)",
+                      border: "4px solid white",
+                      padding: playPadding,
+                      borderRadius: "50%",
+                      cursor: "pointer",
+                      position: "absolute",
+                      top: "50%",
+                      left: "50%",
+                      transform: "translate(-50%, -50%)",
+                    }}
+                  />
+                </Box>
+              )}
             </Box>
           </Flex>
         </Box>

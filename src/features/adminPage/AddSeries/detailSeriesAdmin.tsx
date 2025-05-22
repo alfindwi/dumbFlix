@@ -21,8 +21,6 @@ export function DetailSeriesTrailer() {
   const dispatch = useAppDispatch();
   const { series, loading } = useAppSelector((state) => state.series);
 
-  const seriesDetail = Array.isArray(series) ? series[0] : series;
-
   const extractYouTubeId = (url: string): string => {
     const regExp =
       /(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/))([\w-]{11})/;
@@ -31,6 +29,10 @@ export function DetailSeriesTrailer() {
   };
 
   const decodedSeriesName = seriesName?.replace(/-/g, " ");
+
+  const seriesDetail = Array.isArray(series)
+    ? series.find((item) => item.seriesName === decodedSeriesName)
+    : series;
 
   useEffect(() => {
     if (decodedSeriesName) {
@@ -91,12 +93,10 @@ export function DetailSeriesTrailer() {
               </Flex>
             </Flex>
 
-            {/* Deskripsi */}
-
             <Text
               fontSize="sm"
               mt={3}
-              w="450px"
+              w={{ base: "200px", md: "300px", lg: "500px" }}
               textAlign="justify"
               lineHeight="1.6"
             >

@@ -12,6 +12,7 @@ import {
   Spinner,
   useDisclosure,
   useToast,
+  Text,
   VStack,
 } from "@chakra-ui/react";
 import { useAppDispatch, useAppSelector } from "../../store";
@@ -42,14 +43,14 @@ export function ButtonLogin() {
   const onSubmit: SubmitHandler<loginSchema> = async (data) => {
     try {
       console.log("Submit function called with data:", data);
-  
+
       const res = await dispatch(loginAsync(data));
-  
+
       console.log("Response:", res);
-  
+
       if (loginAsync.fulfilled.match(res) && res.payload) {
         const role = res.payload.user.role;
-  
+
         toast({
           title: "Login success",
           description: "Welcome back",
@@ -58,15 +59,17 @@ export function ButtonLogin() {
           isClosable: true,
           position: "top",
         });
-  
+
         reset();
         navigate(role === "ADMIN" ? "/admin" : "/");
       } else if (loginAsync.rejected.match(res)) {
         const errorMessage =
-          typeof res.payload === "string" ? res.payload : "Terjadi kesalahan saat login";
-  
+          typeof res.payload === "string"
+            ? res.payload
+            : "Terjadi kesalahan saat login";
+
         console.error("Login failed:", errorMessage);
-  
+
         toast({
           title: "Login failed",
           description: errorMessage,
@@ -78,7 +81,7 @@ export function ButtonLogin() {
       }
     } catch (error) {
       console.error("Unexpected error during login:", error);
-  
+
       toast({
         title: "Error",
         description: "Terjadi kesalahan tidak terduga",
@@ -89,7 +92,6 @@ export function ButtonLogin() {
       });
     }
   };
-  
 
   const {
     isOpen: isOpenLogin,
@@ -101,6 +103,7 @@ export function ButtonLogin() {
     <>
       <Button
         size={"md"}
+        display={{ base: "none", md: "block" }}
         bgColor={"#E50914"}
         _hover={{ bgColor: "#E50914" }}
         color={"white"}
@@ -110,10 +113,21 @@ export function ButtonLogin() {
         Login
       </Button>
 
+      <Text
+        cursor="pointer"
+        display={{ base: "block", md: "none" }}
+        onClick={onOpenLogin}
+        fontWeight={"bold"}
+      >
+        Login
+      </Text>
+
       {/* modal login */}
       <Modal isOpen={isOpenLogin} onClose={onCloseLogin}>
         <ModalOverlay />
-        <ModalContent bgColor={"#1f1f1f"}>
+        <ModalContent
+          bgColor={"#1f1f1f"}
+          maxW={{ base: "90vw", sm: "400px", md: "500px" }}>
           <ModalHeader fontWeight={"bold"} color={"#E50914"}>
             Login
           </ModalHeader>

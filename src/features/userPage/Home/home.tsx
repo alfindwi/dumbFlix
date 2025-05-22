@@ -5,6 +5,7 @@ import { Navbar } from "../../navbar/navbar";
 import { CardMovie } from "../cardHome/cardMovie";
 import { CardSeries } from "../cardHome/cardSeries";
 import { Footer } from "../footer/footer";
+import { useAppSelector } from "../../../store";
 
 export function Home() {
   return (
@@ -13,10 +14,17 @@ export function Home() {
       <HomeContent />
       <Footer />
     </Box>
-  );  
+  );
 }
 
 export function HomeContent() {
+  const { series } = useAppSelector((state) => state.series);
+
+  const heroSeries = series.find(
+    (series) =>
+      series.seriesName.replace(/\s+/g, "-") ===
+      "Breaking Bad".replace(/\s+/g, "-")
+  );
   return (
     <Box>
       <Img
@@ -90,7 +98,11 @@ export function HomeContent() {
               TV Series
             </Box>
           </Flex>
-          <Button sx={buttonStyle} as={Link} to="/series">
+          <Button
+            sx={buttonStyle}
+            as={Link}
+            to={`/series/${heroSeries?.seriesName.replace(/\s+/g, "-")}`}
+          >
             Watch Now !
           </Button>
         </Box>

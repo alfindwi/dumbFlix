@@ -14,9 +14,6 @@ export interface AuthState {
 const initialState: AuthState = {
   token: Cookies.get("token") || "",
   isLoggedIn: !!Cookies.get("token"),
-  user: Cookies.get("user")
-    ? JSON.parse(Cookies.get("user") as string)
-    : null,
   loading: false,
   error: null,
 };

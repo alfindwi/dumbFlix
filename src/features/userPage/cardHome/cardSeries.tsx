@@ -28,7 +28,7 @@ export function CardSeries() {
         <Button
           size={"sm"}
           as={Link}
-          to={"/tvshow"}
+          to={"/tvSeries"}
           fontSize={"12px"}
           bgColor={"#e50914"}
           _hover={{ bgColor: "#e50914" }}

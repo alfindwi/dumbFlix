@@ -22,6 +22,7 @@ import { Payment } from "../features/userPage/payment/pay";
 import { Home } from "../features/userPage/Home/home";
 import { DetailMovieAdmin } from "../features/adminPage/AddMovies/detailMoviesAdmin";
 import { Episode } from "../features/userPage/detailSeries/episode";
+import { NotFound } from "../features/userPage/footer/notFound";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -79,8 +80,12 @@ const routes: RouteObject[] = [
         element: <DetailMovie />,
       },
       {
-        path : "/episode/:seriesName/:seasonNumber/:episodeName",
+        path: "/episode/:seriesName/:seasonNumber/:episodeName",
         element: <Episode />,
+      },
+      {
+        path: "*",
+        element: <NotFound />,
       },
     ],
   },

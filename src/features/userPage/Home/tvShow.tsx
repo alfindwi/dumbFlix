@@ -25,6 +25,13 @@ export function TvShowContent() {
   useEffect(() => {
     dispatch(getSeries());
   }, [dispatch]);
+
+  
+  const heroSeries = series.find(
+    (series) =>
+      series.seriesName.replace(/\s+/g, "-") ===
+      "Money Heist".replace(/\s+/g, "-")
+  );
   return (
     <Box>
       <Img
@@ -83,7 +90,7 @@ export function TvShowContent() {
               TV Series
             </Box>
           </Flex>
-          <Button sx={buttonStyle} as={Link} to={"/series"}>
+          <Button sx={buttonStyle} as={Link} to={`/series/${heroSeries?.seriesName.replace(/\s+/g, "-")}`}>
             Watch Now !
           </Button>
         </Box>

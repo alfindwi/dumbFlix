@@ -8,7 +8,7 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
-  useToast
+  useToast,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -90,10 +90,14 @@ export function ModalButtonSeason({
   return (
     <Modal isOpen={isOpenSsn} onClose={onCloseSsn}>
       <ModalOverlay />
-      <ModalContent bgColor={"#1F1F1F"} maxWidth="50vw">
+      <ModalContent
+        bgColor={"#1F1F1F"}
+        maxW={{ base: "90vw", md: "50vw" }}
+        mx="auto"
+      >
         <ModalHeader fontWeight={"bold"}>Add Season</ModalHeader>
         <ModalCloseButton />
-        <ModalBody>
+        <ModalBody >
           <form onSubmit={handleSubmit}>
             <Input
               type="number"
@@ -101,7 +105,7 @@ export function ModalButtonSeason({
               _placeholder={{ color: "#B1B1B1" }}
               bgColor={"#343434"}
               border={"2px solid #D2D2D2"}
-              w={"37rem"}
+              w= {{ base: "100%", md: "100%" }}
               value={seasonNumber}
               onChange={(e) => setSeasonNumber(e.target.value)}
             />

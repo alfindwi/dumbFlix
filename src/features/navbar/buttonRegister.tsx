@@ -14,6 +14,7 @@ import {
   Spinner,
   useDisclosure,
   useToast,
+  Text,
   VStack,
 } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -62,8 +63,8 @@ export function ButtonRegister() {
         isClosable: true,
         position: "top",
       });
-      reset(); 
-      onCloseRegister(); 
+      reset();
+      onCloseRegister();
     } catch (error: any) {
       console.error("Registrasi gagal:", error);
       const errorMessage =
@@ -80,7 +81,6 @@ export function ButtonRegister() {
       });
     }
   };
-  
 
   return (
     <>
@@ -88,6 +88,7 @@ export function ButtonRegister() {
         size={"md"}
         bgColor={"#E50914"}
         _hover={{ bgColor: "#E50914" }}
+        display={{ base: "none", md: "block" }}
         color={"white"}
         fontWeight={"bold"}
         onClick={onOpenRegister}
@@ -95,10 +96,21 @@ export function ButtonRegister() {
         Register
       </Button>
 
+      <Text
+        cursor="pointer"
+        display={{ base: "block", md: "none" }}
+        onClick={onOpenRegister}
+        fontWeight={"bold"}
+      >
+        Register
+      </Text>
+
       {/* Modal Register */}
       <Modal isOpen={isOpenRegister} onClose={onCloseRegister}>
         <ModalOverlay />
-        <ModalContent bgColor={"#1f1f1f"}>
+        <ModalContent
+          bgColor={"#1f1f1f"}
+          maxW={{ base: "90vw", sm: "400px", md: "500px" }}>
           <ModalHeader fontWeight={"bold"} color={"#E50914"}>
             Register
           </ModalHeader>

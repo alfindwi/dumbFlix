@@ -38,6 +38,7 @@ export function NavbarAdmin() {
 
   const handleLogout = () => {
     Cookies.remove("token");
+    Cookies.remove("user");
     Cookies.remove("role");
     dispatch(logout());
     toast({

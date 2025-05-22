@@ -78,46 +78,50 @@ export const Season: React.FC<SeasonProps> = ({ seasons, seriesName }) => {
                         episode.episodeName.replace(/\s+/g, "-")
                       );
                       return (
-                        <ListItem
-                          key={episode.episodeName}
-                          p={2}
-                          borderRadius="5px"
+                        <Box
+                          as={Link}
+                          to={`/episode/${formattedSeriesName}/${season.seasonNumber}/${formattedEpisodeName}`}
                         >
-                          <Flex align="center" role="group">
-                            <Image
-                              src={episode.episodeImage}
-                              alt={episode.episodeName}
-                              borderRadius="5px"
-                              w="100px"
-                              mr={3}
-                            />
-                            <Divider
-                              orientation="vertical"
-                              borderColor="#363434"
-                              height="30px"
-                              mr={3}
-                              ml={3}
-                            />
-                            <Box
-                              as={Link}
-                              to={`/episode/${formattedSeriesName}/${season.seasonNumber}/${formattedEpisodeName}`}
-                            >
-                              <Text fontSize="sm" color="gray.400" mb={1}>
-                                Season {season.seasonNumber} • Episode{" "}
-                                {episode.episodeNumber}
-                              </Text>
-                              <Text
-                                fontWeight="semibold"
-                                fontSize="md"
-                                transition="0.2s"
-                                color="white"
-                                _groupHover={{ color: "#cb0404" }}
-                              >
-                                {episode.episodeName}
-                              </Text>
-                            </Box>
-                          </Flex>
-                        </ListItem>
+                          <ListItem
+                            key={episode.episodeName}
+                            p={2}
+                            borderRadius="5px"
+                            as={Link}
+                            to={`/episode/${formattedSeriesName}/${season.seasonNumber}/${formattedEpisodeName}`}
+                          >
+                            <Flex align="center" role="group">
+                              <Image
+                                src={episode.episodeImage}
+                                alt={episode.episodeName}
+                                borderRadius="5px"
+                                w="100px"
+                                mr={3}
+                              />
+                              <Divider
+                                orientation="vertical"
+                                borderColor="#363434"
+                                height="30px"
+                                mr={3}
+                                ml={3}
+                              />
+                              <Box>
+                                <Text fontSize="sm" color="gray.400" mb={1}>
+                                  Season {season.seasonNumber} • Episode{" "}
+                                  {episode.episodeNumber}
+                                </Text>
+                                <Text
+                                  fontWeight="semibold"
+                                  fontSize="md"
+                                  transition="0.2s"
+                                  color="white"
+                                  _groupHover={{ color: "#cb0404" }}
+                                >
+                                  {episode.episodeName}
+                                </Text>
+                              </Box>
+                            </Flex>
+                          </ListItem>
+                        </Box>
                       );
                     })}
                   </List>
