@@ -1,6 +1,7 @@
 package DumbFlix.DumbFlix_BE.service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import DumbFlix.DumbFlix_BE.dto.request.SeasonRequest;
 import DumbFlix.DumbFlix_BE.dto.response.EpisodeResponse;
 import DumbFlix.DumbFlix_BE.dto.response.SeasonResponse;
+import DumbFlix.DumbFlix_BE.entity.series.Episode;
 import DumbFlix.DumbFlix_BE.entity.series.Season;
 import DumbFlix.DumbFlix_BE.entity.series.Series;
 import DumbFlix.DumbFlix_BE.exception.FuncErrorException;
@@ -62,6 +64,7 @@ public class SeasonService {
 
             return seasons.stream().map(season -> {
                 List<EpisodeResponse> episodeResponses = season.getEpisodes().stream()
+                        .sorted(Comparator.comparing(Episode::getEpisodeNumber)) 
                         .map(episode -> new EpisodeResponse(
                                 episode.getId(),
                                 episode.getEpisodeName(),
