@@ -153,6 +153,17 @@ function Content() {
           _placeholder={{ color: "#B1B1B1" }}
           mb={4}
         />
+        <Input
+            type="text"
+            placeholder="Trailer"
+            bgColor={"#343434"}
+            mb={4}
+            border={"2px solid #D2D2D2"}
+            _placeholder={{ color: "#B1B1B1" }}
+            flex={1}
+            value={trailer}
+            onChange={(e) => setTrailer(e.target.value)}
+          />
         <Select
           options={options}
           onChange={handleChange}

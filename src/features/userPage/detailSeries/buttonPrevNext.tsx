@@ -11,9 +11,10 @@ export function ButtonPrevNext() {
   const { episodes } = useAppSelector((state) => state.episode);
   const { seriesName, seasonNumber, episodeName } = useParams();
   const decodedEpisodeName = decodeURIComponent(episodeName ?? "");
-
-  const normalize = (name: string) =>
-    name.toLowerCase().replace(/\s+/g, "-").trim();
+  function normalize(text?: string) {
+    if (!text) return ""; 
+    return text.toLowerCase().trim().replace(/\s+/g, "-");
+  }
 
   const sortedEpisodes = [...(episodes || [])].sort(
     (a, b) => a.episodeNumber - b.episodeNumber

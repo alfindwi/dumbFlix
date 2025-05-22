@@ -229,7 +229,7 @@ export function ModalButtonEpisode({
                   _hover={{ bgColor: "#E50914" }}
                   w={{ base: "100%", md: "200px" }}
                 >
-                  Add
+                  Save
                 </Button>
               </Flex>
             </Stack>
