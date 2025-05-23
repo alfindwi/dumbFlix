@@ -1,6 +1,7 @@
 package DumbFlix.DumbFlix_BE.service;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,7 @@ import DumbFlix.DumbFlix_BE.dto.response.EpisodeResponse;
 import DumbFlix.DumbFlix_BE.dto.response.SeasonResponse;
 import DumbFlix.DumbFlix_BE.dto.response.SeriesResponse;
 import DumbFlix.DumbFlix_BE.entity.categories.Categories;
+import DumbFlix.DumbFlix_BE.entity.series.Episode;
 import DumbFlix.DumbFlix_BE.entity.series.Series;
 import DumbFlix.DumbFlix_BE.exception.FuncErrorException;
 import DumbFlix.DumbFlix_BE.repository.CategoryRepository;
@@ -103,17 +105,18 @@ public class SeriesService {
                 seasonDTO.setSeasonNumber(season.getSeasonNumber());
 
                 if (season.getEpisodes() != null) {
-                    seasonDTO.setEpisodes(season.getEpisodes().stream().map(episode -> {
-                        return new EpisodeResponse(
-                                episode.getId(),
-                                episode.getEpisodeName(),
-                                episode.getEpisodeNumber(),
-                                episode.getEpisodeDescription(),
-                                episode.getEpisodeImage(),
-                                episode.getEpisodeVideo() 
-                        );
+                    seasonDTO.setEpisodes(season.getEpisodes().stream()
+                            .sorted(Comparator.comparingInt(Episode::getEpisodeNumber))
+                            .map(episode -> {
+                                return new EpisodeResponse(
+                                        episode.getId(),
+                                        episode.getEpisodeName(),
+                                        episode.getEpisodeNumber(),
+                                        episode.getEpisodeDescription(),
+                                        episode.getEpisodeImage(),
+                                        episode.getEpisodeVideo());
 
-                    }).collect(Collectors.toList()));
+                            }).collect(Collectors.toList()));
                 }
                 return seasonDTO;
             }).collect(Collectors.toList()));

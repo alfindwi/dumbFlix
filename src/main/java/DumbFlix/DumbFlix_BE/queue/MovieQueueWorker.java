@@ -40,7 +40,6 @@ public class MovieQueueWorker {
         }
 
         try {
-            // Konversi object redis ke JSON string lalu ke Map
             ObjectMapper mapper = new ObjectMapper();
             Map<String, Object> map = mapper.readValue(json, new TypeReference<>() {
             });
@@ -60,7 +59,6 @@ public class MovieQueueWorker {
             MultipartFile videoFile = new MockMultipartFile("video", "video.mp4", "video/mp4", videoBytes);
             MultipartFile postersFile = new MockMultipartFile("posters", "posters.jpg", "image/jpeg", posterBytes);
 
-            // Upload ke Cloudinary
             CloudinaryResponse thumbnail = cloudinaryService.uploadThumbnail(thumbnailFile, "thumbnail");
             CloudinaryResponse video = cloudinaryService.uploadVideo(videoFile);
             CloudinaryResponse poster = cloudinaryService.uploadThumbnail(postersFile, "poster");
