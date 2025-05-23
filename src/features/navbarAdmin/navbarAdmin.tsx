@@ -26,11 +26,12 @@ import { FaSignOutAlt } from "react-icons/fa";
 import { FaTv } from "react-icons/fa6";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { MdLocalMovies, MdOutlineLiveTv } from "react-icons/md";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../store";
 import { logout } from "../../store/auth/slice";
 
 export function NavbarAdmin() {
+  const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const dispatch = useAppDispatch();
   const toast = useToast();
@@ -48,6 +49,7 @@ export function NavbarAdmin() {
       isClosable: true,
       position: "top",
     });
+    navigate("/");
   };
 
   return (

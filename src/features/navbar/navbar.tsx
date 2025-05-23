@@ -23,7 +23,7 @@ import {
 import Cookies from "js-cookie";
 import { BiSolidCameraMovie } from "react-icons/bi";
 import { FaSignOutAlt } from "react-icons/fa";
-import { FaMoneyBill1, FaRegUser, FaTv } from "react-icons/fa6";
+import { FaTv } from "react-icons/fa6";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { ImExit, ImHome } from "react-icons/im";
 import { Link } from "react-router-dom";

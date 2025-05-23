@@ -9,7 +9,7 @@ export interface MoviesListProps {
   movies: IMovie[];
 }
 
-export const moviesPerPage = 28;
+export const moviesPerPage = 21;
 
 export const CardMovies: React.FC<MoviesListProps> = ({ movies }) => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -20,10 +20,6 @@ export const CardMovies: React.FC<MoviesListProps> = ({ movies }) => {
     const endIndex = Math.min(startIndex + moviesPerPage, movies.length);
     return movies.slice(startIndex, endIndex);
   }, [movies, currentPage]);
-
-  console.log(
-    `Current Page: ${currentPage}, Movies on page: ${paginatedMovies.length}`
-  );
 
   return (
     <Box p={6}>

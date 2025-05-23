@@ -21,8 +21,8 @@ export function Footer() {
         display={{base:"none", md:"block"}}
         mx="auto"
       >
-        <Img src="/src/assets/ALFLIX.png" w={"210px"} ml={"23px"} />
-        <Text ml={"23px"} color={"#929292"} w={"550px"} textAlign={"justify"}>
+        <Img src="/src/assets/ALFLIX.png" w={"160px"} ml={"23px"} />
+        <Text ml={"23px"} fontSize="sm" color={"#929292"} w={"550px"} textAlign={"justify"}>
           Menyediakan berbagai konten video berkualitas tinggi, mulai dari film hingga serial TV. Nikmati pengalaman menonton yang tak tertandingi kapan saja dan di mana saja.
         </Text>
       </Box>
@@ -37,7 +37,7 @@ export function Footer() {
         mx="auto"
         px={6}
       >
-        <Text fontSize="sm" mb={{ base: 4, md: 0 }} color={"#929292"} >
+        <Text fontSize="11px" mb={{ base: 4, md: 0 }} color={"#929292"} >
           Copyright © {new Date().getFullYear()} by Alfin Dwi. All rights
           reserved.
         </Text>

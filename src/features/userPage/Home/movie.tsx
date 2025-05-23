@@ -33,14 +33,14 @@ export function MovieContent() {
       <Img
         src="/src/assets/movieHome.png"
         w="100%"
-        h={{ base: "200px", md: "500px", lg: "630px" }}
+        h={{ base: "200px", md: "360px", lg: "500px" }}
         objectFit="cover"
       />
 
       <Box
         position="absolute"
         left="0"
-        top={{ base: "130px", md: "120px", lg: "200px" }}
+        top={{ base: "130px", md: "120px", lg: "60px" }}
         w="100%"
         h={{ base: "150px", md: "360px", lg: "520px" }}
         bgGradient="linear(to-t, black, transparent 60%)"

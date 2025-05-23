@@ -9,14 +9,14 @@ import {
   useBreakpointValue,
   useToast,
 } from "@chakra-ui/react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { MdPlayArrow } from "react-icons/md";
 import ReactPlayer from "react-player";
-import { Navbar } from "../../navbar/navbar";
-import { Footer } from "../footer/footer";
 import { useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { getMovieByName } from "../../../store/movie/async";
+import { Navbar } from "../../navbar/navbar";
+import { Footer } from "../footer/footer";
 
 export function DetailMovie() {
   return (
@@ -36,7 +36,6 @@ export function DetailMovieContent() {
   const { movies, loading } = useAppSelector((state) => state.movie);
   const { user } = useAppSelector((state) => state.auth);
   const movie = Array.isArray(movies) ? movies[0] : movies;
-  const videoRef = useRef<HTMLDivElement>(null);
 
   const playIconSize = useBreakpointValue({ base: "40px", md: "60px" });
   const playPadding = useBreakpointValue({ base: "8px", md: "12px" });

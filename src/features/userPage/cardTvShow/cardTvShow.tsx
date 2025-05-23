@@ -9,7 +9,7 @@ interface SeriesListProps {
   series: ISeries[];
 }
 
-const seriesPage = 28;
+const seriesPage = 21;
 
 export const CardTvShow: React.FC<SeriesListProps> = ({ series }) => {
   const [currentPage, setCurrentPage] = useState(1);

@@ -64,14 +64,6 @@ const routes: RouteObject[] = [
         element: <Movies />,
       },
       {
-        path: "/profile",
-        element: <Profile />,
-      },
-      {
-        path: "/payment",
-        element: <Payment />,
-      },
-      {
         path: "/series/:seriesName",
         element: <DetailSeries />,
       },
