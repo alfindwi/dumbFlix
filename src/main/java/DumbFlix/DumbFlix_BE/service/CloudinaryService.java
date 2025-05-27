@@ -27,8 +27,7 @@ public class CloudinaryService {
             Map<String, Object> uploadParams = Map.of(
                     "folder", "DumbFlix/" + fileName,
                     "public_id", randomName,
-                    "resource_type", "image"
-            );
+                    "resource_type", "image");
 
             final Map<String, Object> result = this.cloudinary.uploader().upload(image.getBytes(), uploadParams);
 
@@ -37,7 +36,7 @@ public class CloudinaryService {
 
             return CloudinaryResponse.builder().public_id(publicId).url(url).build();
         } catch (Exception e) {
-            e.printStackTrace(); 
+            e.printStackTrace();
             throw new FuncErrorException("Failed to upload file");
         }
     }
@@ -79,8 +78,7 @@ public class CloudinaryService {
             final String url = (String) result.get("secure_url");
             final String publicId = (String) result.get("public_id");
 
-            return new CloudinaryResponse().builder().public_id(publicId).url(url).build();
-
+            return CloudinaryResponse.builder().public_id(publicId).url(url).build();
         } catch (IOException e) {
             throw new RuntimeException("Gagal upload video");
         }
