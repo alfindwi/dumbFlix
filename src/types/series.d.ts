@@ -5,6 +5,6 @@ export interface ISeries {
     description: string;
     poster: string;
     trailer: string;
-    category: ICategory[];
+    categories: ICategory[];
     seasons: ISeason[];
 }

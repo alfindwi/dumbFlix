@@ -1,4 +1,12 @@
-import { Box, Center, Flex, Img, Spinner, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Center,
+  Divider,
+  Flex,
+  Img,
+  Spinner,
+  Text,
+} from "@chakra-ui/react";
 import { useEffect } from "react";
 import ReactPlayer from "react-player";
 import { useParams } from "react-router-dom";
@@ -53,7 +61,19 @@ export function DescTrailer() {
           w={{ base: "80px", md: "90px", lg: "100px" }}
           h={{ base: "120px", md: "130px", lg: "150px" }}
           mr="20px"
+          loading="lazy"
+          draggable="false"
+          onContextMenu={(e) => e.preventDefault()}
+          userSelect="none"
+          sx={{
+            userDrag: "none",
+            WebkitUserDrag: "none",
+            MozUserSelect: "none",
+            msUserSelect: "none",
+            userSelect: "none",
+          }}
         />
+
         <Box>
           {/* Judul */}
           <Text fontSize="lg" fontWeight="bold">
@@ -79,6 +99,23 @@ export function DescTrailer() {
             >
               Tv Series
             </Flex>
+          </Flex>
+
+          <Flex gap={2} mt={2} flexWrap="wrap" fontSize="12px">
+            {Array.isArray(seriesDetail.categories) &&
+              seriesDetail.categories.map((cat, index) => (
+                <Flex key={cat.id} align="center" color="#929292">
+                  <Text>{cat.categoryName}</Text>
+                  {index !== seriesDetail.categories.length - 1 && (
+                    <Divider
+                      ml={1}
+                      orientation="vertical"
+                      borderColor="#363434"
+                      height="10px"
+                    />
+                  )}
+                </Flex>
+              ))}
           </Flex>
 
           {/* Deskripsi */}

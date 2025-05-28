@@ -7,5 +7,5 @@ export interface IMovie {
   poster: string;
   trailer: string;
   video: string;
-  category: ICategory[];
+  categories: ICategory[];
 }

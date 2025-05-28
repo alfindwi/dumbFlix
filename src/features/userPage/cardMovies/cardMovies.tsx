@@ -37,7 +37,7 @@ export const CardMovies: React.FC<MoviesListProps> = ({ movies }) => {
               w="160px"
               transition="transform 0.5s ease, box-shadow 0.2s ease"
               as={Link}
-              to={`/movie/${movie.title}`}
+              to={`/movie/${movie.title.replace(/ /g, "-")}`}
               display="block"
               overflow="hidden"
             >
@@ -62,6 +62,8 @@ export const CardMovies: React.FC<MoviesListProps> = ({ movies }) => {
                   transition="transform 0.3s ease, filter 0.3s ease"
                   className="image"
                   borderRadius="md"
+                  alt={movie.title}
+                  loading="lazy"
                 />
                 <Box
                   className="play-icon"

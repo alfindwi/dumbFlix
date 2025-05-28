@@ -56,11 +56,13 @@ export const CardTvShow: React.FC<SeriesListProps> = ({ series }) => {
                 <Img
                   src={series.poster}
                   w="100%"
-                  h="200px"
+                  h="100%"
                   objectFit="cover"
                   transition="transform 0.3s ease, filter 0.3s ease"
+                  borderTopRadius="md"
                   className="image"
-                  borderRadius="md"
+                  loading="lazy"
+                  alt={series.seriesName}
                 />
                 <Box
                   className="play-icon"

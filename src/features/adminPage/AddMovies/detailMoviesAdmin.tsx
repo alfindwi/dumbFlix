@@ -1,4 +1,13 @@
-import { Box, Center, Flex, Icon, Img, Spinner, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Center,
+  Divider,
+  Flex,
+  Icon,
+  Img,
+  Spinner,
+  Text,
+} from "@chakra-ui/react";
 import { MdPlayArrow } from "react-icons/md";
 import { NavbarAdmin } from "../../navbarAdmin/navbarAdmin";
 import { useAppDispatch, useAppSelector } from "../../../store";
@@ -27,6 +36,7 @@ export function Content() {
     const match = url.match(regExp);
     return match ? match[1] : "";
   };
+
 
   useEffect(() => {
     if (title) {
@@ -101,6 +111,23 @@ export function Content() {
               >
                 Movies
               </Flex>
+            </Flex>
+
+            <Flex gap={2} mt={2} flexWrap="wrap" fontSize="12px">
+              {Array.isArray(movie.categories) &&
+                movie.categories.map((cat, index) => (
+                  <Flex key={cat.id} align="center" color="#929292">
+                    <Text>{cat.categoryName}</Text>
+                    {index !== movie.categories.length - 1 && (
+                      <Divider
+                        ml={1}
+                        orientation="vertical"
+                        borderColor="#363434"
+                        height="10px"
+                      />
+                    )}
+                  </Flex>
+                ))}
             </Flex>
 
             <Text

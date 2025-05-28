@@ -1,11 +1,11 @@
-import { Box, Center, Flex, Img, Spinner, Text } from "@chakra-ui/react";
+import { Box, Center, Divider, Flex, Img, Spinner, Text } from "@chakra-ui/react";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { getSeriesByName } from "../../../store/series/async";
 import { NavbarAdmin } from "../../navbarAdmin/navbarAdmin";
-import { SeasonAdmin } from "./seasonAdmin";
 import { ModalButton } from "./modalButtonSeason";
+import { SeasonAdmin } from "./seasonAdmin";
 
 export function DetailSeriesAdmin() {
   return (
@@ -91,6 +91,22 @@ export function DetailSeriesTrailer() {
               >
                 Tv Series
               </Flex>
+            </Flex>
+            <Flex gap={2} mt={2} flexWrap="wrap" fontSize="12px">
+              {Array.isArray(seriesDetail.categories) &&
+                seriesDetail.categories.map((cat, index) => (
+                  <Flex key={cat.id} align="center" color="#929292">
+                    <Text>{cat.categoryName}</Text>
+                    {index !== seriesDetail.categories.length - 1 && (
+                      <Divider
+                        ml={1}
+                        orientation="vertical"
+                        borderColor="#363434"
+                        height="10px"
+                      />
+                    )}
+                  </Flex>
+                ))}
             </Flex>
 
             <Text

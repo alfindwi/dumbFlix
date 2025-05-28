@@ -112,7 +112,6 @@ export function CardSeries() {
                     ".play-icon": { opacity: 1 },
                   }}
                 >
-                  {/* Image */}
                   <Img
                     src={series.poster}
                     w="100%"
@@ -121,6 +120,8 @@ export function CardSeries() {
                     transition="transform 0.3s ease, filter 0.3s ease"
                     borderTopRadius="md"
                     className="image"
+                    alt={series.seriesName}
+                    loading="lazy"
                   />
 
                   {/* Play Icon */}

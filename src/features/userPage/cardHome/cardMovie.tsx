@@ -120,6 +120,8 @@ export function CardMovie() {
                     transition="transform 0.3s ease, filter 0.3s ease"
                     borderTopRadius="md"
                     className="image"
+                    alt={movie.title}
+                    loading="lazy"
                   />
                   <Box
                     className="play-icon"

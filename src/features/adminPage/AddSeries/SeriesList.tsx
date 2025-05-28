@@ -55,7 +55,6 @@ export const SeriesList: React.FC<SeriesListProps> = ({ series }) => {
                   src={series.poster}
                   w="100%"
                   h="200px"
-                  objectFit="cover"
                   transition="transform 0.3s ease, filter 0.3s ease"
                   borderTopRadius="md"
                   className="image"
