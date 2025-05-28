@@ -37,7 +37,6 @@ public class CategoryService {
 
         System.out.println("📌 Kategori: " + categories.getCategoryName());
     
-        // Cek apakah kategori sudah ada
         if (categoryRepository.findByCategoryName(categories.getCategoryName()).isPresent()) {
             throw new FuncErrorException("Category already exists");
         }
@@ -45,6 +44,21 @@ public class CategoryService {
         Categories savedCategory = categoryRepository.save(categories);
     
         return new CategoryResponse(savedCategory.getCategoryId(), savedCategory.getCategoryName());
+    }
+
+    public CategoryResponse updateCategory(Long categoryId, Categories categories) {
+        Categories existingCategory = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new FuncErrorException("Category not found"));
+    
+        existingCategory.setCategoryName(categories.getCategoryName());
+    
+        Categories updatedCategory = categoryRepository.save(existingCategory);
+    
+        return new CategoryResponse(updatedCategory.getCategoryId(), updatedCategory.getCategoryName());
+    }
+
+    public void deleteCategory(Long categoryId) {
+        categoryRepository.deleteById(categoryId);
     }
     
 }

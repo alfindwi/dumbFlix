@@ -4,8 +4,11 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,8 +39,25 @@ public class CategoryController {
     public ResponseEntity<CategoryResponse> createCategory(@RequestBody CategoryRequest request) {
         Categories categories = new Categories();
         categories.setCategoryName(request.getCategoryName());
-        
+
         CategoryResponse categoryResponse = categoryService.createCategory(categories);
         return ResponseEntity.ok(categoryResponse);
     }
+
+    @PutMapping("/{categoryId}")
+    public ResponseEntity<CategoryResponse> updateCategory(@PathVariable Long categoryId,
+            @RequestBody CategoryRequest request) {
+        Categories categories = new Categories();
+        categories.setCategoryName(request.getCategoryName());
+
+        CategoryResponse categoryResponse = categoryService.updateCategory(categoryId, categories);
+        return ResponseEntity.ok(categoryResponse);
+    }
+
+    @DeleteMapping("/{categoryId}")
+    public ResponseEntity<Void> deleteCategory(@PathVariable Long categoryId) {
+        categoryService.deleteCategory(categoryId);
+        return ResponseEntity.noContent().build();
+    }
+
 }
