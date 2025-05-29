@@ -1,4 +1,13 @@
-import { Box, Button, Flex, Icon, Img, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Center,
+  Flex,
+  Icon,
+  Img,
+  Spinner,
+  Text,
+} from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { MdArrowBack, MdArrowForward, MdPlayArrow } from "react-icons/md";
 import { Link } from "react-router-dom";
@@ -6,6 +15,7 @@ import { Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { getMovies } from "../../../store/movie/async";
+import { IMovie } from "../../../types/movie";
 
 export function CardMovie() {
   const dispatch = useAppDispatch();
@@ -17,7 +27,17 @@ export function CardMovie() {
     dispatch(getMovies());
   }, [dispatch]);
 
-  const paginateMovies = movies.slice(page * pageSize, (page + 1) * pageSize);
+  const paginateMovies = Array.isArray(movies)
+    ? movies.slice(page * pageSize, (page + 1) * pageSize)
+    : [];
+
+  if (!Array.isArray(movies)) {
+    return (
+      <Center h="100vh">
+        <Spinner size="xl" thickness="4px" speed="0.65s" color="red.500" />
+      </Center>
+    );
+  }
 
   return (
     <Box p={6}>
@@ -95,7 +115,7 @@ export function CardMovie() {
                 transition="transform 0.5s ease, box-shadow 0.2s ease"
                 cursor="pointer"
                 as={Link}
-                to={`/movie/${movie.title.replace(/ /g, "-")}`}
+                to={`/movie/${movie.slug}`}
                 display="block"
               >
                 <Box

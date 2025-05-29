@@ -28,6 +28,19 @@ export const getMovieByName = createAsyncThunk(
   }
 );
 
+export const getMovieBySlug = createAsyncThunk(
+  "movie/getMovieBySlug",
+  async (slug: string, thunkAPI) => {
+    try {
+      const res = await api.get(`/api/movie/slug/${slug}`);
+      return res.data;
+    } catch (error) {
+      console.error("Error:", error);
+      return thunkAPI.rejectWithValue("Failed to fetch movie by slug.");
+    }
+  }
+);
+
 export const createMovie = createAsyncThunk(
   "movie/createMovie",
   async (data: FormData, thunkAPI) => {

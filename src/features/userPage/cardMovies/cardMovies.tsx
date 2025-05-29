@@ -12,14 +12,16 @@ export interface MoviesListProps {
 export const moviesPerPage = 21;
 
 export const CardMovies: React.FC<MoviesListProps> = ({ movies }) => {
+  const safeMovies = Array.isArray(movies) ? movies : [];
+
   const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = Math.ceil(movies.length / moviesPerPage);
+  const totalPages = Math.ceil(safeMovies.length / moviesPerPage);
 
   const paginatedMovies = useMemo(() => {
     const startIndex = (currentPage - 1) * moviesPerPage;
-    const endIndex = Math.min(startIndex + moviesPerPage, movies.length);
-    return movies.slice(startIndex, endIndex);
-  }, [movies, currentPage]);
+    const endIndex = Math.min(startIndex + moviesPerPage, safeMovies.length);
+    return safeMovies.slice(startIndex, endIndex);
+  }, [safeMovies, currentPage]);
 
   return (
     <Box p={6}>
@@ -37,7 +39,7 @@ export const CardMovies: React.FC<MoviesListProps> = ({ movies }) => {
               w="160px"
               transition="transform 0.5s ease, box-shadow 0.2s ease"
               as={Link}
-              to={`/movie/${movie.title.replace(/ /g, "-")}`}
+              to={`/movie/${movie.slug}`}
               display="block"
               overflow="hidden"
             >

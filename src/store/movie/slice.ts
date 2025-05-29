@@ -1,6 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IMovie } from "../../types/movie";
-import { createMovie, getMovieByName, getMovies } from "./async";
+import {
+  createMovie,
+  getMovieByName,
+  getMovieBySlug,
+  getMovies,
+} from "./async";
 
 interface movieState {
   movies: IMovie[];
@@ -27,8 +32,9 @@ const productSlice = createSlice({
       })
       .addCase(getMovies.fulfilled, (state, action) => {
         state.loading = false;
-        state.movies = action.payload;
+        state.movies = Array.isArray(action.payload) ? action.payload : [];
       })
+
       .addCase(getMovies.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
@@ -44,9 +50,23 @@ const productSlice = createSlice({
         state.loading = false;
         state.movies = Array.isArray(action.payload)
           ? action.payload
-          : [action.payload]; 
+          : [action.payload];
       })
       .addCase(getMovieByName.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      });
+
+    builder
+      .addCase(getMovieBySlug.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getMovieBySlug.fulfilled, (state, action) => {
+        state.loading = false;
+        state.movies = action.payload;
+      })
+      .addCase(getMovieBySlug.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       });

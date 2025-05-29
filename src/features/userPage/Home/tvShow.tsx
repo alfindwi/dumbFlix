@@ -44,7 +44,7 @@ export function TvShowContent() {
       <Box
         position="absolute"
         left="0"
-        top={{ base: "130px", md: "120px", lg: "60px" }}
+        top={{ base: "130px", md: "73px", lg: "60px" }}
         w="100%"
         h={{ base: "150px", md: "360px", lg: "520px" }}
         bgGradient="linear(to-t, black, transparent 60%)"
@@ -57,8 +57,8 @@ export function TvShowContent() {
           w={{ base: "200px", md: "400px", lg: "100%" }}
           h={"100%"}
           maxW={{ base: "180px", md: "400px", lg: "550px" }}
-          maxH={{ base: "40px", md: "360px", lg: "120px" }}
-          top={{ base: "130px", md: "198px", lg: "270px" }}
+          maxH={{ base: "40px", md: "180px", lg: "120px" }}
+          top={{ base: "130px", md: "150px", lg: "270px" }}
           left={{ base: "120px", md: "250px", lg: "380px" }}
           transform={"translate(-50%, -50%)"}
         />

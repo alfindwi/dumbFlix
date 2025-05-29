@@ -26,7 +26,7 @@ export function MovieContent() {
     dispatch(getMovies());
   }, [dispatch]);
 
-  const heroMovie = movies.find((movie) => movie.title === "Scarface");
+  const heroMovie = Array.isArray(movies) ? movies.find((movie) => movie.slug === "scarface") : null;
 
   return (
     <Box>
@@ -40,7 +40,7 @@ export function MovieContent() {
       <Box
         position="absolute"
         left="0"
-        top={{ base: "130px", md: "120px", lg: "60px" }}
+        top={{ base: "130px", md: "73px", lg: "60px" }}
         w="100%"
         h={{ base: "150px", md: "360px", lg: "520px" }}
         bgGradient="linear(to-t, black, transparent 60%)"
@@ -53,8 +53,8 @@ export function MovieContent() {
           w={{ base: "180px", md: "400px", lg: "100%" }}
           h="100%"
           maxW={{ base: "180px", md: "400px", lg: "550px" }}
-          maxH={{ base: "40px", md: "360px", lg: "120px" }}
-          top={{ base: "130px", md: "198px", lg: "270px" }}
+          maxH={{ base: "40px", md: "80px", lg: "120px" }}
+          top={{ base: "130px", md: "180px", lg: "270px" }}
           left={{ base: "120px", md: "250px", lg: "359px" }}
           transform="translate(-50%, -50%)"
         />
@@ -84,9 +84,11 @@ export function MovieContent() {
               Movies
             </Box>
           </Flex>
-          <Button sx={buttonStyle} as={Link} to={`/movie/${heroMovie?.title}`}>
-            Watch Now!
-          </Button>
+          {heroMovie && (
+            <Button sx={buttonStyle} as={Link} to={`/movie/${heroMovie.slug}`}>
+              Watch Now!
+            </Button>
+          )}
         </Box>
       </Box>
 

@@ -59,7 +59,7 @@ export function HomeContent() {
           src="/src/assets/fontHome.png"
           position={"absolute"}
           w={{ base: "200px", md: "400px", lg: "500px" }}
-          top={{ base: "120px", md: "198px", lg: "200px" }}
+          top={{ base: "120px", md: "170px", lg: "200px" }}
           left={{ base: "130px", md: "250px", lg: "390px" }}
           transform={"translate(-50%, -50%)"}
           userSelect="none"

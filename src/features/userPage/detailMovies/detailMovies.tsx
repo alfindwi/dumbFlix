@@ -15,7 +15,7 @@ import { MdPlayArrow } from "react-icons/md";
 import ReactPlayer from "react-player";
 import { useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../store";
-import { getMovieByName } from "../../../store/movie/async";
+import { getMovieBySlug } from "../../../store/movie/async";
 import { Navbar } from "../../navbar/navbar";
 import { Footer } from "../footer/footer";
 
@@ -30,7 +30,7 @@ export function DetailMovie() {
 }
 
 export function DetailMovieContent() {
-  const { title } = useParams();
+  const { slug } = useParams();
   const dispatch = useAppDispatch();
   const toast = useToast();
   const [isPlaying, setIsPlaying] = useState(false);
@@ -49,11 +49,8 @@ export function DetailMovieContent() {
   };
 
   useEffect(() => {
-    if (title) {
-      const decodedName = title.replace(/-/g, " ");
-      dispatch(getMovieByName(decodedName));
-    }
-  }, [title, dispatch]);
+  dispatch(getMovieBySlug(slug || ""));
+  }, [slug, dispatch]);
 
   useEffect(() => {
     if (movie?.title) {
