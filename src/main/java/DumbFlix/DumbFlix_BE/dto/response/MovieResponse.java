@@ -17,6 +17,7 @@ public class MovieResponse {
     private String trailer;
     private String thumbnail;
     private String video;
+    private String slug;
     private String poster;
     private List<CategoryResponse> categories;
 }

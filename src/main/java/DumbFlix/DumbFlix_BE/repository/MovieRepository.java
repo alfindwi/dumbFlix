@@ -20,6 +20,8 @@ public interface MovieRepository extends JpaRepository<Movies, Long> {
 
     List<Movies> findByCategories_CategoryId(Long categoryId);
 
+    Optional<Movies> findBySlug(String slug);
+
     @SuppressWarnings("null")
     @EntityGraph(attributePaths = { "categories" })
     List<Movies> findAll();

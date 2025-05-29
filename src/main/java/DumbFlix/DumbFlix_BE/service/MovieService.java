@@ -17,6 +17,7 @@ import DumbFlix.DumbFlix_BE.entity.movie.Movies;
 import DumbFlix.DumbFlix_BE.exception.FuncErrorException;
 import DumbFlix.DumbFlix_BE.repository.CategoryRepository;
 import DumbFlix.DumbFlix_BE.repository.MovieRepository;
+import DumbFlix.DumbFlix_BE.security.util.SlugGenerator;
 
 @Service
 public class MovieService {
@@ -35,18 +36,32 @@ public class MovieService {
 
                 return movies.stream()
                                 .map(movie -> {
+                                        String slug = movie.getSlug();
+                                        if (slug == null || slug.trim().isEmpty()) {
+                                                slug = SlugGenerator.generateSlug(movie.getTitle());
+                                                movie.setSlug(slug); 
+                                                movieRepository.save(movie); 
+                                        }
+
                                         List<CategoryResponse> categoryResponses = movie.getCategories().stream()
-                                                        .map(category -> new CategoryResponse(category.getCategoryId(),
+                                                        .map(category -> new CategoryResponse(
+                                                                        category.getCategoryId(),
                                                                         category.getCategoryName()))
                                                         .collect(Collectors.toList());
 
-                                        return new MovieResponse(movie.getMovieId(), movie.getTitle(),
+                                        return new MovieResponse(
+                                                        movie.getMovieId(),
+                                                        movie.getTitle(),
                                                         movie.getDescription(),
-                                                        movie.getYear(), movie.getTrailer(), movie.getThumbnail(),
+                                                        movie.getYear(),
+                                                        movie.getTrailer(),
+                                                        movie.getThumbnail(),
                                                         movie.getVideo(),
+                                                        slug,
                                                         movie.getPosters(),
                                                         categoryResponses);
-                                }).collect(Collectors.toList());
+                                })
+                                .collect(Collectors.toList());
         }
 
         public MovieResponse getMovieById(Long movieId) {
@@ -60,6 +75,7 @@ public class MovieService {
 
                 return new MovieResponse(movies.getMovieId(), movies.getTitle(), movies.getDescription(),
                                 movies.getYear(),
+                                movies.getSlug(),
                                 movies.getTrailer(), movies.getThumbnail(), movies.getVideo(), movies.getPosters(),
                                 categoryResponses);
         }
@@ -75,8 +91,32 @@ public class MovieService {
 
                 return new MovieResponse(movies.getMovieId(), movies.getTitle(), movies.getDescription(),
                                 movies.getYear(),
+                                movies.getSlug(),
                                 movies.getTrailer(), movies.getThumbnail(), movies.getVideo(), movies.getPosters(),
                                 categoryResponses);
+        }
+
+        public MovieResponse getMovieBySlug(String slug) {
+                Movies movies = movieRepository.findBySlug(slug)
+                                .orElseThrow(() -> new FuncErrorException("Movie not found"));
+
+                List<CategoryResponse> categoryResponses = movies.getCategories().stream()
+                                .map(category -> new CategoryResponse(category.getCategoryId(),
+                                                category.getCategoryName()))
+                                .collect(Collectors.toList());
+
+                return new MovieResponse(
+                                movies.getMovieId(),
+                                movies.getTitle(),
+                                movies.getDescription(),
+                                movies.getYear(),
+                                movies.getTrailer(),
+                                movies.getThumbnail(),
+                                movies.getVideo(),
+                                movies.getSlug(),
+                                movies.getPosters(),
+                                categoryResponses);
+
         }
 
         public List<MovieResponse> getMoviesByCategory(Long categoryId) {
@@ -93,6 +133,7 @@ public class MovieService {
                                                         movie.getDescription(),
                                                         movie.getYear(), movie.getTrailer(), movie.getThumbnail(),
                                                         movie.getVideo(),
+                                                        movie.getSlug(),
                                                         movie.getPosters(),
                                                         categoryResponses);
                                 }).collect(Collectors.toList());
@@ -116,6 +157,9 @@ public class MovieService {
                 movies.setVideo(videoUrl);
                 movies.setCategories(categories);
 
+                String slug = SlugGenerator.generateSlug(request.getTitle());
+                movies.setSlug(slug);
+
                 Movies savedMovies = movieRepository.save(movies);
 
                 List<CategoryResponse> categoryResponses = savedMovies.getCategories().stream()
@@ -127,6 +171,7 @@ public class MovieService {
                                 savedMovies.getYear(), savedMovies.getTrailer(), savedMovies.getThumbnail(),
                                 savedMovies.getVideo(),
                                 savedMovies.getPosters(),
+                                savedMovies.getSlug(),
                                 categoryResponses);
         }
 
@@ -174,6 +219,7 @@ public class MovieService {
                                         updatedMovie.getTitle(),
                                         updatedMovie.getDescription(),
                                         updatedMovie.getYear(),
+                                        updatedMovie.getSlug(),
                                         updatedMovie.getTrailer(),
                                         updatedMovie.getThumbnail(),
                                         updatedMovie.getVideo(),

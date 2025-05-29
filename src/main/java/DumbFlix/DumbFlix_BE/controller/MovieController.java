@@ -58,6 +58,12 @@ public class MovieController {
         return ResponseEntity.ok(movieResponse);
     }
 
+    @GetMapping("/slug/{slug}")
+    public ResponseEntity<MovieResponse> getMovieBySlug(@PathVariable("slug") String slug) {
+        MovieResponse movieResponse = movieService.getMovieBySlug(slug);
+        return ResponseEntity.ok(movieResponse);
+    }
+
     @PostMapping
     public ResponseEntity<String> createMovie(
             @RequestParam("thumbnail") MultipartFile thumbnail,

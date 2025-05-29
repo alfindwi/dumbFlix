@@ -59,19 +59,6 @@ public class SeriesService {
                     SeasonResponse seasonDTO = new SeasonResponse();
                     seasonDTO.setSeasonId(season.getSeasonId());
                     seasonDTO.setSeasonNumber(season.getSeasonNumber());
-
-                    if (season.getEpisodes() != null) {
-                        seasonDTO.setEpisodes(season.getEpisodes().stream().map(episode -> {
-                            return new EpisodeResponse(
-                                    episode.getId(),
-                                    episode.getEpisodeName(),
-                                    episode.getEpisodeNumber(),
-                                    episode.getEpisodeDescription(),
-                                    episode.getEpisodeImage(),
-                                    episode.getEpisodeVideo());
-                        }).collect(Collectors.toList()));
-                    }
-
                     return seasonDTO;
                 }).collect(Collectors.toList()));
             }

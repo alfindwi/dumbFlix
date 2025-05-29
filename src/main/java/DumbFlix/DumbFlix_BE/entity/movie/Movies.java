@@ -34,6 +34,9 @@ public class Movies {
 
     private String year;
 
+    @Column(unique = true)
+    private String slug;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "category_movie", joinColumns = @JoinColumn(name = "movie_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
     private List<Categories> categories;
