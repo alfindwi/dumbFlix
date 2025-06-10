@@ -18,20 +18,16 @@ export const getSeriesSeasonEpisode = createAsyncThunk(
   "episode/getSeriesSeasonEpisode",
   async (
     {
-      seriesName,
+      seriesSlug,
       seasonNumber,
-      episodeName,
-    }: { seriesName: string; seasonNumber: number; episodeName: string },
+      episodeSlug,
+    }: { seriesSlug: string; seasonNumber: number; episodeSlug: string },
     thunkAPI
   ) => {
     try {
-      console.log("Fetching:", seriesName, seasonNumber, episodeName);
       const res = await api.get(
-        `/api/episode/${seriesName}/${seasonNumber}/${encodeURIComponent(
-          episodeName
-        )}`
+        `/api/episode/${seriesSlug}/${seasonNumber}/${episodeSlug}`
       );
-      console.log("Response:", res.data);
       return res.data;
     } catch (error: any) {
       console.error("Fetch failed:", error.response?.data || error.message);

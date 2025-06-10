@@ -9,8 +9,7 @@ import { useAppSelector } from "../../../store";
 export function ButtonPrevNext() {
   const navigate = useNavigate();
   const { episodes } = useAppSelector((state) => state.episode);
-  const { seriesName, seasonNumber, episodeName } = useParams();
-  const decodedEpisodeName = decodeURIComponent(episodeName ?? "");
+  const { seriesSlug, seasonNumber, episodeSlug } = useParams();
   function normalize(text?: string) {
     if (!text) return ""; 
     return text.toLowerCase().trim().replace(/\s+/g, "-");
@@ -21,12 +20,12 @@ export function ButtonPrevNext() {
   );
 
   const currentIndex = sortedEpisodes.findIndex(
-    (ep) => normalize(ep.episodeName) === normalize(decodedEpisodeName)
+    (ep) => normalize(ep.episodeSlug) === normalize(episodeSlug)
   );
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [episodeName]);
+  }, [episodeSlug]);
 
   if (!episodes || episodes.length === 0 || currentIndex === -1) return null;
   return (
@@ -42,8 +41,8 @@ export function ButtonPrevNext() {
           if (currentIndex > 0) {
             const prevEpisode = sortedEpisodes[currentIndex - 1];
             navigate(
-              `/episode/${seriesName}/${seasonNumber}/${encodeURIComponent(
-                prevEpisode.episodeName.replace(/\s+/g, "-")
+              `/episode/${seriesSlug}/${seasonNumber}/${encodeURIComponent(
+                prevEpisode.episodeSlug.replace(/\s+/g, "-")
               )}`
             );
           }
@@ -78,7 +77,7 @@ export function ButtonPrevNext() {
         justifyContent="center"
         role="group"
         as={Link}
-        to={`/series/${seriesName}`}
+        to={`/series/${seriesSlug}`}
       >
         <Box
           as={GiHamburgerMenu}
@@ -101,8 +100,8 @@ export function ButtonPrevNext() {
           if (currentIndex < sortedEpisodes.length - 1) {
             const nextEpisode = sortedEpisodes[currentIndex + 1];
             navigate(
-              `/episode/${seriesName}/${seasonNumber}/${encodeURIComponent(
-                nextEpisode.episodeName.replace(/\s+/g, "-")
+              `/episode/${seriesSlug}/${seasonNumber}/${encodeURIComponent(
+                nextEpisode.episodeSlug.replace(/\s+/g, "-")
               )}`
             );
           }

@@ -15,7 +15,6 @@ import { Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { getMovies } from "../../../store/movie/async";
-import { IMovie } from "../../../types/movie";
 
 export function CardMovie() {
   const dispatch = useAppDispatch();

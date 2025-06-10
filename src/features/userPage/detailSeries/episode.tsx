@@ -26,24 +26,21 @@ export function Episode() {
 }
 
 export function EpisodeContent() {
-  const dispatch = useAppDispatch();
-  const { episode, loading } = useAppSelector(
-    (state) => state.episode
-  );
-  const { seriesName, seasonNumber, episodeName } = useParams();
-  const decodedEpisodeName = decodeURIComponent(episodeName ?? "");
+    const dispatch = useAppDispatch();
+  const { episode, loading } = useAppSelector((state) => state.episode);
+  const { seriesSlug, seasonNumber, episodeSlug } = useParams();
 
   useEffect(() => {
-    if (seriesName && seasonNumber && episodeName) {
+    if (seriesSlug && seasonNumber && episodeSlug) {
       dispatch(
         getSeriesSeasonEpisode({
-          seriesName,
+          seriesSlug,
           seasonNumber: parseInt(seasonNumber),
-          episodeName: decodedEpisodeName,
+          episodeSlug,
         })
       );
     }
-  }, [seriesName, seasonNumber, decodedEpisodeName, dispatch]);
+  }, [seriesSlug, seasonNumber, episodeSlug, dispatch]);
 
 
   if (loading || !episode) {
@@ -105,7 +102,7 @@ export function EpisodeContent() {
         </Flex>
       </Box>
       <EpisodeList
-        seriesName={seriesName ?? ""}
+        seriesName={seriesSlug ?? ""}
         seasonNumber={seasonNumber ? parseInt(seasonNumber) : 0}
       />
     </Box>

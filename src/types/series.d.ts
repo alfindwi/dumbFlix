@@ -3,8 +3,9 @@ export interface ISeries {
     seriesName: string;
     seriesYear: string;
     description: string;
-    poster: string;
+    poster: string; 
     trailer: string;
+    seriesSlug: string;
     categories: ICategory[];
     seasons: ISeason[];
 }

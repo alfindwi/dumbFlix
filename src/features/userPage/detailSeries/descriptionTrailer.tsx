@@ -14,7 +14,7 @@ import { useAppDispatch, useAppSelector } from "../../../store";
 import { getSeriesByName } from "../../../store/series/async";
 
 export function DescTrailer() {
-  const { seriesName } = useParams();
+  const { seriesSlug } = useParams();
   const dispatch = useAppDispatch();
   const { selectedSeries: seriesDetail, loading } = useAppSelector(
     (state) => state.series
@@ -28,13 +28,12 @@ export function DescTrailer() {
   };
 
   useEffect(() => {
-    if (seriesName) {
-      const decodedName = seriesName.replace(/-/g, " ");
-      dispatch(getSeriesByName(decodedName));
+    if (seriesSlug) {
+      dispatch(getSeriesByName(seriesSlug));
     }
 
     window.scrollTo({ top: 0 });
-  }, [seriesName, dispatch]);
+  }, [seriesSlug, dispatch]);
 
   useEffect(() => {
     if (seriesDetail?.seriesName) {

@@ -62,7 +62,7 @@ const routes: RouteObject[] = [
         element: <Movies />,
       },
       {
-        path: "/series/:seriesName",
+        path: "/series/:seriesSlug",
         element: <DetailSeries />,
       },
       {
@@ -70,7 +70,7 @@ const routes: RouteObject[] = [
         element: <DetailMovie />,
       },
       {
-        path: "/episode/:seriesName/:seasonNumber/:episodeName",
+        path: "/episode/:seriesSlug/:seasonNumber/:episodeSlug",
         element: <Episode />,
       },
       {

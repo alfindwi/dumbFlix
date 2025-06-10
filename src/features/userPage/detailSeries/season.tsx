@@ -14,12 +14,11 @@ import { IEpisode } from "../../../types/episode";
 import { ISeason } from "../../../types/season";
 
 interface SeasonProps {
-  seriesName: string;
+  seriesSlug: string;
   seasons: ISeason[];
 }
 
-export const Season: React.FC<SeasonProps> = ({ seasons, seriesName }) => {
-  const formattedSeriesName = seriesName.replace(/\s+/g, "-");
+export const Season: React.FC<SeasonProps> = ({ seasons, seriesSlug }) => {
   const [openSeasons, setOpenSeasons] = useState<Record<number, boolean>>({});
 
   const toggleSeason = (seasonNumber: number) => {
@@ -74,20 +73,17 @@ export const Season: React.FC<SeasonProps> = ({ seasons, seriesName }) => {
                     borderRadius="8px"
                   >
                     {season.episodes.map((episode: IEpisode) => {
-                      const formattedEpisodeName = encodeURIComponent(
-                        episode.episodeName.replace(/\s+/g, "-")
-                      );
                       return (
                         <Box
                           as={Link}
-                          to={`/episode/${formattedSeriesName}/${season.seasonNumber}/${formattedEpisodeName}`}
+                          to={`/episode/${seriesSlug}/${season.seasonNumber}/${episode.episodeSlug}`}
                         >
                           <ListItem
                             key={episode.episodeName}
                             p={2}
                             borderRadius="5px"
                             as={Link}
-                            to={`/episode/${formattedSeriesName}/${season.seasonNumber}/${formattedEpisodeName}`}
+                            to={`/episode/${seriesSlug}/${season.seasonNumber}/${episode.episodeSlug}`}
                           >
                             <Flex align="center" role="group">
                               <Image

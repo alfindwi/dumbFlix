@@ -30,7 +30,7 @@ export function DetailSeriesContent() {
         backgroundColor="black"
       ></Flex>
       <DescTrailer />
-      {seriesDetail && <Season seasons={seriesDetail.seasons} seriesName={seriesDetail.seriesName} />}
+      {seriesDetail && <Season seasons={seriesDetail.seasons} seriesSlug={seriesDetail.seriesSlug} />}
     </Box>
   );
 }

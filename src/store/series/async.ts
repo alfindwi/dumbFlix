@@ -16,9 +16,9 @@ export const getSeries = createAsyncThunk(
 
 export const getSeriesByName = createAsyncThunk(
   "series/getSeriesByName",
-  async (seriesName: string, thunkAPI) => {
+  async (seriesSlug: string, thunkAPI) => {
     try {
-      const res = await api.get(`/api/series/${seriesName}`);
+      const res = await api.get(`/api/series/${seriesSlug}`);
       return res.data;
     } catch (error) {
       console.error("Error:", error);
