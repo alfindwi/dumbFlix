@@ -1,44 +1,57 @@
-version: "3.8"
-# belom bisa buat docker masih error anjay
+version: '3.8'
+
 services:
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: dumbflix-backend
-    env_file:
-      - .env
-    depends_on:
-      - db
-      - redis
+    build: .
+    container_name: dumbflix_be
     ports:
       - "8080:8080"
-    networks:
-      - dumbflix_network
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://ep-round-shadow-a1pomk59-pooler.ap-southeast-1.aws.neon.tech:5432/neondb?sslmode=require
+      SPRING_DATASOURCE_USERNAME: neondb_owner
+      SPRING_DATASOURCE_PASSWORD: npg_TjvPQMGuJk28
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      JWT_SECRET: RAHASIABANGET
+      CLOUDINARY_CLOUD_NAME: db2rr1kej
+      CLOUDINARY_API_KEY: 157391675985234
+      CLOUDINARY_API_SECRET: oomxlfXCEgQyM5sL8HVM-oJycww
+      SPRING_REDIS_HOST: redis
+      SPRING_REDIS_PORT: 6379
+      SPRING_REDIS_PASSWORD: gajahpesek
+    depends_on:
+      redis:
+        condition: service_healthy
+      db:
+        condition: service_started
+    restart: unless-stopped
 
   db:
-    image: postgres:15-alpine
-    container_name: db
+    image: postgres:14
+    container_name: postgres_dumbflix
     environment:
       POSTGRES_DB: dumbflix
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
     volumes:
-      - db_data:/var/lib/postgresql/data
-    networks:
-      - dumbflix_network
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
 
   redis:
     image: redis:alpine
-    container_name: redis
-    command: ["redis-server", "--requirepass", "gajahpesek"]
+    container_name: redis_dumbflix
+    command: redis-server --requirepass gajahpesek
     ports:
       - "6379:6379"
-    networks:
-      - dumbflix_network
-
-networks:
-  dumbflix_network:
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "gajahpesek", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
-  db_data:
+  postgres_data:
+  redis_data:

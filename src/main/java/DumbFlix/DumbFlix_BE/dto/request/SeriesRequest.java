@@ -14,6 +14,7 @@ import lombok.Setter;
 public class SeriesRequest {
     private Long seriesId;
     private String seriesName;
+    private String slug;
     private String seriesYear;
     private String description;
     private String trailer;

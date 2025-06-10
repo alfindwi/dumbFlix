@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import DumbFlix.DumbFlix_BE.dto.request.SeasonRequest;
@@ -58,20 +59,21 @@ public class SeasonService {
         }
     }
 
+    @Cacheable(value = "seasonBySeriesName", key = "'seasonBySeriesName' + #seriesName")
     public List<SeasonResponse> getSeasonBySeriesName(String seriesName) {
         try {
             List<Season> seasons = seasonRepository.findBySeries_SeriesName(seriesName);
 
             return seasons.stream().map(season -> {
                 List<EpisodeResponse> episodeResponses = season.getEpisodes().stream()
-                        .sorted(Comparator.comparing(Episode::getEpisodeNumber)) 
+                        .sorted(Comparator.comparing(Episode::getEpisodeNumber))
                         .map(episode -> new EpisodeResponse(
                                 episode.getId(),
                                 episode.getEpisodeName(),
                                 episode.getEpisodeNumber(),
                                 episode.getEpisodeDescription(),
                                 episode.getEpisodeImage(),
-                                episode.getEpisodeVideo()))
+                                episode.getEpisodeVideo(), episode.getSlug()))
                         .collect(Collectors.toList());
 
                 return new SeasonResponse(

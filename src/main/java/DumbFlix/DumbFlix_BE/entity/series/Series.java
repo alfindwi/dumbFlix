@@ -5,6 +5,7 @@ import java.util.List;
 
 import DumbFlix.DumbFlix_BE.entity.categories.Categories;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -34,12 +35,14 @@ public class Series {
     public String seriesName;
     public String seriesYear;
     private String posters;
+
+    @Column(columnDefinition = "TEXT")
     private String description;
     private String trailer;
-
+    @Column(unique = true)
+    private String slug;
     @ManyToMany
-    @JoinTable(name = "category_series", 
-    joinColumns = @JoinColumn(name = "series_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
+    @JoinTable(name = "category_series", joinColumns = @JoinColumn(name = "series_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
     private List<Categories> categories;
 
     @OneToMany(mappedBy = "series", cascade = CascadeType.ALL, orphanRemoval = true)

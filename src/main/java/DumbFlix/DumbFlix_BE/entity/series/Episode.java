@@ -1,5 +1,6 @@
 package DumbFlix.DumbFlix_BE.entity.series;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -19,16 +20,18 @@ import lombok.Setter;
 @AllArgsConstructor
 @Table(name = "episode")
 public class Episode {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
-    
+
     public String episodeName;
     public int episodeNumber;
     public String episodeDescription;
     public String episodeImage;
     public String episodeVideo;
+    @Column(unique = true)
+    private String slug;
 
     @ManyToOne
     @JoinColumn(name = "season_id", nullable = false)

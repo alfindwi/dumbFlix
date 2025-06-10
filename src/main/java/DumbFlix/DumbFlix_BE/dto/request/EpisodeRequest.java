@@ -8,6 +8,7 @@ import lombok.Setter;
 public class EpisodeRequest {
     private String episodeName;
     private Integer episodeNumber;
+    private String slug;
     private String episodeDescription;
     private Integer seasonNumber;
 }

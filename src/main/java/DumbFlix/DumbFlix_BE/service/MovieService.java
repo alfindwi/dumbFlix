@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import DumbFlix.DumbFlix_BE.dto.request.MovieRequest;
@@ -31,6 +32,7 @@ public class MovieService {
                 this.categoryRepository = categoryRepository;
         }
 
+        @Cacheable(value = "allMoviesCache", key = "'allMovies'")
         public List<MovieResponse> getAllMovies() {
                 List<Movies> movies = movieRepository.findAll();
 
@@ -39,8 +41,8 @@ public class MovieService {
                                         String slug = movie.getSlug();
                                         if (slug == null || slug.trim().isEmpty()) {
                                                 slug = SlugGenerator.generateSlug(movie.getTitle());
-                                                movie.setSlug(slug); 
-                                                movieRepository.save(movie); 
+                                                movie.setSlug(slug);
+                                                movieRepository.save(movie);
                                         }
 
                                         List<CategoryResponse> categoryResponses = movie.getCategories().stream()
@@ -96,6 +98,7 @@ public class MovieService {
                                 categoryResponses);
         }
 
+        @Cacheable(value = "movieBySlugCache", key = "'movieBySlug' + #slug")
         public MovieResponse getMovieBySlug(String slug) {
                 Movies movies = movieRepository.findBySlug(slug)
                                 .orElseThrow(() -> new FuncErrorException("Movie not found"));

@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import DumbFlix.DumbFlix_BE.dto.request.EpisodeRequest;
@@ -19,6 +20,7 @@ import DumbFlix.DumbFlix_BE.exception.FuncErrorException;
 import DumbFlix.DumbFlix_BE.repository.EpisodeRepository;
 import DumbFlix.DumbFlix_BE.repository.SeasonRepository;
 import DumbFlix.DumbFlix_BE.repository.SeriesRepository;
+import DumbFlix.DumbFlix_BE.security.util.SlugGenerator;
 
 @Service
 public class EpisodeService {
@@ -42,7 +44,8 @@ public class EpisodeService {
                                 episode.getEpisodeNumber(),
                                 episode.getEpisodeDescription(),
                                 episode.getEpisodeImage(),
-                                episode.getEpisodeVideo());
+                                episode.getEpisodeVideo(),
+                                episode.getSlug());
         }
 
         public EpisodeResponse getSeriesAndSeasonAndEpisode(String seriesName, Integer seasonNumber,
@@ -69,11 +72,12 @@ public class EpisodeService {
                                 episode.getEpisodeNumber(),
                                 episode.getEpisodeDescription(),
                                 episode.getEpisodeImage(),
-                                episode.getEpisodeVideo());
+                                episode.getEpisodeVideo(),
+                                episode.getSlug());
         }
 
+        @Cacheable(value = "episodeBySeasonCache", key = "'episodeBySeason' + #seriesName + #seasonNumber")
         public List<EpisodeResponse> getEpisodeBySeason(String seriesName, Integer seasonNumber) {
-
                 Series series = seriesRepository.findBySeriesName(seriesName)
                                 .orElseThrow(() -> new FuncErrorException("Series not found"));
 
@@ -82,14 +86,26 @@ public class EpisodeService {
 
                 List<Episode> episodes = episodeRepository.findBySeason(season);
 
-                return episodes.stream().sorted(Comparator.comparingInt(Episode::getEpisodeNumber))
-                                .map(e -> new EpisodeResponse(
-                                                e.getId(),
-                                                e.getEpisodeName(),
-                                                e.getEpisodeNumber(),
-                                                e.getEpisodeDescription(),
-                                                e.getEpisodeImage(),
-                                                e.getEpisodeVideo()))
+                return episodes.stream()
+                                .sorted(Comparator.comparingInt(Episode::getEpisodeNumber))
+                                .map(e -> {
+                                        // Generate slug jika belum ada
+                                        String slug = e.getSlug();
+                                        if (slug == null || slug.trim().isEmpty()) {
+                                                slug = SlugGenerator.generateSlug(e.getEpisodeName());
+                                                e.setSlug(slug);
+                                                episodeRepository.save(e); // Simpan perubahan slug
+                                        }
+
+                                        return new EpisodeResponse(
+                                                        e.getId(),
+                                                        e.getEpisodeName(),
+                                                        e.getEpisodeNumber(),
+                                                        e.getEpisodeDescription(),
+                                                        e.getEpisodeImage(),
+                                                        e.getEpisodeVideo(),
+                                                        slug);
+                                })
                                 .collect(Collectors.toList());
         }
 
@@ -115,7 +131,7 @@ public class EpisodeService {
 
                         return new EpisodeResponse(saved.getId(), saved.getEpisodeName(), saved.getEpisodeNumber(),
                                         saved.getEpisodeDescription(), saved.getEpisodeImage(),
-                                        saved.getEpisodeVideo());
+                                        saved.getEpisodeVideo(), saved.getSlug());
                 } catch (Exception e) {
                         throw new FuncErrorException("Failed to add episode: " + e.getMessage());
                 }
@@ -160,7 +176,7 @@ public class EpisodeService {
                                         updated.getEpisodeNumber(),
                                         updated.getEpisodeDescription(),
                                         updated.getEpisodeImage(),
-                                        updated.getEpisodeVideo());
+                                        updated.getEpisodeVideo(), updated.getSlug());
                 } catch (Exception e) {
                         throw new FuncErrorException("Failed to update episode: " + e.getMessage());
                 }

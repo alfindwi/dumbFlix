@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import DumbFlix.DumbFlix_BE.dto.request.SeriesRequest;
@@ -22,6 +23,7 @@ import DumbFlix.DumbFlix_BE.entity.series.Series;
 import DumbFlix.DumbFlix_BE.exception.FuncErrorException;
 import DumbFlix.DumbFlix_BE.repository.CategoryRepository;
 import DumbFlix.DumbFlix_BE.repository.SeriesRepository;
+import DumbFlix.DumbFlix_BE.security.util.SlugGenerator;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -36,9 +38,18 @@ public class SeriesService {
         this.categoryRepository = categoryRepository;
     }
 
+    @Cacheable(value = "allSeriesCache", key = "'allSeries'")
     public List<SeriesResponse> getAllSeries() {
         List<Series> seriesList = seriesRepository.findAll();
+
         return seriesList.stream().map(series -> {
+            String slug = series.getSlug();
+            if (slug == null || slug.trim().isEmpty()) {
+                slug = SlugGenerator.generateSlug(series.getSeriesName());
+                series.setSlug(slug);
+                seriesRepository.save(series);
+            }
+
             SeriesResponse dto = new SeriesResponse();
             dto.setSeriesId(series.getId());
             dto.setSeriesName(series.getSeriesName());
@@ -46,6 +57,7 @@ public class SeriesService {
             dto.setPoster(series.getPosters());
             dto.setDescription(series.getDescription());
             dto.setTrailer(series.getTrailer());
+            dto.setSlug(slug); 
 
             List<CategoryResponse> categoryResponses = series.getCategories().stream()
                     .map(category -> new CategoryResponse(
@@ -101,7 +113,7 @@ public class SeriesService {
                                         episode.getEpisodeNumber(),
                                         episode.getEpisodeDescription(),
                                         episode.getEpisodeImage(),
-                                        episode.getEpisodeVideo());
+                                        episode.getEpisodeVideo(), episode.getSlug());
 
                             }).collect(Collectors.toList()));
                 }
@@ -141,6 +153,7 @@ public class SeriesService {
                     savedSeries.getPosters(),
                     savedSeries.getDescription(),
                     savedSeries.getTrailer(),
+                    savedSeries.getSlug(),
                     categoryResponses,
                     Collections.emptyList());
         } catch (Exception e) {
@@ -191,6 +204,7 @@ public class SeriesService {
                     updatedSeries.getPosters(),
                     updatedSeries.getDescription(),
                     updatedSeries.getTrailer(),
+                    updatedSeries.getSlug(),
                     categoryResponses,
                     Collections.emptyList());
         } catch (Exception e) {

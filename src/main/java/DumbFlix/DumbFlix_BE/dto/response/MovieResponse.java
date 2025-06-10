@@ -1,15 +1,18 @@
 package DumbFlix.DumbFlix_BE.dto.response;
 
+import java.io.Serializable;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @AllArgsConstructor
-public class MovieResponse {
+public class MovieResponse implements Serializable{
     private Long movieId;
     private String title;
     private String description;
