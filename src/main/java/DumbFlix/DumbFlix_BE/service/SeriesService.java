@@ -43,10 +43,10 @@ public class SeriesService {
         List<Series> seriesList = seriesRepository.findAll();
 
         return seriesList.stream().map(series -> {
-            String slug = series.getSlug();
+            String slug = series.getSeriesSlug();
             if (slug == null || slug.trim().isEmpty()) {
                 slug = SlugGenerator.generateSlug(series.getSeriesName());
-                series.setSlug(slug);
+                series.setSeriesSlug(slug);
                 seriesRepository.save(series);
             }
 
@@ -57,7 +57,7 @@ public class SeriesService {
             dto.setPoster(series.getPosters());
             dto.setDescription(series.getDescription());
             dto.setTrailer(series.getTrailer());
-            dto.setSlug(slug); 
+            dto.setSeriesSlug(slug);
 
             List<CategoryResponse> categoryResponses = series.getCategories().stream()
                     .map(category -> new CategoryResponse(
@@ -79,8 +79,9 @@ public class SeriesService {
         }).collect(Collectors.toList());
     }
 
-    public SeriesResponse getSeriesByName(String seriesName) {
-        Series series = seriesRepository.findBySeriesName(seriesName)
+    @Cacheable(value = "seriesByNameCache", key = "#seriesSlug")
+    public SeriesResponse getSeriesByName(String seriesSlug) {
+        Series series = seriesRepository.findBySeriesSlug(seriesSlug)
                 .orElseThrow(() -> new FuncErrorException("Series not found"));
 
         SeriesResponse dto = new SeriesResponse();
@@ -90,6 +91,7 @@ public class SeriesService {
         dto.setPoster(series.getPosters());
         dto.setDescription(series.getDescription());
         dto.setTrailer(series.getTrailer());
+        dto.setSeriesSlug(series.getSeriesSlug());
 
         List<CategoryResponse> categoryResponses = series.getCategories().stream()
                 .map(category -> new CategoryResponse(category.getCategoryId(),
@@ -113,7 +115,7 @@ public class SeriesService {
                                         episode.getEpisodeNumber(),
                                         episode.getEpisodeDescription(),
                                         episode.getEpisodeImage(),
-                                        episode.getEpisodeVideo(), episode.getSlug());
+                                        episode.getEpisodeVideo(), episode.getEpisodeSlug());
 
                             }).collect(Collectors.toList()));
                 }
@@ -153,7 +155,7 @@ public class SeriesService {
                     savedSeries.getPosters(),
                     savedSeries.getDescription(),
                     savedSeries.getTrailer(),
-                    savedSeries.getSlug(),
+                    savedSeries.getSeriesSlug(),
                     categoryResponses,
                     Collections.emptyList());
         } catch (Exception e) {
@@ -204,7 +206,7 @@ public class SeriesService {
                     updatedSeries.getPosters(),
                     updatedSeries.getDescription(),
                     updatedSeries.getTrailer(),
-                    updatedSeries.getSlug(),
+                    updatedSeries.getSeriesSlug(),
                     categoryResponses,
                     Collections.emptyList());
         } catch (Exception e) {

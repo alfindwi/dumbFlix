@@ -38,9 +38,12 @@ public class Series {
 
     @Column(columnDefinition = "TEXT")
     private String description;
+    
     private String trailer;
+
     @Column(unique = true)
-    private String slug;
+    private String seriesSlug;
+
     @ManyToMany
     @JoinTable(name = "category_series", joinColumns = @JoinColumn(name = "series_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
     private List<Categories> categories;

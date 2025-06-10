@@ -30,8 +30,9 @@ public class Episode {
     public String episodeDescription;
     public String episodeImage;
     public String episodeVideo;
+    
     @Column(unique = true)
-    private String slug;
+    private String episodeSlug;
 
     @ManyToOne
     @JoinColumn(name = "season_id", nullable = false)

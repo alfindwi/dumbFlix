@@ -17,7 +17,7 @@ public class SeriesResponse {
     private String seriesYear;
     private String poster;
     private String description;
-    private String slug;
+    private String seriesSlug;
     private String trailer;
     private List<CategoryResponse> categories;
     private List<SeasonResponse> seasons;

@@ -73,7 +73,7 @@ public class SeasonService {
                                 episode.getEpisodeNumber(),
                                 episode.getEpisodeDescription(),
                                 episode.getEpisodeImage(),
-                                episode.getEpisodeVideo(), episode.getSlug()))
+                                episode.getEpisodeVideo(), episode.getEpisodeSlug()))
                         .collect(Collectors.toList());
 
                 return new SeasonResponse(

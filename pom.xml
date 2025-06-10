@@ -54,7 +54,7 @@
             <artifactId>spring-boot-devtools</artifactId>
             <scope>runtime</scope>
             <optional>true</optional>
-        </dependency>
+        </dependency> 
 
         <!-- https://mvnrepository.com/artifact/com.auth0/java-jwt -->
         <dependency>

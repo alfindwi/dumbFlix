@@ -45,24 +45,20 @@ public class EpisodeService {
                                 episode.getEpisodeDescription(),
                                 episode.getEpisodeImage(),
                                 episode.getEpisodeVideo(),
-                                episode.getSlug());
+                                episode.getEpisodeSlug());
         }
 
-        public EpisodeResponse getSeriesAndSeasonAndEpisode(String seriesName, Integer seasonNumber,
-                        String episodeName) {
-
-                Series series = seriesRepository.findBySeriesName(seriesName)
+        @Cacheable(value = "seriesAndSeasonAndEpisodeCache", key = "'seriesAndSeasonAndEpisode' + #serieSlug + #seasonNumber + #episodeSlug")
+        public EpisodeResponse getSeriesAndSeasonAndEpisode(String seriesSlug, Integer seasonNumber,
+                        String episodeSlug) {
+                Series series = seriesRepository.findBySeriesSlug(seriesSlug)
                                 .orElseThrow(() -> new FuncErrorException("Series not found"));
 
                 Season season = seasonRepository.findBySeasonNumberAndSeries(seasonNumber, series)
                                 .orElseThrow(() -> new FuncErrorException("Season not found for this series"));
 
-                List<Episode> sortedEpisodes = season.getEpisodes().stream()
-                                .sorted(Comparator.comparingInt(Episode::getEpisodeNumber))
-                                .collect(Collectors.toList());
-
-                Episode episode = sortedEpisodes.stream()
-                                .filter(e -> e.getEpisodeName().equalsIgnoreCase(episodeName))
+                Episode episode = season.getEpisodes().stream()
+                                .filter(e -> e.getEpisodeSlug().equalsIgnoreCase(episodeSlug))
                                 .findFirst()
                                 .orElseThrow(() -> new FuncErrorException("Episode not found in this season"));
 
@@ -73,12 +69,12 @@ public class EpisodeService {
                                 episode.getEpisodeDescription(),
                                 episode.getEpisodeImage(),
                                 episode.getEpisodeVideo(),
-                                episode.getSlug());
+                                episode.getEpisodeSlug());
         }
 
-        @Cacheable(value = "episodeBySeasonCache", key = "'episodeBySeason' + #seriesName + #seasonNumber")
-        public List<EpisodeResponse> getEpisodeBySeason(String seriesName, Integer seasonNumber) {
-                Series series = seriesRepository.findBySeriesName(seriesName)
+        @Cacheable(value = "episodeBySeasonCache", key = "'episodeBySeason' + #seriesSlug + #seasonNumber")
+        public List<EpisodeResponse> getEpisodeBySeason(String seriesSlug, Integer seasonNumber) {
+                Series series = seriesRepository.findBySeriesSlug(seriesSlug)
                                 .orElseThrow(() -> new FuncErrorException("Series not found"));
 
                 Season season = seasonRepository.findBySeasonNumberAndSeries(seasonNumber, series)
@@ -89,12 +85,12 @@ public class EpisodeService {
                 return episodes.stream()
                                 .sorted(Comparator.comparingInt(Episode::getEpisodeNumber))
                                 .map(e -> {
-                                        // Generate slug jika belum ada
-                                        String slug = e.getSlug();
+                                        String slug = e.getEpisodeSlug();
                                         if (slug == null || slug.trim().isEmpty()) {
                                                 slug = SlugGenerator.generateSlug(e.getEpisodeName());
-                                                e.setSlug(slug);
-                                                episodeRepository.save(e); // Simpan perubahan slug
+                                                e.setEpisodeSlug(slug);
+                                                episodeRepository.save(e);
+                                                System.out.println("Slug disimpan: " + slug);
                                         }
 
                                         return new EpisodeResponse(
@@ -131,7 +127,7 @@ public class EpisodeService {
 
                         return new EpisodeResponse(saved.getId(), saved.getEpisodeName(), saved.getEpisodeNumber(),
                                         saved.getEpisodeDescription(), saved.getEpisodeImage(),
-                                        saved.getEpisodeVideo(), saved.getSlug());
+                                        saved.getEpisodeVideo(), saved.getEpisodeSlug());
                 } catch (Exception e) {
                         throw new FuncErrorException("Failed to add episode: " + e.getMessage());
                 }
@@ -176,7 +172,7 @@ public class EpisodeService {
                                         updated.getEpisodeNumber(),
                                         updated.getEpisodeDescription(),
                                         updated.getEpisodeImage(),
-                                        updated.getEpisodeVideo(), updated.getSlug());
+                                        updated.getEpisodeVideo(), updated.getEpisodeSlug());
                 } catch (Exception e) {
                         throw new FuncErrorException("Failed to update episode: " + e.getMessage());
                 }

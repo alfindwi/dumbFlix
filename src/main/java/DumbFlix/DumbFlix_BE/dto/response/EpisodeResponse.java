@@ -16,5 +16,5 @@ public class EpisodeResponse {
     private String episodeDescription;
     private String episodeImage;
     private String episodeVideo;
-    private String slug;
+    private String episodeSlug;
 }

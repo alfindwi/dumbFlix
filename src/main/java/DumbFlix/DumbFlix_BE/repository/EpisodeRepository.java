@@ -13,7 +13,7 @@ public interface EpisodeRepository extends JpaRepository<Episode, Long> {
 
     Optional<Episode> findFirstByEpisodeName(String episodeName);
 
-    Optional<Episode> findByEpisodeNameAndSeason(String episodeName, Season season);
+    Optional<Episode> findByEpisodeSlugAndSeason(String episodeSlug, Season season);
 
     List<Episode> findBySeason(Season season);
 
