@@ -22,6 +22,8 @@ public interface MovieRepository extends JpaRepository<Movies, Long> {
 
     Optional<Movies> findBySlug(String slug);
 
+    List<Movies> findByTitleContainingIgnoreCase(String keyword);
+
     @SuppressWarnings("null")
     @EntityGraph(attributePaths = { "categories" })
     List<Movies> findAll();

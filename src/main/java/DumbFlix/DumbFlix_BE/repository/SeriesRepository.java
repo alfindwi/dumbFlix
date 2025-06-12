@@ -19,5 +19,7 @@ public interface SeriesRepository extends JpaRepository<Series, Long> {
 
     Optional<Series> findBySeriesSlug(String seriesSlug);
 
+    List<Series> findBySeriesNameContainingIgnoreCase(String keyword);
+
     List<Series> findByCategories_CategoryId(Long categoryId);
 }

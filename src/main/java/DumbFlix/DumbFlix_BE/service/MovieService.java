@@ -1,5 +1,6 @@
 package DumbFlix.DumbFlix_BE.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,16 +14,22 @@ import org.springframework.stereotype.Service;
 import DumbFlix.DumbFlix_BE.dto.request.MovieRequest;
 import DumbFlix.DumbFlix_BE.dto.response.CategoryResponse;
 import DumbFlix.DumbFlix_BE.dto.response.MovieResponse;
+import DumbFlix.DumbFlix_BE.dto.response.SearchResultResponse;
 import DumbFlix.DumbFlix_BE.entity.categories.Categories;
 import DumbFlix.DumbFlix_BE.entity.movie.Movies;
+import DumbFlix.DumbFlix_BE.entity.series.Series;
 import DumbFlix.DumbFlix_BE.exception.FuncErrorException;
 import DumbFlix.DumbFlix_BE.repository.CategoryRepository;
 import DumbFlix.DumbFlix_BE.repository.MovieRepository;
+import DumbFlix.DumbFlix_BE.repository.SeriesRepository;
 import DumbFlix.DumbFlix_BE.security.util.SlugGenerator;
 
 @Service
 public class MovieService {
         private final MovieRepository movieRepository;
+
+        @Autowired
+        private SeriesRepository seriesRepository;
 
         private final CategoryRepository categoryRepository;
 
@@ -120,6 +127,45 @@ public class MovieService {
                                 movies.getPosters(),
                                 categoryResponses);
 
+        }
+
+        public List<SearchResultResponse> searchAll(String keyword) {
+                List<Movies> foundMovies = movieRepository.findByTitleContainingIgnoreCase(keyword);
+                List<Series> foundSeries = seriesRepository.findBySeriesNameContainingIgnoreCase(keyword);
+
+                if (foundMovies.isEmpty()) {
+                        throw new FuncErrorException("No movies found for keyword: " + keyword);
+                }
+
+                if (foundSeries.isEmpty()) {
+                        throw new FuncErrorException("No series found for keyword: " + keyword);
+                }
+
+                List<SearchResultResponse> results = new ArrayList<>();
+
+                for (Movies movies : foundMovies) {
+                        SearchResultResponse res = new SearchResultResponse();
+                        res.setType("movie");
+                        res.setTitle(movies.getTitle());
+                        res.setSlug(movies.getSlug());
+                        res.setPoster(movies.getThumbnail());
+                        res.setDescription(movies.getDescription());
+                        res.setYear(movies.getYear());
+                        results.add(res);
+                }
+
+                for (Series series : foundSeries) {
+                        SearchResultResponse res = new SearchResultResponse();
+                        res.setType("series");
+                        res.setTitle(series.getSeriesName());
+                        res.setSlug(series.getSeriesSlug());
+                        res.setPoster(series.getPosters());
+                        res.setDescription(series.getDescription());
+                        res.setYear(series.getSeriesYear());
+                        results.add(res);
+                }
+
+                return results;
         }
 
         public List<MovieResponse> getMoviesByCategory(Long categoryId) {

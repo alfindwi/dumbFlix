@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import DumbFlix.DumbFlix_BE.dto.request.MovieRequest;
 import DumbFlix.DumbFlix_BE.dto.response.MovieResponse;
+import DumbFlix.DumbFlix_BE.dto.response.SearchResultResponse;
 import DumbFlix.DumbFlix_BE.service.MovieService;
 
 @RestController
@@ -62,6 +63,11 @@ public class MovieController {
     public ResponseEntity<MovieResponse> getMovieBySlug(@PathVariable("slug") String slug) {
         MovieResponse movieResponse = movieService.getMovieBySlug(slug);
         return ResponseEntity.ok(movieResponse);
+    }
+
+    @GetMapping("/search/{keyword}")
+    public ResponseEntity<List<SearchResultResponse>> searchAll(@PathVariable("keyword") String keyword) {
+        return ResponseEntity.ok(movieService.searchAll(keyword));
     }
 
     @PostMapping

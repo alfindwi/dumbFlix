@@ -1,4 +1,4 @@
-package DumbFlix.DumbFlix_BE.controller.auth;
+package DumbFlix.DumbFlix_BE.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

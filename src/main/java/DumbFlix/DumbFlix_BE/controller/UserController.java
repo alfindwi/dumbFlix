@@ -1,4 +1,4 @@
-package DumbFlix.DumbFlix_BE.controller.user;
+package DumbFlix.DumbFlix_BE.controller;
 
 import DumbFlix.DumbFlix_BE.dto.request.UserRequest;
 import DumbFlix.DumbFlix_BE.dto.response.UserResponse;
