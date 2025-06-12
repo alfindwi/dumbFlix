@@ -11,9 +11,6 @@ import {
   Flex,
   IconButton,
   Img,
-  Input,
-  InputGroup,
-  InputRightElement,
   Menu,
   MenuButton,
   MenuItem,
@@ -21,11 +18,11 @@ import {
   Text,
   useBreakpointValue,
   useDisclosure,
-  useToast,
+  useToast
 } from "@chakra-ui/react";
 import Cookies from "js-cookie";
 import { BiSolidCameraMovie } from "react-icons/bi";
-import { FaSearch, FaSignOutAlt } from "react-icons/fa";
+import { FaSignOutAlt } from "react-icons/fa";
 import { FaTv } from "react-icons/fa6";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { ImExit, ImHome } from "react-icons/im";
