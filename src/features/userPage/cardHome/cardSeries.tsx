@@ -95,7 +95,7 @@ export function CardSeries() {
                 transition="transform 0.5s ease, box-shadow 0.2s ease"
                 cursor="pointer"
                 as={Link}
-                to={`/series/${series.seriesName.replace(/ /g, "-")}`}
+                to={`/series/${series.seriesSlug}`}
                 display="block"
               >
                 <Box

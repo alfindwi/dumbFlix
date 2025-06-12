@@ -57,6 +57,7 @@ export function HomeContent() {
       <Box>
         <Img
           src="/src/assets/fontHome.png"
+          zIndex={10}
           position={"absolute"}
           w={{ base: "200px", md: "400px", lg: "500px" }}
           top={{ base: "120px", md: "170px", lg: "200px" }}

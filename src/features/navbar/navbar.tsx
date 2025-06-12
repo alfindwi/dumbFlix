@@ -11,6 +11,9 @@ import {
   Flex,
   IconButton,
   Img,
+  Input,
+  InputGroup,
+  InputRightElement,
   Menu,
   MenuButton,
   MenuItem,
@@ -22,7 +25,7 @@ import {
 } from "@chakra-ui/react";
 import Cookies from "js-cookie";
 import { BiSolidCameraMovie } from "react-icons/bi";
-import { FaSignOutAlt } from "react-icons/fa";
+import { FaSearch, FaSignOutAlt } from "react-icons/fa";
 import { FaTv } from "react-icons/fa6";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { ImExit, ImHome } from "react-icons/im";
@@ -31,6 +34,7 @@ import { useAppDispatch, useAppSelector } from "../../store";
 import { logout } from "../../store/auth/slice";
 import { ButtonLogin } from "./buttonLogin";
 import { ButtonRegister } from "./buttonRegister";
+import { SearchBar } from "./searchBar";
 
 export function Navbar() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -66,14 +70,17 @@ export function Navbar() {
       backdropFilter="blur(10px)"
     >
       {isMobile ? (
-        <IconButton
-          icon={<GiHamburgerMenu />}
-          aria-label="Open Menu"
-          variant="ghost"
-          color="white"
-          fontSize="24px"
-          onClick={onOpen}
-        />
+        <>
+          <IconButton
+            icon={<GiHamburgerMenu />}
+            aria-label="Open Menu"
+            variant="ghost"
+            color="white"
+            fontSize="24px"
+            onClick={onOpen}
+          />
+          <SearchBar />
+        </>
       ) : (
         <Flex alignItems="center" fontWeight="bold" gap={7} ml={8}>
           <Text as={Link} to="/" cursor="pointer" color="white">
@@ -99,7 +106,8 @@ export function Navbar() {
         <Img
           src="/src/assets/ALFLIX.png"
           alt="Logo"
-          mr={{ base: 0, md: isLoggedIn ? "10rem" : "4rem" }}
+          ml={{ base: 0, md: isLoggedIn ? "7rem" : "" }}
+          mr={{ base: 0, md: isLoggedIn ? "" : "4rem" }}
           h={{ base: "20px", md: "25px" }}
         />
       </Flex>
@@ -113,6 +121,7 @@ export function Navbar() {
             </>
           ) : (
             <Menu>
+              <SearchBar />
               <MenuButton as={Box} cursor="pointer">
                 <Avatar
                   src={
