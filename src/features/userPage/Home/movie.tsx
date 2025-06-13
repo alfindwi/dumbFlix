@@ -4,19 +4,7 @@ import { Link } from "react-router-dom";
 import { buttonStyle } from "../../../assets/style/buttonStyle";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { getMovies } from "../../../store/movie/async";
-import { Navbar } from "../../navbar/navbar";
 import { CardMovies } from "../cardMovies/cardMovies";
-import { Footer } from "../footer/footer";
-
-export function Movies() {
-  return (
-    <Box>
-      <Navbar />
-      <MovieContent />
-      <Footer />
-    </Box>
-  );
-}
 
 export function MovieContent() {
   const dispatch = useAppDispatch();

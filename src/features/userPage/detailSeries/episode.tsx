@@ -9,21 +9,9 @@ import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { getSeriesSeasonEpisode } from "../../../store/episode/async";
-import { Navbar } from "../../navbar/navbar";
-import { Footer } from "../footer/footer";
 import { ButtonPrevNext } from "./buttonPrevNext";
 import EpisodeList from "./episodeList";
 import { VideoPlayer } from "./videoPlayer";
-
-export function Episode() {
-  return (
-    <Box>
-      <Navbar />
-      <EpisodeContent />
-      <Footer />
-    </Box>
-  );
-}
 
 export function EpisodeContent() {
     const dispatch = useAppDispatch();

@@ -11,12 +11,25 @@ import {
 import { FaSearch } from "react-icons/fa";
 import { useState } from "react";
 import { IoClose } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
 
 export function SearchBar() {
   const { isOpen, onToggle } = useDisclosure();
   const [searchValue, setSearchValue] = useState("");
-
+  const navigate = useNavigate();
   const isMobile = useBreakpointValue({ base: true, md: false });
+
+  const handleSearch = () => {
+    if (searchValue) {
+      navigate(`/search/${searchValue}`);
+    }
+  };
+
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      handleSearch();
+    }
+  };
 
   return (
     <Box position="relative">
@@ -42,12 +55,13 @@ export function SearchBar() {
                 <Input
                   value={searchValue}
                   onChange={(e) => setSearchValue(e.target.value)}
+                  onKeyPress={handleKeyPress}
                   placeholder="Search..."
                   bgColor="#343434"
                   color="white"
                   focusBorderColor="transparent"
                 />
-                <InputRightElement pointerEvents="none">
+                <InputRightElement onClick={handleSearch} pointerEvents="none">
                   <FaSearch color="gray.400" />
                 </InputRightElement>
               </InputGroup>
@@ -61,11 +75,12 @@ export function SearchBar() {
             onChange={(e) => setSearchValue(e.target.value)}
             placeholder="Search..."
             bgColor="#343434"
+            onKeyPress={handleKeyPress}
             color="white"
             border="none"
             focusBorderColor="transparent"
           />
-          <InputRightElement pointerEvents="none">
+          <InputRightElement onClick={handleSearch} pointerEvents="none">
             <FaSearch color="gray.400" />
           </InputRightElement>
         </InputGroup>

@@ -16,18 +16,6 @@ import ReactPlayer from "react-player";
 import { useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { getMovieBySlug } from "../../../store/movie/async";
-import { Navbar } from "../../navbar/navbar";
-import { Footer } from "../footer/footer";
-
-export function DetailMovie() {
-  return (
-    <Box>
-      <Navbar />
-      <DetailMovieContent />
-      <Footer />
-    </Box>
-  );
-}
 
 export function DetailMovieContent() {
   const { slug } = useParams();

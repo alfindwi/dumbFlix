@@ -10,7 +10,7 @@ import { useAppSelector } from "../../../store";
 export function Home() {
   return (
     <Box>
-      <Navbar />
+      <Navbar/>
       <HomeContent />
       <Footer />
     </Box>
@@ -21,9 +21,7 @@ export function HomeContent() {
   const { series } = useAppSelector((state) => state.series);
 
   const heroSeries = series.find(
-    (series) =>
-      series.seriesName.replace(/\s+/g, "-") ===
-      "Breaking Bad".replace(/\s+/g, "-")
+    (series) => series.seriesSlug === "breaking-bad"
   );
   return (
     <Box>
@@ -102,7 +100,7 @@ export function HomeContent() {
           <Button
             sx={buttonStyle}
             as={Link}
-            to={`/series/${heroSeries?.seriesName.replace(/\s+/g, "-")}`}
+            to={`/series/${heroSeries?.seriesSlug}`}
           >
             Watch Now !
           </Button>

@@ -4,19 +4,7 @@ import { Link } from "react-router-dom";
 import { buttonStyle } from "../../../assets/style/buttonStyle";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { getSeries } from "../../../store/series/async";
-import { Navbar } from "../../navbar/navbar";
 import { CardTvShow } from "../cardTvShow/cardTvShow";
-import { Footer } from "../footer/footer";
-
-export function TvShow() {
-  return (
-    <Box>
-      <Navbar />
-      <TvShowContent />
-      <Footer />
-    </Box>
-  );
-}
 
 export function TvShowContent() {
   const dispatch = useAppDispatch();

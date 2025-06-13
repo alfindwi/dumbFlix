@@ -1,4 +1,12 @@
-import { Box, Icon, Img, Text, Wrap, WrapItem } from "@chakra-ui/react";
+import {
+  Box,
+  Icon,
+  Img,
+  Text,
+  Wrap,
+  WrapItem,
+  useBreakpointValue,
+} from "@chakra-ui/react";
 import { useMemo, useState } from "react";
 import { MdPlayArrow } from "react-icons/md";
 import { Link } from "react-router-dom";
@@ -9,19 +17,27 @@ export interface MoviesListProps {
   movies: IMovie[];
 }
 
-export const moviesPerPage = 21;
-
 export const CardMovies: React.FC<MoviesListProps> = ({ movies }) => {
   const safeMovies = Array.isArray(movies) ? movies : [];
 
+  const moviesPerPage = useBreakpointValue({
+    base: 20, 
+    md: 21,   
+  });
+
   const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = Math.ceil(safeMovies.length / moviesPerPage);
+
+  const totalPages = useMemo(() => {
+    return moviesPerPage ? Math.ceil(safeMovies.length / moviesPerPage) : 1;
+  }, [safeMovies.length, moviesPerPage]);
 
   const paginatedMovies = useMemo(() => {
+    if (!moviesPerPage) return [];
+
     const startIndex = (currentPage - 1) * moviesPerPage;
     const endIndex = Math.min(startIndex + moviesPerPage, safeMovies.length);
     return safeMovies.slice(startIndex, endIndex);
-  }, [safeMovies, currentPage]);
+  }, [safeMovies, currentPage, moviesPerPage]);
 
   return (
     <Box p={6}>

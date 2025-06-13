@@ -1,4 +1,12 @@
-import { Box, Icon, Img, Text, Wrap, WrapItem } from "@chakra-ui/react";
+import {
+  Box,
+  Icon,
+  Img,
+  Text,
+  Wrap,
+  WrapItem,
+  useBreakpointValue,
+} from "@chakra-ui/react";
 import React, { useMemo, useState } from "react";
 import { MdPlayArrow } from "react-icons/md";
 import { Link } from "react-router-dom";
@@ -9,17 +17,25 @@ interface SeriesListProps {
   series: ISeries[];
 }
 
-const seriesPage = 21;
-
 export const CardTvShow: React.FC<SeriesListProps> = ({ series }) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = Math.ceil(series.length / seriesPage);
 
-  const paginatedMovies = useMemo(() => {
-    const startIndex = (currentPage - 1) * seriesPage;
-    const endIndex = Math.min(startIndex + seriesPage, series.length);
+  const seriesPerPage = useBreakpointValue({
+    base: 20,
+    md: 21, 
+  });
+
+  const totalPages = useMemo(() => {
+    return seriesPerPage ? Math.ceil(series.length / seriesPerPage) : 1;
+  }, [series.length, seriesPerPage]);
+
+  const paginatedSeries = useMemo(() => {
+    if (!seriesPerPage) return [];
+    const startIndex = (currentPage - 1) * seriesPerPage;
+    const endIndex = Math.min(startIndex + seriesPerPage, series.length);
     return series.slice(startIndex, endIndex);
-  }, [series, currentPage]);
+  }, [series, currentPage, seriesPerPage]);
+
   return (
     <Box p={6}>
       <Text fontSize="24px" fontWeight="semibold">
@@ -27,7 +43,7 @@ export const CardTvShow: React.FC<SeriesListProps> = ({ series }) => {
       </Text>
 
       <Wrap spacing={4} mt={4} justify="flex-start" w="full">
-        {paginatedMovies.map((series) => (
+        {paginatedSeries.map((series) => (
           <WrapItem key={series.id}>
             <Box
               mt={4}

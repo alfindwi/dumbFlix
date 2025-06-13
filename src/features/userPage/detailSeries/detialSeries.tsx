@@ -1,19 +1,7 @@
 import { Box, Flex } from "@chakra-ui/react";
-import { Navbar } from "../../navbar/navbar";
-import { Footer } from "../footer/footer";
+import { useAppSelector } from "../../../store";
 import { DescTrailer } from "./descriptionTrailer";
 import { Season } from "./season";
-import { useAppSelector } from "../../../store";
-
-export function DetailSeries() {
-  return (
-    <Box>
-      <Navbar />
-      <DetailSeriesContent />
-      <Footer />
-    </Box>
-  );
-}
 
 export function DetailSeriesContent() {
   const { selectedSeries: series } = useAppSelector((state) => state.series);

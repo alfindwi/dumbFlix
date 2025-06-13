@@ -14,13 +14,15 @@ import { ListSeries } from "../features/adminPage/AddSeries/ListSeries";
 import { AddSeries } from "../features/adminPage/AddSeries/addSeries";
 import { DetailSeriesAdmin } from "../features/adminPage/AddSeries/detailSeriesAdmin";
 import { HomeAdmin } from "../features/adminPage/HomeAdmin/HomeAdmin";
-import { Home } from "../features/userPage/Home/home";
-import { Movies } from "../features/userPage/Home/movie";
-import { TvShow } from "../features/userPage/Home/tvShow";
-import { DetailMovie } from "../features/userPage/detailMovies/detailMovies";
-import { DetailSeries } from "../features/userPage/detailSeries/detialSeries";
-import { Episode } from "../features/userPage/detailSeries/episode";
+import { HomeContent } from "../features/userPage/Home/home";
+import { MovieContent } from "../features/userPage/Home/movie";
+import { TvShowContent } from "../features/userPage/Home/tvShow";
+import { DetailMovieContent } from "../features/userPage/detailMovies/detailMovies";
+import { DetailSeriesContent } from "../features/userPage/detailSeries/detialSeries";
+import { EpisodeContent } from "../features/userPage/detailSeries/episode";
 import { NotFound } from "../features/userPage/footer/notFound";
+import { LayoutUser } from "../layouts/layoutUser";
+import { Search } from "../features/userPage/searchPage/search";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -48,35 +50,40 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 const routes: RouteObject[] = [
   {
     path: "/",
+    element: <LayoutUser />,
     children: [
       {
         index: true,
-        element: <Home />,
+        element: <HomeContent />,
       },
       {
         path: "/tvSeries",
-        element: <TvShow />,
+        element: <TvShowContent />,
       },
       {
         path: "/movies",
-        element: <Movies />,
+        element: <MovieContent />,
       },
       {
         path: "/series/:seriesSlug",
-        element: <DetailSeries />,
+        element: <DetailSeriesContent />,
       },
       {
         path: "/movie/:slug",
-        element: <DetailMovie />,
+        element: <DetailMovieContent />,
       },
       {
         path: "/episode/:seriesSlug/:seasonNumber/:episodeSlug",
-        element: <Episode />,
+        element: <EpisodeContent />,
       },
       {
         path: "*",
         element: <NotFound />,
       },
+      {
+        path: "/search/:query",
+        element: <Search/>,
+      }
     ],
   },
   {
