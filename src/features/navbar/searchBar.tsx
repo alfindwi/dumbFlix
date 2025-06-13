@@ -9,20 +9,32 @@ import {
   Slide,
 } from "@chakra-ui/react";
 import { FaSearch } from "react-icons/fa";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { motion } from "framer-motion";
 import { IoClose } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 
 export function SearchBar() {
-  const { isOpen, onToggle } = useDisclosure();
+  const { isOpen, onToggle, onClose } = useDisclosure();
   const [searchValue, setSearchValue] = useState("");
   const navigate = useNavigate();
+  const [hasSearched, setHasSearched] = useState(false);
   const isMobile = useBreakpointValue({ base: true, md: false });
 
+const searchRef = useRef<HTMLDivElement>(null);
+
   const handleSearch = () => {
-    if (searchValue) {
+    if (searchValue.trim()) {
       navigate(`/search/${searchValue}`);
+      setHasSearched(true);
     }
+  };
+
+  const handleClearSearch = () => {
+    setSearchValue("");
+    setHasSearched(false);
+    navigate("/");
+    onClose();
   };
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -30,6 +42,28 @@ export function SearchBar() {
       handleSearch();
     }
   };
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (isOpen && searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        onClose();
+      }
+    }
+
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen, onClose]);
+
+  useEffect(() => {
+    if (searchValue.trim() === "") {
+      setHasSearched(false);
+    }
+  }, [searchValue]);
 
   return (
     <Box position="relative">
@@ -45,11 +79,12 @@ export function SearchBar() {
           />
           <Slide direction="right" in={isOpen} style={{ zIndex: 20 }}>
             <Box
-              position="fixed" 
+              position="fixed"
               top="75px"
               right="0"
               w="58%"
               px={4}
+              ref={searchRef}
             >
               <InputGroup size="md">
                 <Input
@@ -61,8 +96,20 @@ export function SearchBar() {
                   color="white"
                   focusBorderColor="transparent"
                 />
-                <InputRightElement onClick={handleSearch} pointerEvents="none">
-                  <FaSearch color="gray.400" />
+                <InputRightElement
+                  onClick={hasSearched ? handleClearSearch : handleSearch}
+                  cursor="pointer"
+                >
+                  <motion.div
+                    animate={{ rotate: hasSearched ? 90 : 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    {hasSearched ? (
+                      <IoClose color="gray.400" size={20} />
+                    ) : (
+                      <FaSearch color="gray.400" />
+                    )}
+                  </motion.div>
                 </InputRightElement>
               </InputGroup>
             </Box>
@@ -80,8 +127,20 @@ export function SearchBar() {
             border="none"
             focusBorderColor="transparent"
           />
-          <InputRightElement onClick={handleSearch} pointerEvents="none">
-            <FaSearch color="gray.400" />
+          <InputRightElement
+            onClick={hasSearched ? handleClearSearch : handleSearch}
+            cursor="pointer"
+          >
+            <motion.div
+              animate={{ rotate: hasSearched ? 90 : 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              {hasSearched ? (
+                <IoClose color="gray.400" size={20} />
+              ) : (
+                <FaSearch color="gray.400" />
+              )}
+            </motion.div>
           </InputRightElement>
         </InputGroup>
       )}

@@ -20,7 +20,7 @@ export function Footer() {
 
   return (
     <Box bg="black" color="white" py={6}>
-      <Divider borderColor="gray.600" display={{ base: "none", md: "block" }} />
+      <Divider borderColor="gray.600" display={{ base: "block", md: "block" }} />
 
       <Box
         mt={4}
