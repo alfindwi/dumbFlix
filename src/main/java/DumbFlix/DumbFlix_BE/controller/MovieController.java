@@ -1,10 +1,10 @@
 package DumbFlix.DumbFlix_BE.controller;
 
+import java.io.IOException;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.io.IOException;
-import java.util.Base64;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -24,7 +24,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import DumbFlix.DumbFlix_BE.dto.request.MovieRequest;
 import DumbFlix.DumbFlix_BE.dto.response.MovieResponse;
-import DumbFlix.DumbFlix_BE.dto.response.SearchResultResponse;
 import DumbFlix.DumbFlix_BE.service.MovieService;
 
 @RestController
@@ -65,10 +64,7 @@ public class MovieController {
         return ResponseEntity.ok(movieResponse);
     }
 
-    @GetMapping("/search/{keyword}")
-    public ResponseEntity<List<SearchResultResponse>> searchAll(@PathVariable("keyword") String keyword) {
-        return ResponseEntity.ok(movieService.searchAll(keyword));
-    }
+   
 
     @PostMapping
     public ResponseEntity<String> createMovie(

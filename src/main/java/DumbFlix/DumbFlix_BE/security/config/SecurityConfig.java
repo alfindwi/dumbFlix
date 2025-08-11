@@ -47,7 +47,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**", "/api/category/**", "/api/movie/**", "/api/series/**",
-                                "/api/season/**", "/api/episode/**", "/api/users/**")
+                                "/api/season/**", "/api/episode/**", "/api/users/**", "/api/search/**")
                         .permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

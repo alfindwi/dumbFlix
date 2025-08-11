@@ -20,6 +20,7 @@ import DumbFlix.DumbFlix_BE.dto.response.CloudinaryResponse;
 import DumbFlix.DumbFlix_BE.service.CloudinaryService;
 import DumbFlix.DumbFlix_BE.service.SeriesService;
 
+
 @Component
 public class SeriesQueueWorker {
 
