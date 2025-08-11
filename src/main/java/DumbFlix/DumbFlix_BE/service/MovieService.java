@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import DumbFlix.DumbFlix_BE.dto.request.MovieRequest;
@@ -23,12 +25,14 @@ import DumbFlix.DumbFlix_BE.security.util.SlugGenerator;
 @Service
 public class MovieService {
         private final MovieRepository movieRepository;
-
+        private final SubcriptionService subscriptionService;
         private final CategoryRepository categoryRepository;
 
         @Autowired
-        public MovieService(MovieRepository movieRepository, CategoryRepository categoryRepository) {
+        public MovieService(MovieRepository movieRepository, CategoryRepository categoryRepository,
+                        SubcriptionService subscriptionService) {
                 this.movieRepository = movieRepository;
+                this.subscriptionService = subscriptionService;
                 this.categoryRepository = categoryRepository;
         }
 
@@ -103,10 +107,24 @@ public class MovieService {
                 Movies movies = movieRepository.findBySlug(slug)
                                 .orElseThrow(() -> new FuncErrorException("Movie not found"));
 
+                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+                String fullName = null;
+
+                if (authentication != null && authentication.isAuthenticated()) {
+                        fullName = authentication.getName();
+                }
+
+                boolean isSubscribed = false;
+                if (fullName != null) {
+                        isSubscribed = subscriptionService.isUserSubscribed(fullName);
+                }
+
                 List<CategoryResponse> categoryResponses = movies.getCategories().stream()
                                 .map(category -> new CategoryResponse(category.getCategoryId(),
                                                 category.getCategoryName()))
                                 .collect(Collectors.toList());
+
+                String videoUrl = isSubscribed ? movies.getVideo() : null;
 
                 return new MovieResponse(
                                 movies.getMovieId(),
@@ -115,14 +133,12 @@ public class MovieService {
                                 movies.getYear(),
                                 movies.getTrailer(),
                                 movies.getThumbnail(),
-                                movies.getVideo(),
+                                videoUrl,
                                 movies.getSlug(),
                                 movies.getPosters(),
                                 categoryResponses);
 
         }
-
-        
 
         public List<MovieResponse> getMoviesByCategory(Long categoryId) {
                 List<Movies> movies = movieRepository.findByCategories_CategoryId(categoryId);

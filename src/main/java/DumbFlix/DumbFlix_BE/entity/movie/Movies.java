@@ -2,7 +2,9 @@ package DumbFlix.DumbFlix_BE.entity.movie;
 
 import java.util.List;
 
+import DumbFlix.DumbFlix_BE.entity.actors.Actors;
 import DumbFlix.DumbFlix_BE.entity.categories.Categories;
+import DumbFlix.DumbFlix_BE.entity.directors.Directors;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -48,4 +50,13 @@ public class Movies {
     private String description;
     private String trailer;
 
+    @ManyToMany
+    @JoinTable(name = "movie_actor", 
+    joinColumns = @JoinColumn(name = "movie_id"), inverseJoinColumns = @JoinColumn(name = "actor_id"))
+    private List<Actors> actors;
+
+    @ManyToMany
+    @JoinTable(name = "movie_director", 
+    joinColumns = @JoinColumn(name = "movie_id"), inverseJoinColumns = @JoinColumn(name = "director_id"))
+    private List<Directors> directors;
 }

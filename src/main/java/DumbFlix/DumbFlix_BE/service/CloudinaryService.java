@@ -70,17 +70,21 @@ public class CloudinaryService {
 
             Map<String, Object> uploadParams = ObjectUtils.asMap(
                     "resource_type", "video",
+                    "type", "authenticated", // <-- Private mode
                     "public_id", "DumbFlix/Videos/" + timestamp,
                     "folder", "DumbFlix");
 
             Map<String, Object> result = this.cloudinary.uploader().upload(video.getBytes(), uploadParams);
 
-            final String url = (String) result.get("secure_url");
             final String publicId = (String) result.get("public_id");
 
-            return CloudinaryResponse.builder().public_id(publicId).url(url).build();
+            return CloudinaryResponse.builder()
+                    .public_id(publicId)
+                    .url(publicId)
+                    .build();
         } catch (IOException e) {
             throw new RuntimeException("Gagal upload video");
         }
     }
+
 }
