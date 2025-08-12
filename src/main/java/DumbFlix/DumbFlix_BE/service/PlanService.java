@@ -3,6 +3,7 @@ package DumbFlix.DumbFlix_BE.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -10,13 +11,16 @@ import DumbFlix.DumbFlix_BE.dto.response.PlanResponse;
 import DumbFlix.DumbFlix_BE.entity.subsPayment.Plan;
 import DumbFlix.DumbFlix_BE.exception.FuncErrorException;
 import DumbFlix.DumbFlix_BE.repository.PlanRepository;
-import jakarta.validation.Valid;
 
 @Service
 public class PlanService {
 
-    @Valid
-    private PlanRepository planRepository;
+    private final PlanRepository planRepository;
+
+    @Autowired
+    public PlanService(PlanRepository planRepository) {
+        this.planRepository = planRepository;
+    }
 
     public ResponseEntity<List<PlanResponse>> getAllPlans() {
         List<Plan> planResponses = planRepository.findAll();

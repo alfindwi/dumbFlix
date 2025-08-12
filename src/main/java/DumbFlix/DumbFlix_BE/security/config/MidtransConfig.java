@@ -1,5 +1,6 @@
 package DumbFlix.DumbFlix_BE.security.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -12,6 +13,8 @@ import lombok.Setter;
 @ConfigurationProperties(prefix = "mt")
 public class MidtransConfig {
 
+    @Value("${mt.server-key}")
     private String serverKey;
-    private boolean isProduction;
+
+    private boolean isProduction = false;
 }

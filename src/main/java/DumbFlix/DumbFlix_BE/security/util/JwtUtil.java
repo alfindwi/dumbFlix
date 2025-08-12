@@ -19,8 +19,9 @@ public class JwtUtil {
         this.secretKey = secretKey;
     }
 
-    public String generateToken(Long id, String email,  String fullName ,String image,String address, String phone, String gender,
-                                String status, String role) {
+    public String generateToken(Long id, String email, String fullName, String image, String address, String phone,
+            String gender,
+            String status, String role) {
         return JWT.create()
                 .withClaim("id", id)
                 .withClaim("email", email)
@@ -48,5 +49,21 @@ public class JwtUtil {
     public String getSecretKey() {
         return secretKey;
     }
-}
 
+    public String extractEmail(String token) {
+        Algorithm algorithm = Algorithm.HMAC256(secretKey);
+        return JWT.require(algorithm).build()
+                .verify(token)
+                .getClaim("email")
+                .asString();
+    }
+
+    public Long extractUserId(String token) {
+        Algorithm algorithm = Algorithm.HMAC256(secretKey);
+        return JWT.require(algorithm).build()
+                .verify(token)
+                .getClaim("id")
+                .asLong();
+    }
+
+}

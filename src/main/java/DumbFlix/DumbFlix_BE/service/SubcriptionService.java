@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import DumbFlix.DumbFlix_BE.entity.subsPayment.Subcription;
+import DumbFlix.DumbFlix_BE.entity.subsPayment.Subscription;
 import DumbFlix.DumbFlix_BE.repository.SubscriptionRepository;
 
 @Service
@@ -20,7 +20,7 @@ public class SubcriptionService {
                 .orElse(false);
     }
 
-    public Optional<Subcription> getSubscriptionByfullName(String fullName) {
+    public Optional<Subscription> getSubscriptionByfullName(String fullName) {
         return subscriptionRepository.findByUser_fullName(fullName);
     }
 

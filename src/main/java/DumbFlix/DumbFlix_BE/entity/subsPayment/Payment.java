@@ -5,6 +5,8 @@ import java.time.LocalDate;
 
 import DumbFlix.DumbFlix_BE.entity.user.User;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -23,11 +25,16 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String paymentMethod;
+    @Enumerated(EnumType.STRING)
+    private PaymentMethod paymentMethod = PaymentMethod.MIDTRANS;
 
     private BigDecimal amount;
 
     private LocalDate paymentDate;
+
+    private String orderId;
+    @Enumerated(EnumType.STRING)
+    private PaymentStatus paymentStatus = PaymentStatus.PENDING;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -35,5 +42,5 @@ public class Payment {
 
     @ManyToOne
     @JoinColumn(name = "subscription_id")
-    private Subcription subscription;
+    private Subscription subscription;
 }

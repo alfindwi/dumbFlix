@@ -3,7 +3,7 @@ package DumbFlix.DumbFlix_BE.entity.user;
 
 import java.util.List;
 
-import DumbFlix.DumbFlix_BE.entity.subsPayment.Subcription;
+import DumbFlix.DumbFlix_BE.entity.subsPayment.Subscription;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -39,7 +39,7 @@ public class User {
     private String image;
 
     @OneToMany(mappedBy = "user")
-    private List<Subcription> subscriptions;
+    private List<Subscription> subscriptions;
 
     @Enumerated(EnumType.STRING)
     private Status status = Status.NotActive;

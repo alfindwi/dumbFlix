@@ -39,14 +39,12 @@ public class JwtFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain) throws ServletException, IOException {
         String authHeader = request.getHeader("Authorization");
 
-        // Jika tidak ada Authorization header atau tidak diawali dengan "Bearer ",
-        // lanjutkan filter
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        String token = authHeader.substring(7); // Hapus "Bearer " dari token
+        String token = authHeader.substring(7);
 
         try {
             Algorithm algorithm = Algorithm.HMAC256(jwtUtil.getSecretKey());

@@ -1,4 +1,4 @@
-package DumbFlix.DumbFlix_BE.dto.response;
+package DumbFlix.DumbFlix_BE.dto.request;
 
 import java.math.BigDecimal;
 
@@ -11,11 +11,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PlanResponse {
-    private Long planId;       
+public class PlanRequest {
+    private Long planId;
     private String name;
     private BigDecimal price;
-    private Integer durationDays;   
-    private String description; 
+    private Integer durationDays;
+    private String description;
 }
-

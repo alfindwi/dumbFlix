@@ -7,6 +7,8 @@ import java.util.List;
 import DumbFlix.DumbFlix_BE.entity.user.User;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -22,7 +24,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Table(name = "subcription")
-public class Subcription {
+public class Subscription {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,7 +38,10 @@ public class Subcription {
     @JoinColumn(name = "plan_id")
     private Plan plan;
 
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private SubscriptionStatus status = SubscriptionStatus.PENDING;
+
+
     private java.time.LocalDate startDate;
     private java.time.LocalDate endDate;
 
@@ -44,9 +49,10 @@ public class Subcription {
     private List<Payment> payments = new ArrayList<>();
 
     public boolean isActive() {
-        return status != null && status.equalsIgnoreCase("ACTIVE") &&
+        return status == SubscriptionStatus.ACTIVE &&
                 LocalDate.now().isAfter(startDate.minusDays(1)) &&
                 LocalDate.now().isBefore(endDate.plusDays(1));
     }
 
 }
+

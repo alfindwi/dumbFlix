@@ -1,5 +1,7 @@
 package DumbFlix.DumbFlix_BE.entity.subsPayment;
 
+import java.math.BigDecimal;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -19,7 +21,7 @@ public class Plan {
     private Long planId;
 
     private String name;
-    private Double price;
+    private BigDecimal price;
     private Integer durationDays;
     private String description;
 }
