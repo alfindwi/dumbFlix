@@ -95,10 +95,13 @@ public class PaymentService {
                 "payment_method", "midtrans",
                 "order_id", orderId,
                 "amount", plan.getPrice(),
-                "redirect_url", redirectUrl);
+                "redirect_url", redirectUrl,
+                "token", snapResponse.getString("token"));
     }
 
     public void handleNotification(Map<String, Object> notification) {
+        System.out.println("Received notification: " + notification);
+
         String orderId = (String) notification.get("order_id");
         String transactionStatus = (String) notification.get("transaction_status");
 
