@@ -18,9 +18,9 @@ public class Directors {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long actorId;
+    private Long directorId;
 
     private String name;
-    
+    private String slug;
     private String image;
 }

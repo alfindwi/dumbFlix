@@ -13,12 +13,18 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import DumbFlix.DumbFlix_BE.dto.request.MovieRequest;
+import DumbFlix.DumbFlix_BE.dto.response.ActorResponse;
 import DumbFlix.DumbFlix_BE.dto.response.CategoryResponse;
+import DumbFlix.DumbFlix_BE.dto.response.DirectorResponse;
 import DumbFlix.DumbFlix_BE.dto.response.MovieResponse;
+import DumbFlix.DumbFlix_BE.entity.actors.Actors;
 import DumbFlix.DumbFlix_BE.entity.categories.Categories;
+import DumbFlix.DumbFlix_BE.entity.directors.Directors;
 import DumbFlix.DumbFlix_BE.entity.movie.Movies;
 import DumbFlix.DumbFlix_BE.exception.FuncErrorException;
+import DumbFlix.DumbFlix_BE.repository.ActorRepository;
 import DumbFlix.DumbFlix_BE.repository.CategoryRepository;
+import DumbFlix.DumbFlix_BE.repository.DirectorRepository;
 import DumbFlix.DumbFlix_BE.repository.MovieRepository;
 import DumbFlix.DumbFlix_BE.security.util.SlugGenerator;
 
@@ -27,13 +33,18 @@ public class MovieService {
         private final MovieRepository movieRepository;
         private final SubcriptionService subscriptionService;
         private final CategoryRepository categoryRepository;
+        private final ActorRepository actorRepository;
+        private final DirectorRepository directorRepository;
 
         @Autowired
         public MovieService(MovieRepository movieRepository, CategoryRepository categoryRepository,
-                        SubcriptionService subscriptionService) {
+                        SubcriptionService subscriptionService, ActorRepository actorRepository,
+                        DirectorRepository directorRepository) {
                 this.movieRepository = movieRepository;
                 this.subscriptionService = subscriptionService;
                 this.categoryRepository = categoryRepository;
+                this.actorRepository = actorRepository;
+                this.directorRepository = directorRepository;
         }
 
         @Cacheable(value = "allMoviesCache", key = "'allMovies'")
@@ -50,61 +61,96 @@ public class MovieService {
                                         }
 
                                         List<CategoryResponse> categoryResponses = movie.getCategories().stream()
-                                                        .map(category -> new CategoryResponse(
-                                                                        category.getCategoryId(),
+                                                        .map(category -> new CategoryResponse(category.getCategoryId(),
                                                                         category.getCategoryName()))
                                                         .collect(Collectors.toList());
+                                        List<ActorResponse> actorResponses = movie.getActors().stream()
+                                                        .map(actor -> new ActorResponse(actor.getActorId(),
+                                                                        actor.getName(),
+                                                                        actor.getImage(), actor.getSlug()))
+                                                        .collect(Collectors.toList());
+                                        List<DirectorResponse> directorResponses = movie.getDirectors().stream()
+                                                        .map(director -> new DirectorResponse(director.getDirectorId(),
+                                                                        director.getName(), director.getImage(),
+                                                                        director.getSlug()))
+                                                        .collect(Collectors.toList());
 
-                                        return new MovieResponse(
-                                                        movie.getMovieId(),
-                                                        movie.getTitle(),
+                                        return new MovieResponse(movie.getMovieId(), movie.getTitle(),
                                                         movie.getDescription(),
-                                                        movie.getYear(),
-                                                        movie.getTrailer(),
-                                                        movie.getThumbnail(),
+                                                        movie.getYear(), movie.getTrailer(), movie.getThumbnail(),
                                                         movie.getVideo(),
-                                                        slug,
+                                                        movie.getSlug(),
                                                         movie.getPosters(),
-                                                        categoryResponses);
+                                                        categoryResponses,
+                                                        actorResponses,
+                                                        directorResponses);
                                 })
                                 .collect(Collectors.toList());
         }
 
         public MovieResponse getMovieById(Long movieId) {
-                Movies movies = movieRepository.findById(movieId)
+                Movies movie = movieRepository.findById(movieId)
                                 .orElseThrow(() -> new FuncErrorException("Movie not found"));
 
-                List<CategoryResponse> categoryResponses = movies.getCategories().stream()
+                List<CategoryResponse> categoryResponses = movie.getCategories().stream()
                                 .map(category -> new CategoryResponse(category.getCategoryId(),
                                                 category.getCategoryName()))
                                 .collect(Collectors.toList());
+                List<ActorResponse> actorResponses = movie.getActors().stream()
+                                .map(actor -> new ActorResponse(actor.getActorId(),
+                                                actor.getName(),
+                                                actor.getImage(), actor.getSlug()))
+                                .collect(Collectors.toList());
+                List<DirectorResponse> directorResponses = movie.getDirectors().stream()
+                                .map(director -> new DirectorResponse(director.getDirectorId(),
+                                                director.getName(), director.getImage(),
+                                                director.getSlug()))
+                                .collect(Collectors.toList());
 
-                return new MovieResponse(movies.getMovieId(), movies.getTitle(), movies.getDescription(),
-                                movies.getYear(),
-                                movies.getSlug(),
-                                movies.getTrailer(), movies.getThumbnail(), movies.getVideo(), movies.getPosters(),
-                                categoryResponses);
+                return new MovieResponse(movie.getMovieId(), movie.getTitle(),
+                                movie.getDescription(),
+                                movie.getYear(), movie.getTrailer(), movie.getThumbnail(),
+                                movie.getVideo(),
+                                movie.getSlug(),
+                                movie.getPosters(),
+                                categoryResponses,
+                                actorResponses,
+                                directorResponses);
         }
 
         public MovieResponse getMovieByName(String title) {
-                Movies movies = movieRepository.findByTitle(title)
+                Movies movie = movieRepository.findByTitle(title)
                                 .orElseThrow(() -> new FuncErrorException("Movie not found"));
 
-                List<CategoryResponse> categoryResponses = movies.getCategories().stream()
+                List<CategoryResponse> categoryResponses = movie.getCategories().stream()
                                 .map(category -> new CategoryResponse(category.getCategoryId(),
                                                 category.getCategoryName()))
                                 .collect(Collectors.toList());
+                List<ActorResponse> actorResponses = movie.getActors().stream()
+                                .map(actor -> new ActorResponse(actor.getActorId(),
+                                                actor.getName(),
+                                                actor.getImage(), actor.getSlug()))
+                                .collect(Collectors.toList());
+                List<DirectorResponse> directorResponses = movie.getDirectors().stream()
+                                .map(director -> new DirectorResponse(director.getDirectorId(),
+                                                director.getName(), director.getImage(),
+                                                director.getSlug()))
+                                .collect(Collectors.toList());
 
-                return new MovieResponse(movies.getMovieId(), movies.getTitle(), movies.getDescription(),
-                                movies.getYear(),
-                                movies.getSlug(),
-                                movies.getTrailer(), movies.getThumbnail(), movies.getVideo(), movies.getPosters(),
-                                categoryResponses);
+                return new MovieResponse(movie.getMovieId(), movie.getTitle(),
+                                movie.getDescription(),
+                                movie.getYear(), movie.getTrailer(), movie.getThumbnail(),
+                                movie.getVideo(),
+                                movie.getSlug(),
+                                movie.getPosters(),
+                                categoryResponses,
+                                actorResponses,
+                                directorResponses);
         }
 
         @Cacheable(value = "movieBySlugCache", key = "'movieBySlug' + #slug")
         public MovieResponse getMovieBySlug(String slug) {
-                Movies movies = movieRepository.findBySlug(slug)
+                Movies movie = movieRepository.findBySlug(slug)
                                 .orElseThrow(() -> new FuncErrorException("Movie not found"));
 
                 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -119,24 +165,32 @@ public class MovieService {
                         isSubscribed = subscriptionService.isUserSubscribed(fullName);
                 }
 
-                List<CategoryResponse> categoryResponses = movies.getCategories().stream()
+                List<CategoryResponse> categoryResponses = movie.getCategories().stream()
                                 .map(category -> new CategoryResponse(category.getCategoryId(),
                                                 category.getCategoryName()))
                                 .collect(Collectors.toList());
+                List<ActorResponse> actorResponses = movie.getActors().stream()
+                                .map(actor -> new ActorResponse(actor.getActorId(),
+                                                actor.getName(),
+                                                actor.getImage(), actor.getSlug()))
+                                .collect(Collectors.toList());
+                List<DirectorResponse> directorResponses = movie.getDirectors().stream()
+                                .map(director -> new DirectorResponse(director.getDirectorId(),
+                                                director.getName(), director.getImage(),
+                                                director.getSlug()))
+                                .collect(Collectors.toList());
 
-                String videoUrl = isSubscribed ? movies.getVideo() : null;
+                String videoUrl = isSubscribed ? movie.getVideo() : null;
 
-                return new MovieResponse(
-                                movies.getMovieId(),
-                                movies.getTitle(),
-                                movies.getDescription(),
-                                movies.getYear(),
-                                movies.getTrailer(),
-                                movies.getThumbnail(),
+                return new MovieResponse(movie.getMovieId(), movie.getTitle(),
+                                movie.getDescription(),
+                                movie.getYear(), movie.getTrailer(), movie.getThumbnail(),
                                 videoUrl,
-                                movies.getSlug(),
-                                movies.getPosters(),
-                                categoryResponses);
+                                movie.getSlug(),
+                                movie.getPosters(),
+                                categoryResponses,
+                                actorResponses,
+                                directorResponses);
 
         }
 
@@ -149,6 +203,16 @@ public class MovieService {
                                                         .map(category -> new CategoryResponse(category.getCategoryId(),
                                                                         category.getCategoryName()))
                                                         .collect(Collectors.toList());
+                                        List<ActorResponse> actorResponses = movie.getActors().stream()
+                                                        .map(actor -> new ActorResponse(actor.getActorId(),
+                                                                        actor.getName(),
+                                                                        actor.getImage(), actor.getSlug()))
+                                                        .collect(Collectors.toList());
+                                        List<DirectorResponse> directorResponses = movie.getDirectors().stream()
+                                                        .map(director -> new DirectorResponse(director.getDirectorId(),
+                                                                        director.getName(), director.getImage(),
+                                                                        director.getSlug()))
+                                                        .collect(Collectors.toList());
 
                                         return new MovieResponse(movie.getMovieId(), movie.getTitle(),
                                                         movie.getDescription(),
@@ -156,8 +220,44 @@ public class MovieService {
                                                         movie.getVideo(),
                                                         movie.getSlug(),
                                                         movie.getPosters(),
-                                                        categoryResponses);
+                                                        categoryResponses,
+                                                        actorResponses,
+                                                        directorResponses);
                                 }).collect(Collectors.toList());
+        }
+
+        public List<MovieResponse> getMovieByActors(String slug) {
+                List<Movies> movies = movieRepository.findByActors_Slug(slug);
+
+                return movies.stream().map(movie -> {
+                        List<CategoryResponse> categoryResponses = movie.getCategories().stream()
+                                        .map(c -> new CategoryResponse(c.getCategoryId(), c.getCategoryName()))
+                                        .collect(Collectors.toList());
+
+                        List<ActorResponse> actorResponses = movie.getActors().stream()
+                                        .map(a -> new ActorResponse(a.getActorId(), a.getName(), a.getImage(),
+                                                        a.getSlug()))
+                                        .collect(Collectors.toList());
+
+                        List<DirectorResponse> directorResponses = movie.getDirectors().stream()
+                                        .map(d -> new DirectorResponse(d.getDirectorId(), d.getName(), d.getImage(),
+                                                        d.getSlug()))
+                                        .collect(Collectors.toList());
+
+                        return new MovieResponse(
+                                        movie.getMovieId(),
+                                        movie.getTitle(),
+                                        movie.getDescription(),
+                                        movie.getYear(),
+                                        movie.getTrailer(),
+                                        movie.getThumbnail(),
+                                        movie.getVideo(),
+                                        movie.getSlug(),
+                                        movie.getPosters(),
+                                        categoryResponses,
+                                        actorResponses,
+                                        directorResponses);
+                }).collect(Collectors.toList());
         }
 
         public MovieResponse createMovie(MovieRequest request, String thumbnailUrl, String videoUrl, String poster) {
@@ -165,8 +265,15 @@ public class MovieService {
                 List<Long> categoryIds = request.getCategoryIds().stream()
                                 .map(Integer::longValue)
                                 .collect(Collectors.toList());
-
                 List<Categories> categories = categoryRepository.findAllById(categoryIds);
+
+                List<Long> actorIds = request.getActorsIds().stream().map(Integer::longValue)
+                                .collect(Collectors.toList());
+                List<Actors> actors = actorRepository.findAllById(actorIds);
+
+                List<Long> directorIds = request.getDirectorsIds().stream().map(Integer::longValue)
+                                .collect(Collectors.toList());
+                List<Directors> directors = directorRepository.findAllById(directorIds);
 
                 Movies movies = new Movies();
                 movies.setTitle(request.getTitle());
@@ -177,6 +284,8 @@ public class MovieService {
                 movies.setPosters(poster);
                 movies.setVideo(videoUrl);
                 movies.setCategories(categories);
+                movies.setActors(actors);
+                movies.setDirectors(directors);
 
                 String slug = SlugGenerator.generateSlug(request.getTitle());
                 movies.setSlug(slug);
@@ -188,12 +297,24 @@ public class MovieService {
                                                 category.getCategoryName()))
                                 .collect(Collectors.toList());
 
+                List<ActorResponse> actorResponses = savedMovies.getActors().stream()
+                                .map(actor -> new ActorResponse(actor.getActorId(), actor.getName(), actor.getImage(),
+                                                actor.getSlug()))
+                                .collect(Collectors.toList());
+
+                List<DirectorResponse> directorResponses = savedMovies.getDirectors().stream()
+                                .map(director -> new DirectorResponse(director.getDirectorId(), director.getName(),
+                                                director.getImage(), director.getSlug()))
+                                .collect(Collectors.toList());
+
                 return new MovieResponse(savedMovies.getMovieId(), savedMovies.getTitle(), savedMovies.getDescription(),
                                 savedMovies.getYear(), savedMovies.getTrailer(), savedMovies.getThumbnail(),
                                 savedMovies.getVideo(),
                                 savedMovies.getPosters(),
                                 savedMovies.getSlug(),
-                                categoryResponses);
+                                categoryResponses,
+                                actorResponses,
+                                directorResponses);
         }
 
         public MovieResponse updateMovie(Long movieId, MovieRequest request, String thumbnailUrl, String videoUrl,
@@ -229,23 +350,46 @@ public class MovieService {
                                 existingMovie.setCategories(categories);
                         }
 
+                        if (request.getActorsIds() != null && !request.getActorsIds().isEmpty()) {
+                                List<Long> actorIds = request.getActorsIds().stream().map(Integer::longValue)
+                                                .collect(Collectors.toList());
+                                List<Actors> actors = actorRepository.findAllById(actorIds);
+                                existingMovie.setActors(actors);
+                        }
+
+                        if(request.getDirectorsIds() != null && !request.getDirectorsIds().isEmpty()) {
+                                List<Long> directorIds = request.getDirectorsIds().stream().map(Integer::longValue)
+                                                .collect(Collectors.toList());
+                                List<Directors> directors = directorRepository.findAllById(directorIds);
+                                existingMovie.setDirectors(directors);
+                        }
+
                         Movies updatedMovie = movieRepository.save(existingMovie);
 
                         List<CategoryResponse> categoryResponses = updatedMovie.getCategories().stream()
-                                        .map(c -> new CategoryResponse(c.getCategoryId(), c.getCategoryName()))
+                                        .map(category -> new CategoryResponse(category.getCategoryId(),
+                                                        category.getCategoryName()))
+                                        .collect(Collectors.toList());
+                        List<ActorResponse> actorResponses = updatedMovie.getActors().stream()
+                                        .map(actor -> new ActorResponse(actor.getActorId(),
+                                                        actor.getName(),
+                                                        actor.getImage(), actor.getSlug()))
+                                        .collect(Collectors.toList());
+                        List<DirectorResponse> directorResponses = updatedMovie.getDirectors().stream()
+                                        .map(director -> new DirectorResponse(director.getDirectorId(),
+                                                        director.getName(), director.getImage(),
+                                                        director.getSlug()))
                                         .collect(Collectors.toList());
 
-                        return new MovieResponse(
-                                        updatedMovie.getMovieId(),
-                                        updatedMovie.getTitle(),
+                        return new MovieResponse(updatedMovie.getMovieId(), updatedMovie.getTitle(),
                                         updatedMovie.getDescription(),
-                                        updatedMovie.getYear(),
-                                        updatedMovie.getSlug(),
-                                        updatedMovie.getTrailer(),
-                                        updatedMovie.getThumbnail(),
+                                        updatedMovie.getYear(), updatedMovie.getTrailer(), updatedMovie.getThumbnail(),
                                         updatedMovie.getVideo(),
+                                        updatedMovie.getSlug(),
                                         updatedMovie.getPosters(),
-                                        categoryResponses);
+                                        categoryResponses,
+                                        actorResponses,
+                                        directorResponses);
                 } catch (Exception e) {
                         e.printStackTrace();
                         throw new FuncErrorException("Failed to update movie: " + e.getMessage());

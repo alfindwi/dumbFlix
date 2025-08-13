@@ -18,6 +18,7 @@ public class MovieRequest {
     private String year;
     private String trailer;
     private List<Integer> categoryIds;
-
+    private List<Integer> actorsIds;
+    private List<Integer> directorsIds;
 
 }

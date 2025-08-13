@@ -22,6 +22,10 @@ public interface MovieRepository extends JpaRepository<Movies, Long> {
 
     Optional<Movies> findBySlug(String slug);
 
+    List<Movies> findByActors_Slug(String slug);
+
+    List<Movies> findByDirectors_DirectorId(Long directorId);
+
     List<Movies> findByTitleContainingIgnoreCase(String keyword);
 
     @SuppressWarnings("null")

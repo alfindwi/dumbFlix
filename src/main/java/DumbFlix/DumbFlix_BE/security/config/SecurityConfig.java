@@ -46,9 +46,10 @@ public class SecurityConfig {
                 .cors(cors -> cors.disable())
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/payment/notification").permitAll() 
+                        .requestMatchers("/api/payment/notification").permitAll()
                         .requestMatchers("/api/auth/**", "/api/category/**", "/api/movie/**", "/api/series/**",
-                                "/api/season/**", "/api/episode/**", "/api/users/**", "/api/search/**", "/api/plan/**")
+                                "/api/season/**", "/api/episode/**", "/api/users/**", "/api/search/**", "/api/plan/**",
+                                "/api/actor/**", "/api/director/**")
                         .permitAll()
                         .requestMatchers("/api/payment/**").authenticated()
                         .anyRequest().denyAll())

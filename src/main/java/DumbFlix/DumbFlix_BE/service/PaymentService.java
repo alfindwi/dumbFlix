@@ -71,8 +71,10 @@ public class PaymentService {
         payment.setPaymentMethod(PaymentMethod.MIDTRANS);
         paymentRepository.save(payment);
 
-        // Generate Order ID
         String orderId = "SUBS-" + payment.getId() + "-" + System.currentTimeMillis();
+        payment.setOrderId(orderId);
+
+        paymentRepository.save(payment);
 
         Map<String, Object> params = new HashMap<>();
         Map<String, Object> transactionDetails = new HashMap<>();
@@ -100,32 +102,33 @@ public class PaymentService {
     }
 
     public void handleNotification(Map<String, Object> notification) {
-        System.out.println("Received notification: " + notification);
 
         String orderId = (String) notification.get("order_id");
         String transactionStatus = (String) notification.get("transaction_status");
 
-        Payment payment = paymentRepository.findByOrderId(orderId)
-                .orElseThrow(() -> new RuntimeException("Payment not found"));
+        paymentRepository.findByOrderId(orderId).ifPresentOrElse(payment -> {
+            Subscription subscription = payment.getSubscription();
+            User user = payment.getUser();
 
-        Subscription subscription = payment.getSubscription();
-        User user = payment.getUser();
+            if ("settlement".equalsIgnoreCase(transactionStatus) ||
+                    "capture".equalsIgnoreCase(transactionStatus)) {
+                payment.setPaymentStatus(PaymentStatus.PAID);
+                subscription.setStatus(SubscriptionStatus.ACTIVE);
+                user.setStatus(Status.Active);
+            } else if ("cancel".equalsIgnoreCase(transactionStatus) ||
+                    "deny".equalsIgnoreCase(transactionStatus) ||
+                    "expire".equalsIgnoreCase(transactionStatus)) {
+                payment.setPaymentStatus(PaymentStatus.CANCELLED);
+                subscription.setStatus(SubscriptionStatus.CANCELLED);
+            }
 
-        if ("settlement".equalsIgnoreCase(transactionStatus) ||
-                "capture".equalsIgnoreCase(transactionStatus)) {
-            payment.setPaymentStatus(PaymentStatus.PAID);
-            subscription.setStatus(SubscriptionStatus.ACTIVE);
-            user.setStatus(Status.Active);
-        } else if ("cancel".equalsIgnoreCase(transactionStatus) ||
-                "deny".equalsIgnoreCase(transactionStatus) ||
-                "expire".equalsIgnoreCase(transactionStatus)) {
-            payment.setPaymentStatus(PaymentStatus.CANCELLED);
-            subscription.setStatus(SubscriptionStatus.CANCELLED);
-        }
+            paymentRepository.save(payment);
+            subscriptionRepository.save(subscription);
+            userRepository.save(user);
 
-        paymentRepository.save(payment);
-        subscriptionRepository.save(subscription);
-        userRepository.save(user);
+        }, () -> {
+            System.out.println("⚠️ Payment not found for orderId: " + orderId);
+        });
     }
 
 }
