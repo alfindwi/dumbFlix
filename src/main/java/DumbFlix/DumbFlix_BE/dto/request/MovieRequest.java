@@ -20,5 +20,4 @@ public class MovieRequest {
     private List<Integer> categoryIds;
     private List<Integer> actorsIds;
     private List<Integer> directorsIds;
-
 }
