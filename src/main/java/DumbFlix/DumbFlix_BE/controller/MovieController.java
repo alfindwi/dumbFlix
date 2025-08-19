@@ -43,24 +43,28 @@ public class MovieController {
     }
 
     @GetMapping
+    @JsonView(Views.Full.class)
     public ResponseEntity<List<MovieResponse>> getAllMovies() {
         List<MovieResponse> movieResponses = movieService.getAllMovies();
         return ResponseEntity.ok(movieResponses);
     }
 
     @GetMapping("/category/{categoryId}")
+    @JsonView(Views.Simple.class)
     public ResponseEntity<List<MovieResponse>> getMoviesByCategory(@PathVariable("categoryId") Long categoryId) {
         List<MovieResponse> movieResponses = movieService.getMoviesByCategory(categoryId);
         return ResponseEntity.ok(movieResponses);
     }
 
     @GetMapping("/slug/{slug}")
+    @JsonView(Views.Full.class)
     public ResponseEntity<MovieResponse> getMovieBySlug(@PathVariable("slug") String slug) {
         MovieResponse movieResponse = movieService.getMovieBySlug(slug);
         return ResponseEntity.ok(movieResponse);
     }
 
     @GetMapping("/actors/{slug}")
+    @JsonView(Views.Simple.class)
     public ResponseEntity<List<MovieResponse>> getMovieByActors(@PathVariable("slug") String slug) {
         List<MovieResponse> movieResponses = movieService.getMovieByActors(slug);
         return ResponseEntity.ok(movieResponses);
@@ -68,6 +72,7 @@ public class MovieController {
    
 
     @PostMapping
+    
     public ResponseEntity<String> createMovie(
             @RequestParam("thumbnail") MultipartFile thumbnail,
             @RequestParam("video") MultipartFile video,
