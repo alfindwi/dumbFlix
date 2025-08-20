@@ -10,16 +10,14 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
-  Select,
   Spinner,
+  Text,
   useDisclosure,
   useToast,
-  Text,
-  VStack,
+  VStack
 } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { IoMdArrowDropdown } from "react-icons/io";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { registerAsync } from "../../store/auth/async";
 import {
@@ -105,7 +103,6 @@ export function ButtonRegister() {
         Register
       </Text>
 
-      {/* Modal Register */}
       <Modal isOpen={isOpenRegister} onClose={onCloseRegister}>
         <ModalOverlay />
         <ModalContent
@@ -150,54 +147,6 @@ export function ButtonRegister() {
                   <FormErrorMessage>
                     {errors.fullName?.message}
                   </FormErrorMessage>
-                </FormControl>
-
-                <FormControl isInvalid={!!errors.gender}>
-                  <FormLabel>Gender</FormLabel>
-                  <Select
-                    mt={2}
-                    bgColor={"#343434"}
-                    w="full"
-                    _hover={{ bgColor: "#444444" }}
-                    _placeholder={{ color: "#B1B1B1" }}
-                    icon={<IoMdArrowDropdown />}
-                    color={"#b9b9b9"}
-                    {...register("gender")}
-                  >
-                    <option
-                      value="male"
-                      style={{ color: "#b9b9b9", backgroundColor: "#343434" }}
-                    >
-                      Male
-                    </option>
-                    <option
-                      value="female"
-                      style={{ color: "#b9b9b9", backgroundColor: "#343434" }}
-                    >
-                      Female
-                    </option>
-                  </Select>
-                  <FormErrorMessage>{errors.gender?.message}</FormErrorMessage>
-                </FormControl>
-
-                <FormControl isInvalid={!!errors.phone}>
-                  <FormLabel>Phone</FormLabel>
-                  <Input
-                    type="number"
-                    placeholder="Enter your phone number"
-                    {...register("phone")}
-                  />
-                  <FormErrorMessage>{errors.phone?.message}</FormErrorMessage>
-                </FormControl>
-
-                <FormControl isInvalid={!!errors.address}>
-                  <FormLabel>Address</FormLabel>
-                  <Input
-                    type="text"
-                    placeholder="Enter your address"
-                    {...register("address")}
-                  />
-                  <FormErrorMessage>{errors.address?.message}</FormErrorMessage>
                 </FormControl>
 
                 <Button

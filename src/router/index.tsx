@@ -81,7 +81,7 @@ const routes: RouteObject[] = [
         element: <NotFound />,
       },
       {
-        path: "/search/:query",
+        path: "/search/:keyword",
         element: <Search/>,
       }
     ],

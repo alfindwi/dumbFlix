@@ -1,7 +1,6 @@
 import {
   Box,
   Icon,
-  Img,
   Text,
   Wrap,
   WrapItem,
@@ -12,6 +11,9 @@ import { MdPlayArrow } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { IMovie } from "../../../types/movie";
 import Pagination from "../Paggination";
+import { LazyImage } from "../../components/lazyImage";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+
 
 export interface MoviesListProps {
   movies: IMovie[];
@@ -21,8 +23,8 @@ export const CardMovies: React.FC<MoviesListProps> = ({ movies }) => {
   const safeMovies = Array.isArray(movies) ? movies : [];
 
   const moviesPerPage = useBreakpointValue({
-    base: 20, 
-    md: 21,   
+    base: 10, 
+    md: 10,   
   });
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -72,16 +74,13 @@ export const CardMovies: React.FC<MoviesListProps> = ({ movies }) => {
                   ".play-icon": { opacity: 1 },
                 }}
               >
-                <Img
+                <LazyImage
                   src={movie.poster}
                   w="100%"
                   h="200px"
-                  objectFit="cover"
-                  transition="transform 0.3s ease, filter 0.3s ease"
                   className="image"
                   borderRadius="md"
                   alt={movie.title}
-                  loading="lazy"
                 />
                 <Box
                   className="play-icon"

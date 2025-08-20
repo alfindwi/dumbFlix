@@ -14,73 +14,63 @@ export function MovieContent() {
     dispatch(getMovies());
   }, [dispatch]);
 
-  const heroMovie = Array.isArray(movies) ? movies.find((movie) => movie.slug === "scarface") : null;
+  const heroMovie = Array.isArray(movies)
+    ? movies.find((movie) => movie.slug === "scarface")
+    : null;
 
   return (
-    <Box>
-      <Img
-        src="/src/assets/movieHome.png"
-        w="100%"
-        h={{ base: "200px", md: "360px", lg: "500px" }}
-        objectFit="cover"
-      />
-
+    <>
       <Box
-        position="absolute"
-        left="0"
-        top={{ base: "130px", md: "73px", lg: "60px" }}
         w="100%"
-        h={{ base: "150px", md: "360px", lg: "520px" }}
-        bgGradient="linear(to-t, black, transparent 60%)"
-      />
-
-      <Box>
-        <Img
-          src="/src/assets/moviesName.png"
-          position="absolute"
-          w={{ base: "180px", md: "400px", lg: "100%" }}
-          h="100%"
-          maxW={{ base: "180px", md: "400px", lg: "550px" }}
-          maxH={{ base: "40px", md: "80px", lg: "120px" }}
-          top={{ base: "130px", md: "180px", lg: "270px" }}
-          left={{ base: "120px", md: "250px", lg: "359px" }}
-          transform="translate(-50%, -50%)"
-        />
+        h="100vh"
+        bgImage="url('/src/assets/movieHome.avif')"
+        bgSize="cover"
+        bgPosition="top"
+        position="relative"
+      >
         <Box
           position="absolute"
-          top={{ base: "215px", md: "260px", lg: "360px" }}
-          left={{ base: "170px", md: "250px", lg: "380px" }}
-          transform="translate(-50%, -50%)"
-          w={{ base: "280px", md: "400px", lg: "550px" }}
-          mt={{ base: "0px", md: "40px", lg: "55px" }}
-          textShadow="2px 2px 4px rgba(0, 0, 0, 0.8)"
+          top={0}
+          left={0}
+          w="100%"
+          h="100%"
+          bgGradient="linear(to-t, black 1%, transparent 5%)"
+        />
+
+        <Box
+          position="absolute"
+          bottom={{ base: "30px", md: "50px", lg: "80px" }}
+          left={{ base: "20px", md: "60px", lg: "100px" }}
+          maxW={{ base: "90%", md: "60%", lg: "40%" }}
+          color="white"
+          transform="translateY(5%)"
         >
-          <Text fontSize={{ base: "10px", md: "12px", lg: "14px" }}>
+          <Img
+            src="/src/assets/moviesName.avif"
+            w={{ base: "200px", md: "400px", lg: "500px" }}
+            mb={4}
+          />
+          <Text fontSize={{ base: "xs", md: "sm", lg: "md" }} mb={3}>
             Tony Montana and his best friend Manny build a drug empire in Miami.
             But the more power he gains, the bigger his ego and fears become.
             Enemies start to appear in the world of drugs.
           </Text>
-          <Flex mt={2} gap={4} display={{ base: "none", md: "flex" }}>
-            <Text>1983</Text>
-            <Box
-              bgColor="transparent"
-              border="1px solid white"
-              borderRadius="3px"
-              fontSize="14px"
-              p={1}
-            >
+          <Flex gap={4} mb={3} align="center">
+            <Text fontSize={{ base: "xs", md: "sm" }}>1983</Text>
+            <Box border="1px solid white" px={2} py={1} borderRadius="md">
               Movies
             </Box>
           </Flex>
-          {heroMovie && (
-            <Button sx={buttonStyle} as={Link} to={`/movie/${heroMovie.slug}`}>
-              Watch Now!
-            </Button>
-          )}
+          <Button
+            sx={buttonStyle}
+            as={Link}
+            to={`/movies/${heroMovie?.slug}` || ""}
+          >
+            Watch Now !
+          </Button>
         </Box>
       </Box>
-
       <CardMovies movies={movies} />
-    </Box>
+    </>
   );
 }

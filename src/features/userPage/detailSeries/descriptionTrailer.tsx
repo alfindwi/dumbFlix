@@ -74,12 +74,10 @@ export function DescTrailer() {
         />
 
         <Box>
-          {/* Judul */}
           <Text fontSize="lg" fontWeight="bold">
             {seriesDetail.seriesName}
           </Text>
 
-          {/* Tahun dan Kategori */}
           <Flex align="center" mt={2}>
             <Text fontSize="sm" color="#929292" mr={4}>
               {seriesDetail.seriesYear}
@@ -117,7 +115,6 @@ export function DescTrailer() {
               ))}
           </Flex>
 
-          {/* Deskripsi */}
           <Text
             fontSize={{ base: "11px", md: "14px", lg: "sm" }}
             mt={3}

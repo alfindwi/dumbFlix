@@ -21,11 +21,11 @@ export function SearchBar() {
   const [hasSearched, setHasSearched] = useState(false);
   const isMobile = useBreakpointValue({ base: true, md: false });
 
-const searchRef = useRef<HTMLDivElement>(null);
+  const searchRef = useRef<HTMLDivElement>(null);
 
   const handleSearch = () => {
     if (searchValue.trim()) {
-      navigate(`/search/${searchValue}`);
+      navigate(`/search/${searchValue.trim()}`);
       setHasSearched(true);
     }
   };
@@ -45,7 +45,11 @@ const searchRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (isOpen && searchRef.current && !searchRef.current.contains(event.target as Node)) {
+      if (
+        isOpen &&
+        searchRef.current &&
+        !searchRef.current.contains(event.target as Node)
+      ) {
         onClose();
       }
     }

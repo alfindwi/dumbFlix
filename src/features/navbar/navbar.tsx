@@ -18,7 +18,7 @@ import {
   Text,
   useBreakpointValue,
   useDisclosure,
-  useToast
+  useToast,
 } from "@chakra-ui/react";
 import Cookies from "js-cookie";
 import { BiSolidCameraMovie } from "react-icons/bi";
@@ -57,14 +57,17 @@ export function Navbar() {
   return (
     <Flex
       as="nav"
-      bg="#1F1F1F"
-      p={4}
-      alignItems="center"
-      justifyContent="space-between"
       w="100%"
-      boxShadow="0px 4px 8px rgba(0, 0, 0, 0.6)"
+      px={6}
+      py={4}
+      align="center"
+      justify="space-between"
+      position="absolute"
+      top={0}
+      left={0}
       zIndex={10}
-      backdropFilter="blur(10px)"
+      bg="transparent"
+      color="white"
     >
       {isMobile ? (
         <>
@@ -99,15 +102,7 @@ export function Navbar() {
         transform={{ base: "translateX(-50%)", md: "none" }}
         as={Link}
         to="/"
-      >
-        <Img
-          src="/src/assets/ALFLIX.png"
-          alt="Logo"
-          ml={{ base: 0, md: isLoggedIn ? "7rem" : "" }}
-          mr={{ base: 0, md: isLoggedIn ? "" : "4rem" }}
-          h={{ base: "20px", md: "25px" }}
-        />
-      </Flex>
+      ></Flex>
 
       {!isMobile && (
         <Flex gap={2} mr={9} alignItems="center" zIndex={10}>

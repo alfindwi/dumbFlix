@@ -168,7 +168,6 @@ export function DetailMovieContent() {
                 border="1px solid #929292"
                 borderRadius="3px"
                 fontSize="14px"
-                p={1}
                 w={"70px"}
                 h={"27px"}
                 justifyContent={"center"}

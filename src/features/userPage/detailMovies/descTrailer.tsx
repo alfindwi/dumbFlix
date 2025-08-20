@@ -65,7 +65,6 @@ export function DescTrailerMovie() {
             </Flex>
           </Flex>
 
-          {/* Deskripsi */}
           <Text
             fontSize={{ base: "11px", md: "14px", lg: "sm" }}
             mt={3}
@@ -78,7 +77,9 @@ export function DescTrailerMovie() {
         </Box>
         <Box ml={"150px"} display={{ base: "none", md: "block", lg: "block" }}>
           <ReactPlayer
-            url={`https://www.youtube.com/watch?v=${extractYouTubeId(movie.trailer)}`}
+            url={`https://www.youtube.com/watch?v=${extractYouTubeId(
+              movie.trailer
+            )}`}
             width={"480px"}
             height={"225px"}
           />

@@ -45,10 +45,11 @@ export function CardMovie() {
           Movies
         </Text>
         <Button
-          size={{ base: "xs", md: "sm" }}
+          size={"sm"}
           as={Link}
           to={"/movies"}
-          fontSize={"12px"}
+          p={5}
+          fontSize={"15px"}
           bgColor={"#e50914"}
           _hover={{ bgColor: "#e50914" }}
         >
@@ -69,7 +70,7 @@ export function CardMovie() {
           zIndex="10"
           display="block"
         >
-          <Icon as={MdArrowForward} color="white" boxSize={10} />
+          <Icon as={MdArrowForward} color="#e50914" boxSize={10} />
         </Box>
 
         <Box
@@ -84,7 +85,7 @@ export function CardMovie() {
           zIndex="10"
           display="block"
         >
-          <Icon as={MdArrowBack} color="white" boxSize={10} />
+          <Icon as={MdArrowBack} color="#e50914" boxSize={10} />
         </Box>
 
         <Swiper

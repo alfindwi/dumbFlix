@@ -19,7 +19,7 @@ const initialState: movieState = {
   error: null,
 };
 
-const productSlice = createSlice({
+const movieSlice = createSlice({
   name: "movie",
   initialState,
   reducers: {},
@@ -91,4 +91,4 @@ const productSlice = createSlice({
   },
 });
 
-export default productSlice.reducer;
+export default movieSlice.reducer;

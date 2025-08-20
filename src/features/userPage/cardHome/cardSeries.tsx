@@ -26,10 +26,11 @@ export function CardSeries() {
           TV Series
         </Text>
         <Button
-          size={"sm"}
+          size="sm"
           as={Link}
           to={"/tvSeries"}
-          fontSize={"12px"}
+          p={5}
+          fontSize={"15px"}
           bgColor={"#e50914"}
           _hover={{ bgColor: "#e50914" }}
         >
@@ -50,7 +51,7 @@ export function CardSeries() {
           zIndex="10"
           display="block"
         >
-          <Icon as={MdArrowForward} color="white" boxSize={10} />
+          <Icon as={MdArrowForward} color="#e50914" boxSize={10} />
         </Box>
 
         <Box
@@ -65,7 +66,7 @@ export function CardSeries() {
           zIndex="10"
           display="block"
         >
-          <Icon as={MdArrowBack} color="white" boxSize={10} />
+          <Icon as={MdArrowBack} color="#e50914" boxSize={10} />
         </Box>
 
         <Swiper
@@ -124,7 +125,6 @@ export function CardSeries() {
                     loading="lazy"
                   />
 
-                  {/* Play Icon */}
                   <Box
                     className="play-icon"
                     position="absolute"
