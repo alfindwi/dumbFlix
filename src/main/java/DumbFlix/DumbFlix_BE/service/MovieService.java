@@ -2,9 +2,11 @@ package DumbFlix.DumbFlix_BE.service;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +52,7 @@ public class MovieService {
 
         @Cacheable(value = "allMoviesCache", key = "'allMovies'")
         public List<MovieResponse> getAllMovies() {
-                List<Movies> movies = movieRepository.findAll();
+                List<Movies> movies = movieRepository.findAllWithRelations();
 
                 return movies.stream()
                                 .map(movie -> {
@@ -227,19 +229,6 @@ public class MovieService {
 
         public MovieResponse createMovie(MovieRequest request, String thumbnailUrl, String videoUrl, String poster) {
 
-                List<Long> categoryIds = request.getCategoryIds().stream()
-                                .map(Integer::longValue)
-                                .collect(Collectors.toList());
-                List<Categories> categories = categoryRepository.findAllById(categoryIds);
-
-                List<Long> actorIds = request.getActorsIds().stream().map(Integer::longValue)
-                                .collect(Collectors.toList());
-                List<Actors> actors = actorRepository.findAllById(actorIds);
-
-                List<Long> directorIds = request.getDirectorsIds().stream().map(Integer::longValue)
-                                .collect(Collectors.toList());
-                List<Directors> directors = directorRepository.findAllById(directorIds);
-
                 Movies movies = new Movies();
                 movies.setTitle(request.getTitle());
                 movies.setDescription(request.getDescription());
@@ -248,9 +237,28 @@ public class MovieService {
                 movies.setThumbnail(thumbnailUrl);
                 movies.setPosters(poster);
                 movies.setVideo(videoUrl);
-                movies.setCategories(categories);
-                movies.setActors(actors);
-                movies.setDirectors(directors);
+
+                Set<Categories> categorySet = new HashSet<>(
+                                categoryRepository.findAllById(request.getCategoryIds().stream()
+                                                .mapToLong(i -> i)
+                                                .boxed()
+                                                .collect(Collectors.toList())));
+
+                Set<Actors> actorSet = new HashSet<>(
+                                actorRepository.findAllById(request.getActorsIds().stream()
+                                                .mapToLong(i -> i)
+                                                .boxed()
+                                                .collect(Collectors.toList())));
+
+                Set<Directors> directorSet = new HashSet<>(
+                                directorRepository.findAllById(request.getDirectorsIds().stream()
+                                                .mapToLong(i -> i)
+                                                .boxed()
+                                                .collect(Collectors.toList())));
+
+                movies.setCategories(categorySet);
+                movies.setActors(actorSet);
+                movies.setDirectors(directorSet);
 
                 String slug = SlugGenerator.generateSlug(request.getTitle());
                 movies.setSlug(slug);
@@ -282,147 +290,94 @@ public class MovieService {
                                 directorResponses);
         }
 
-        public MovieResponse updateMovie(Long movieId, MovieRequest request, String thumbnailUrl, String videoUrl,
-                        String posterUrl) {
-                try {
-                        Movies existingMovie = movieRepository.findById(movieId)
-                                        .orElseThrow(() -> new FuncErrorException("Movie not found"));
+        public MovieResponse updateMovie(Long movieId, MovieRequest request,
+                        String thumbnailUrl, String videoUrl, String posterUrl) {
+                Movies existingMovie = movieRepository.findById(movieId)
+                                .orElseThrow(() -> new FuncErrorException("Movie not found"));
 
-                        // Basic fields
-                        existingMovie.setTitle(
-                                        request.getTitle() != null ? request.getTitle() : existingMovie.getTitle());
-                        existingMovie.setDescription(request.getDescription() != null ? request.getDescription()
-                                        : existingMovie.getDescription());
-                        existingMovie.setYear(request.getYear() != null ? request.getYear() : existingMovie.getYear());
-                        existingMovie.setTrailer(request.getTrailer() != null ? request.getTrailer()
-                                        : existingMovie.getTrailer());
+                // --- Basic fields ---
+                if (request.getTitle() != null)
+                        existingMovie.setTitle(request.getTitle());
+                if (request.getDescription() != null)
+                        existingMovie.setDescription(request.getDescription());
+                if (request.getYear() != null)
+                        existingMovie.setYear(request.getYear());
+                if (request.getTrailer() != null)
+                        existingMovie.setTrailer(request.getTrailer());
 
-                        if (posterUrl != null)
-                                existingMovie.setPosters(posterUrl);
-                        if (thumbnailUrl != null)
-                                existingMovie.setThumbnail(thumbnailUrl);
-                        if (videoUrl != null)
-                                existingMovie.setVideo(videoUrl);
+                if (posterUrl != null)
+                        existingMovie.setPosters(posterUrl);
+                if (thumbnailUrl != null)
+                        existingMovie.setThumbnail(thumbnailUrl);
+                if (videoUrl != null)
+                        existingMovie.setVideo(videoUrl);
 
-                        // Update Categories
-                        if (request.getCategoryIds() != null) {
-                                if (request.getCategoryIds().isEmpty()) {
-                                        existingMovie.setCategories(Collections.emptyList());
-                                } else {
-                                        List<Long> categoryIds = request.getCategoryIds().stream()
-                                                        .map(Integer::longValue)
-                                                        .collect(Collectors.toList());
-
-                                        List<Categories> categories = categoryRepository.findAllById(categoryIds);
-
-                                        // Buat kategori baru kalau ID tidak ditemukan
-                                        if (categories.size() < categoryIds.size()) {
-                                                List<Long> foundIds = categories.stream().map(Categories::getCategoryId)
-                                                                .toList();
-                                                List<Long> newIds = categoryIds.stream()
-                                                                .filter(id -> !foundIds.contains(id)).toList();
-                                                for (Long id : newIds) {
-                                                        Categories newCat = new Categories();
-                                                        newCat.setCategoryId(id); // atau auto-generate
-                                                        newCat.setCategoryName("New Category " + id);
-                                                        categories.add(categoryRepository.save(newCat));
-                                                }
-                                        }
-
-                                        existingMovie.setCategories(categories);
-                                }
+                // --- Update Categories ---
+                if (request.getCategoryIds() != null) {
+                        if (request.getCategoryIds().isEmpty()) {
+                                existingMovie.setCategories(Collections.emptySet());
+                        } else {
+                                Set<Categories> categories = new HashSet<>(categoryRepository.findAllById(
+                                                request.getCategoryIds().stream()
+                                                                .mapToLong(i -> i)
+                                                                .boxed()
+                                                                .collect(Collectors.toList())));
+                                existingMovie.setCategories(categories);
                         }
-
-                        // Update Actors
-                        if (request.getActorsIds() != null) {
-                                if (request.getActorsIds().isEmpty()) {
-                                        existingMovie.setActors(Collections.emptyList());
-                                } else {
-                                        List<Long> actorIds = request.getActorsIds().stream()
-                                                        .map(Integer::longValue)
-                                                        .collect(Collectors.toList());
-
-                                        List<Actors> actors = actorRepository.findAllById(actorIds);
-
-                                        // Buat actor baru kalau ID tidak ditemukan
-                                        if (actors.size() < actorIds.size()) {
-                                                List<Long> foundIds = actors.stream().map(Actors::getActorId).toList();
-                                                List<Long> newIds = actorIds.stream()
-                                                                .filter(id -> !foundIds.contains(id)).toList();
-                                                for (Long id : newIds) {
-                                                        Actors newActor = new Actors();
-                                                        newActor.setActorId(id); // atau auto-generate
-                                                        newActor.setName("New Actor " + id);
-                                                        actors.add(actorRepository.save(newActor));
-                                                }
-                                        }
-
-                                        existingMovie.setActors(actors);
-                                }
-                        }
-
-                        // Update Directors
-                        if (request.getDirectorsIds() != null) {
-                                if (request.getDirectorsIds().isEmpty()) {
-                                        existingMovie.setDirectors(Collections.emptyList());
-                                } else {
-                                        List<Long> directorIds = request.getDirectorsIds().stream()
-                                                        .map(Integer::longValue)
-                                                        .collect(Collectors.toList());
-
-                                        List<Directors> directors = directorRepository.findAllById(directorIds);
-
-                                        // Buat director baru kalau ID tidak ditemukan
-                                        if (directors.size() < directorIds.size()) {
-                                                List<Long> foundIds = directors.stream().map(Directors::getDirectorId)
-                                                                .toList();
-                                                List<Long> newIds = directorIds.stream()
-                                                                .filter(id -> !foundIds.contains(id)).toList();
-                                                for (Long id : newIds) {
-                                                        Directors newDirector = new Directors();
-                                                        newDirector.setDirectorId(id); // atau auto-generate
-                                                        newDirector.setName("New Director " + id);
-                                                        directors.add(directorRepository.save(newDirector));
-                                                }
-                                        }
-
-                                        existingMovie.setDirectors(directors);
-                                }
-                        }
-
-                        Movies updatedMovie = movieRepository.save(existingMovie);
-
-                        // Mapping to Response
-                        List<CategoryResponse> categoryResponses = updatedMovie.getCategories().stream()
-                                        .map(c -> new CategoryResponse(c.getCategoryId(), c.getCategoryName()))
-                                        .collect(Collectors.toList());
-                        List<ActorResponse> actorResponses = updatedMovie.getActors().stream()
-                                        .map(a -> new ActorResponse(a.getActorId(), a.getName(), a.getImage(),
-                                                        a.getSlug()))
-                                        .collect(Collectors.toList());
-                        List<DirectorResponse> directorResponses = updatedMovie.getDirectors().stream()
-                                        .map(d -> new DirectorResponse(d.getDirectorId(), d.getName(), d.getImage(),
-                                                        d.getSlug()))
-                                        .collect(Collectors.toList());
-
-                        return new MovieResponse(
-                                        updatedMovie.getMovieId(),
-                                        updatedMovie.getTitle(),
-                                        updatedMovie.getDescription(),
-                                        updatedMovie.getYear(),
-                                        updatedMovie.getTrailer(),
-                                        updatedMovie.getThumbnail(),
-                                        updatedMovie.getVideo(),
-                                        updatedMovie.getSlug(),
-                                        updatedMovie.getPosters(),
-                                        categoryResponses,
-                                        actorResponses,
-                                        directorResponses);
-
-                } catch (Exception e) {
-                        e.printStackTrace();
-                        throw new FuncErrorException("Failed to update movie: " + e.getMessage());
                 }
+
+                // --- Update Actors ---
+                if (request.getActorsIds() != null) {
+                        if (request.getActorsIds().isEmpty()) {
+                                existingMovie.setActors(Collections.emptySet());
+                        } else {
+                                Set<Actors> actors = new HashSet<>(actorRepository.findAllById(
+                                                request.getActorsIds().stream()
+                                                                .mapToLong(i -> i)
+                                                                .boxed()
+                                                                .collect(Collectors.toList())));
+                                existingMovie.setActors(actors);
+                        }
+                }
+
+                // --- Update Directors ---
+                if (request.getDirectorsIds() != null) {
+                        if (request.getDirectorsIds().isEmpty()) {
+                                existingMovie.setDirectors(Collections.emptySet());
+                        } else {
+                                Set<Directors> directors = new HashSet<>(directorRepository.findAllById(
+                                                request.getDirectorsIds().stream()
+                                                                .mapToLong(i -> i)
+                                                                .boxed()
+                                                                .collect(Collectors.toList())));
+                                existingMovie.setDirectors(directors);
+                        }
+                }
+
+                Movies updatedMovie = movieRepository.save(existingMovie);
+
+                // --- Mapping ke Response ---
+                return new MovieResponse(
+                                updatedMovie.getMovieId(),
+                                updatedMovie.getTitle(),
+                                updatedMovie.getDescription(),
+                                updatedMovie.getYear(),
+                                updatedMovie.getTrailer(),
+                                updatedMovie.getThumbnail(),
+                                updatedMovie.getVideo(),
+                                updatedMovie.getSlug(),
+                                updatedMovie.getPosters(),
+                                updatedMovie.getCategories().stream()
+                                                .map(c -> new CategoryResponse(c.getCategoryId(), c.getCategoryName()))
+                                                .toList(),
+                                updatedMovie.getActors().stream()
+                                                .map(a -> new ActorResponse(a.getActorId(), a.getName(), a.getImage(),
+                                                                a.getSlug()))
+                                                .toList(),
+                                updatedMovie.getDirectors().stream()
+                                                .map(d -> new DirectorResponse(d.getDirectorId(), d.getName(),
+                                                                d.getImage(), d.getSlug()))
+                                                .toList());
         }
 
         public Map<String, String> deleteMovies(Long movieId) {

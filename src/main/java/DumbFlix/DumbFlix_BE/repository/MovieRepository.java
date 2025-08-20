@@ -29,6 +29,13 @@ public interface MovieRepository extends JpaRepository<Movies, Long> {
     List<Movies> findByTitleContainingIgnoreCase(String keyword);
 
     @SuppressWarnings("null")
-    @EntityGraph(attributePaths = { "categories" })
+    @EntityGraph(attributePaths = { "categories", "actors", "directors" })
     List<Movies> findAll();
+
+    @Query("SELECT DISTINCT m FROM Movies m " +
+            "LEFT JOIN FETCH m.categories " +
+            "LEFT JOIN FETCH m.actors " +
+            "LEFT JOIN FETCH m.directors")
+    List<Movies> findAllWithRelations();
+
 }

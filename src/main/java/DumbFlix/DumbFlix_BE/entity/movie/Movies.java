@@ -1,6 +1,7 @@
 package DumbFlix.DumbFlix_BE.entity.movie;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import DumbFlix.DumbFlix_BE.entity.actors.Actors;
 import DumbFlix.DumbFlix_BE.entity.categories.Categories;
@@ -39,9 +40,6 @@ public class Movies {
     @Column(unique = true)
     private String slug;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "category_movie", joinColumns = @JoinColumn(name = "movie_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
-    private List<Categories> categories;
     private String posters;
     private String thumbnail;
     private String video;
@@ -49,14 +47,16 @@ public class Movies {
     @Column(columnDefinition = "TEXT")
     private String description;
     private String trailer;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "category_movie", joinColumns = @JoinColumn(name = "movie_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
+    private Set<Categories> categories = new HashSet<>();
 
-    @ManyToMany
-    @JoinTable(name = "movie_actor", 
-    joinColumns = @JoinColumn(name = "movie_id"), inverseJoinColumns = @JoinColumn(name = "actor_id"))
-    private List<Actors> actors;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "movie_actor", joinColumns = @JoinColumn(name = "movie_id"), inverseJoinColumns = @JoinColumn(name = "actor_id"))
+    private Set<Actors> actors = new HashSet<>();
 
-    @ManyToMany
-    @JoinTable(name = "movie_director", 
-    joinColumns = @JoinColumn(name = "movie_id"), inverseJoinColumns = @JoinColumn(name = "director_id"))
-    private List<Directors> directors;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "movie_director", joinColumns = @JoinColumn(name = "movie_id"), inverseJoinColumns = @JoinColumn(name = "director_id"))
+    private Set<Directors> directors = new HashSet<>();
+
 }

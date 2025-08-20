@@ -43,7 +43,6 @@ public class MovieController {
     }
 
     @GetMapping
-    @JsonView(Views.Full.class)
     public ResponseEntity<List<MovieResponse>> getAllMovies() {
         List<MovieResponse> movieResponses = movieService.getAllMovies();
         return ResponseEntity.ok(movieResponses);
