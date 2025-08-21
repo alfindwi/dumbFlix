@@ -7,7 +7,7 @@ import store from "./store/index.ts";
 import theme from "./theme/theme.ts";
 import "swiper/css";
 import "swiper/css/navigation";
-
+import "../src/libs/i8next.ts";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

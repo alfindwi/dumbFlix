@@ -23,6 +23,7 @@ import { EpisodeContent } from "../features/userPage/detailSeries/episode";
 import { NotFound } from "../features/userPage/footer/notFound";
 import { LayoutUser } from "../layouts/layoutUser";
 import { Search } from "../features/userPage/searchPage/search";
+import { Subscription } from "../features/subscription/subscription";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -47,6 +48,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   return children;
 };
 
+
 const routes: RouteObject[] = [
   {
     path: "/",
@@ -54,6 +56,10 @@ const routes: RouteObject[] = [
     children: [
       {
         index: true,
+        element: <Subscription />,
+      },
+      {
+        path: '/home',
         element: <HomeContent />,
       },
       {
