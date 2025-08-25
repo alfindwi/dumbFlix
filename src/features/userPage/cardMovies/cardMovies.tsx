@@ -10,9 +10,8 @@ import { useMemo, useState } from "react";
 import { MdPlayArrow } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { IMovie } from "../../../types/movie";
-import Pagination from "../Paggination";
 import { LazyImage } from "../../components/lazyImage";
-import { LazyLoadImage } from "react-lazy-load-image-component";
+import Pagination from "../Paggination";
 
 
 export interface MoviesListProps {

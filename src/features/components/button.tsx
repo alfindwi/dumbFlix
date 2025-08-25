@@ -13,7 +13,7 @@ export const PrimaryButton: React.FC<PrimaryButtonProps> = ({ to, children, ...p
       <Button
         as={RouterLink}
         to={to}
-        size="sm"
+        size="md"
         px={4}
         py={4}
         fontSize="15px"
