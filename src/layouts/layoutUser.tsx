@@ -6,7 +6,9 @@ import { Outlet, useLocation } from "react-router-dom";
 export function LayoutUser() {
   const location = useLocation();
 
-  const hideNavbar = location.pathname === "/";
+  const hiddenRoutes = ["/", "/login", "/register", "/profile-icons"];
+  const hideNavbar = hiddenRoutes.includes(location.pathname);
+
   return (
     <Flex direction="column" minH="100vh">
       {!hideNavbar && <Navbar />}

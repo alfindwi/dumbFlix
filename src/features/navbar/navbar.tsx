@@ -20,17 +20,16 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
+import { TiPencil } from "react-icons/ti";
 import Cookies from "js-cookie";
 import { BiSolidCameraMovie } from "react-icons/bi";
-import { FaSignOutAlt } from "react-icons/fa";
+import { FaRegUser, FaSignOutAlt } from "react-icons/fa";
 import { FaTv } from "react-icons/fa6";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { ImExit, ImHome } from "react-icons/im";
 import { Link } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../../store";
+import { useAppDispatch } from "../../store";
 import { logout } from "../../store/auth/slice";
-import { ButtonLogin } from "./buttonLogin";
-import { ButtonRegister } from "./buttonRegister";
 import { SearchBar } from "./searchBar";
 
 export function Navbar() {
@@ -38,7 +37,6 @@ export function Navbar() {
   const dispatch = useAppDispatch();
   const toast = useToast();
   const isMobile = useBreakpointValue({ base: true, md: false });
-  const { isLoggedIn } = useAppSelector((state) => state.auth);
 
   const handleLogout = () => {
     Cookies.remove("token");
@@ -83,7 +81,7 @@ export function Navbar() {
         </>
       ) : (
         <Flex alignItems="center" fontWeight="bold" gap={7} ml={8}>
-          <Text as={Link} to="/" cursor="pointer" color="white">
+          <Text as={Link} to="/dashboard" cursor="pointer" color="white">
             Home
           </Text>
           <Text as={Link} to="/tvSeries" cursor="pointer" color="white">
@@ -106,33 +104,30 @@ export function Navbar() {
 
       {!isMobile && (
         <Flex gap={2} mr={9} alignItems="center" zIndex={10}>
-          {!isLoggedIn ? (
-            <>
-              <ButtonLogin />
-              <ButtonRegister />
-            </>
-          ) : (
-            <Menu>
-              <SearchBar />
-              <MenuButton as={Box} cursor="pointer">
-                <Avatar
-                  src={
-                    "https://i.pinimg.com/736x/4e/d1/c8/4ed1c8ae3c42f348db7eedb18abe2300.jpg"
-                  }
-                />
-              </MenuButton>
-              <MenuList bgColor="black" zIndex="1000">
-                <MenuItem
-                  onClick={handleLogout}
-                  _hover={{ color: "red" }}
-                  bgColor={"black"}
-                >
-                  <ImExit style={{ marginRight: "10px", color: "red" }} />
-                  Logout
-                </MenuItem>
-              </MenuList>
-            </Menu>
-          )}
+          <Menu>
+            <SearchBar />
+            <MenuButton as={Box} cursor="pointer">
+              <Avatar
+                src={
+                  "https://i.pinimg.com/736x/4e/d1/c8/4ed1c8ae3c42f348db7eedb18abe2300.jpg"
+                }
+              />
+            </MenuButton>
+            <MenuList bgColor="blackAlpha.600" zIndex="1000">
+              <MenuItem as={Link} to="/profile" bgColor={"blackAlpha.600"}>
+                <TiPencil style={{ marginRight: "10px" }} size={20} />
+                Manage Profile
+              </MenuItem>
+              <MenuItem  bgColor={"blackAlpha.600"}>
+                <FaRegUser style={{ marginRight: "10px" }} size={20} />
+                Account
+              </MenuItem>
+              <MenuItem onClick={handleLogout} bgColor={"blackAlpha.600"}>
+                <ImExit style={{ marginRight: "10px" }} />
+                Logout
+              </MenuItem>
+            </MenuList>
+          </Menu>
         </Flex>
       )}
 
@@ -153,7 +148,12 @@ export function Navbar() {
             <Flex direction="column" gap={4} fontWeight={"bold"}>
               <Flex align="center" gap={2}>
                 <ImHome />
-                <Text as={Link} to="/" onClick={onClose} cursor="pointer">
+                <Text
+                  as={Link}
+                  to="/dashboard"
+                  onClick={onClose}
+                  cursor="pointer"
+                >
                   Home
                 </Text>
               </Flex>
@@ -176,23 +176,12 @@ export function Navbar() {
               </Flex>
 
               <Divider borderColor="gray.600" />
-              {!isLoggedIn ? (
-                <>
-                  <Flex align="center" gap={2}>
-                    <ButtonLogin />
-                  </Flex>
-                  <Flex align="center" gap={2}>
-                    <ButtonRegister />
-                  </Flex>
-                </>
-              ) : (
-                <Flex align="center" gap={2}>
-                  <FaSignOutAlt />
-                  <Text onClick={handleLogout} cursor="pointer">
-                    Logout
-                  </Text>
-                </Flex>
-              )}
+              <Flex align="center" gap={2}>
+                <FaSignOutAlt />
+                <Text onClick={handleLogout} cursor="pointer">
+                  Logout
+                </Text>
+              </Flex>
             </Flex>
           </DrawerBody>
         </DrawerContent>

@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Icon, Img, Text } from "@chakra-ui/react";
+import { Box, Button, Flex, Icon, Img, Skeleton, SkeletonText, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { MdArrowBack, MdArrowForward, MdPlayArrow } from "react-icons/md";
 import { Link } from "react-router-dom";
@@ -9,7 +9,7 @@ import { getSeries } from "../../../store/series/async";
 
 export function CardSeries() {
   const dispatch = useAppDispatch();
-  const { series: tvSeries } = useAppSelector((state) => state.series);
+  const { series: tvSeries, loading } = useAppSelector((state) => state.series);
   const [page] = useState(0);
   const pageSize = 10;
 
@@ -85,79 +85,94 @@ export function CardSeries() {
           modules={[Navigation]}
           style={{ padding: "10px" }}
         >
-          {paginateSeries.map((series, index) => (
-            <SwiperSlide key={index} style={{ width: "auto" }}>
-              <Box
-                mt={4}
-                bgColor="black"
-                borderRadius="md"
-                w="100%"
-                maxW="160px"
-                transition="transform 0.5s ease, box-shadow 0.2s ease"
-                cursor="pointer"
-                as={Link}
-                to={`/series/${series.seriesSlug}`}
-                display="block"
-              >
-                <Box
-                  position="relative"
-                  w="100%"
-                  h="auto"
-                  overflow="hidden"
-                  aspectRatio="2/3"
-                  _hover={{
-                    ".image": {
-                      transform: "scale(1.1)",
-                      filter: "brightness(0.3)",
-                    },
-                    ".play-icon": { opacity: 1 },
-                  }}
-                >
-                  <Img
-                    src={series.poster}
-                    w="100%"
-                    h="100%"
-                    objectFit="cover"
-                    transition="transform 0.3s ease, filter 0.3s ease"
-                    borderTopRadius="md"
-                    className="image"
-                    alt={series.seriesName}
-                    loading="lazy"
-                  />
-
+          {loading
+            ? Array.from({ length: 7 }, (_, index) => (
+                <SwiperSlide key={index} style={{ width: "auto" }}>
                   <Box
-                    className="play-icon"
-                    position="absolute"
-                    top="50%"
-                    left="50%"
-                    transform="translate(-50%, -50%)"
-                    opacity={0}
-                    cursor="pointer"
-                    border={"5px solid white"}
-                    borderRadius="full"
-                    w="50px"
-                    h="50px"
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
+                    mt={4}
+                    w={"160px"}
+                    bg={"black"}
+                    borderRadius={"md"}
+                    overflow={"hidden"}
                   >
-                    <Icon as={MdPlayArrow} color="white" boxSize={8} />
+                    <Skeleton height={"240px"} borderTopRadius={"md"} />
+                    <SkeletonText mt="2" noOfLines={2} spacing="2" />
                   </Box>
-                </Box>
-                <Text fontSize="15px" mt={2} fontWeight="semibold">
-                  {series.seriesName}
-                </Text>
-                <Text
-                  fontSize="12px"
-                  mt={1}
-                  fontWeight="medium"
-                  color="#929292"
-                >
-                  {series.seriesYear}
-                </Text>
-              </Box>
-            </SwiperSlide>
-          ))}
+                </SwiperSlide>
+              ))
+            : paginateSeries.map((series, index) => (
+                <SwiperSlide key={index} style={{ width: "auto" }}>
+                  <Box
+                    mt={4}
+                    bgColor="black"
+                    borderRadius="md"
+                    w="100%"
+                    maxW="160px"
+                    transition="transform 0.5s ease, box-shadow 0.2s ease"
+                    cursor="pointer"
+                    as={Link}
+                    to={`/series/${series.seriesSlug}`}
+                    display="block"
+                  >
+                    <Box
+                      position="relative"
+                      w="100%"
+                      h="auto"
+                      overflow="hidden"
+                      aspectRatio="2/3"
+                      _hover={{
+                        ".image": {
+                          transform: "scale(1.1)",
+                          filter: "brightness(0.3)",
+                        },
+                        ".play-icon": { opacity: 1 },
+                      }}
+                    >
+                      <Img
+                        src={series.poster}
+                        w="100%"
+                        h="100%"
+                        objectFit="cover"
+                        transition="transform 0.3s ease, filter 0.3s ease"
+                        borderTopRadius="md"
+                        className="image"
+                        alt={series.seriesName}
+                        loading="lazy"
+                      />
+
+                      <Box
+                        className="play-icon"
+                        position="absolute"
+                        top="50%"
+                        left="50%"
+                        transform="translate(-50%, -50%)"
+                        opacity={0}
+                        cursor="pointer"
+                        border={"5px solid white"}
+                        borderRadius="full"
+                        w="50px"
+                        h="50px"
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                      >
+                        <Icon as={MdPlayArrow} color="white" boxSize={8} />
+                      </Box>
+                    </Box>
+                    <Text fontSize="15px" mt={2} fontWeight="semibold">
+                      {series.seriesName}
+                    </Text>
+                    <Text
+                      fontSize="12px"
+                      mt={1}
+                      fontWeight="medium"
+                      color="#929292"
+                    >
+                      {series.seriesYear}
+                    </Text>
+                  </Box>
+                </SwiperSlide>
+              ))}
         </Swiper>
       </Box>
     </Box>

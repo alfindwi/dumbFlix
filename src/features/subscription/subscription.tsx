@@ -24,7 +24,6 @@ export function Subscription() {
   return (
     <Box
       w="100%"
-      minH="100vh"
       bgImage="url('/src/assets/bgPayment.avif')"
       bgSize="contain"
       bgPosition="center"
@@ -64,7 +63,7 @@ export function Subscription() {
               _hover={{ bg: "gray.800" }}
               px={3}
               rightIcon={<IoMdArrowDropdown />}
-              minW="200px"
+              minW={{ base: "50px", md: "210px" }}
               justifyContent="space-between"
             >
               <Flex align="center" gap={2}>
@@ -84,7 +83,7 @@ export function Subscription() {
             </MenuList>
           </Menu>
 
-          <PrimaryButton to="/payment">{t("button")}</PrimaryButton>
+          <PrimaryButton to="/login">{t("button")}</PrimaryButton>
         </Flex>
       </Flex>
 

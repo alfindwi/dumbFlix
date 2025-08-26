@@ -14,6 +14,9 @@ import { ListSeries } from "../features/adminPage/AddSeries/ListSeries";
 import { AddSeries } from "../features/adminPage/AddSeries/addSeries";
 import { DetailSeriesAdmin } from "../features/adminPage/AddSeries/detailSeriesAdmin";
 import { HomeAdmin } from "../features/adminPage/HomeAdmin/HomeAdmin";
+import { Login } from "../features/auth/login";
+import { Register } from "../features/auth/register";
+import { Subscription } from "../features/subscription/subscription";
 import { HomeContent } from "../features/userPage/Home/home";
 import { MovieContent } from "../features/userPage/Home/movie";
 import { TvShowContent } from "../features/userPage/Home/tvShow";
@@ -21,9 +24,10 @@ import { DetailMovieContent } from "../features/userPage/detailMovies/detailMovi
 import { DetailSeriesContent } from "../features/userPage/detailSeries/detialSeries";
 import { EpisodeContent } from "../features/userPage/detailSeries/episode";
 import { NotFound } from "../features/userPage/footer/notFound";
-import { LayoutUser } from "../layouts/layoutUser";
 import { Search } from "../features/userPage/searchPage/search";
-import { Subscription } from "../features/subscription/subscription";
+import { LayoutUser } from "../layouts/layoutUser";
+import { ProfileContent } from "../features/userPage/Profile/profile";
+import { ProfileIconsPage } from "../features/userPage/Profile/profileIcons";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -48,7 +52,6 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   return children;
 };
 
-
 const routes: RouteObject[] = [
   {
     path: "/",
@@ -59,7 +62,7 @@ const routes: RouteObject[] = [
         element: <Subscription />,
       },
       {
-        path: '/home',
+        path: "/dashboard",
         element: <HomeContent />,
       },
       {
@@ -88,7 +91,23 @@ const routes: RouteObject[] = [
       },
       {
         path: "/search/:keyword",
-        element: <Search/>,
+        element: <Search />,
+      },
+      {
+        path: "/profile",
+        element: <ProfileContent />,
+      },
+      {
+        path: "/login",
+        element: <Login />,
+      },
+      {
+        path: "/register",
+        element: <Register />,
+      },
+      {
+        path: "/profile-icons",
+        element: <ProfileIconsPage />,
       }
     ],
   },

@@ -2,15 +2,15 @@ import { extendTheme } from "@chakra-ui/react";
 
 const theme = extendTheme({
   fonts: {
-    heading: `'Outfit', monospace`,
-    body: `'Outfit', monospace`,
+    heading: `'Montserrat', monospace`,
+    body: `'Montserrat', monospace`,
   },
   styles: {
     global: {
       'html, body': {
-        backgroundColor: 'black',
+        backgroundColor: '#000000',
         color: 'white',
-        fontFamily: `'Outfit', monospace`,
+        fontFamily: `'Montserrat', monospace`,
       },
       "::-webkit-scrollbar": {
         display: "none",
