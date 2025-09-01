@@ -4,7 +4,7 @@ import {
   Text,
   Wrap,
   WrapItem,
-  useBreakpointValue,
+  useBreakpointValue
 } from "@chakra-ui/react";
 import { useMemo, useState } from "react";
 import { MdPlayArrow } from "react-icons/md";
@@ -23,7 +23,7 @@ export const CardMovies: React.FC<MoviesListProps> = ({ movies }) => {
 
   const moviesPerPage = useBreakpointValue({
     base: 10, 
-    md: 10,   
+    md: 21,   
   });
 
   const [currentPage, setCurrentPage] = useState(1);

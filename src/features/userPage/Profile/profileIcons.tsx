@@ -1,24 +1,17 @@
-import { Box, Flex, Text } from "@chakra-ui/react";
+import { Box, Flex, Img, Text } from "@chakra-ui/react";
 import { FaArrowLeftLong } from "react-icons/fa6";
-import { Link } from "react-router-dom";
-import { AvatarRow, avatars } from "./avatarRow";
+import { Link, useNavigate } from "react-router-dom";
+import { avatarData } from "./avatarRow";
 
 export function ProfileIconsPage() {
-//   const [selected, setSelected] = useState<string>(avatarOptions[0]);
-
-//   const handleSave = () => {
-//     navigate("/profile");
-//   };
+  const navigate = useNavigate();
+  const handleSelected = (avatar: string) => {
+    localStorage.setItem("selectedAvatar", avatar);
+    navigate("/profile");
+  };
 
   return (
-    <Box
-      position="relative"
-      w="full"
-      h="100vh"
-      px={2}
-      py={4}
-      overflowY="auto"
-    >
+    <Box position="relative" w="full" h="100vh" px={2} py={4} overflowY="auto">
       <Flex
         align="center"
         gap={3}
@@ -50,10 +43,38 @@ export function ProfileIconsPage() {
         </Flex>
       </Flex>
 
-      <AvatarRow title="One Piece" avatars={avatars} />
-      <AvatarRow title="The Dragon Prince" avatars={avatars} />
-      <AvatarRow title="Stranger Things" avatars={avatars} />
-      <AvatarRow title="Arcane" avatars={avatars} />
+      {avatarData.map((group, i) => (
+        <Box key={i} mb={8} px={8}>
+          <Text fontSize="xl" fontWeight="bold" color="white" mb={4}>
+            {group.title}
+          </Text>
+
+          <Flex wrap="wrap" gap={6}>
+            {group.images.map((src, idx) => (
+              <Box
+                key={idx}
+                w="140px"
+                onClick={() => handleSelected(src)}
+                h="140px"
+                borderRadius="md"
+                overflow="hidden"
+                border="3px solid transparent"
+                cursor="pointer"
+                transition="all 0.2s"
+                _hover={{ transform: "scale(1.05)", borderColor: "#E50914" }}
+              >
+                <Img
+                  src={src}
+                  alt={`${group.title} ${idx}`}
+                  w="full"
+                  h="full"
+                  objectFit="cover"
+                />
+              </Box>
+            ))}
+          </Flex>
+        </Box>
+      ))}
     </Box>
   );
 }

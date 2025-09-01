@@ -23,10 +23,11 @@ export const searchSlice = createSlice({
       .addCase(searchAll.pending, (state) => {
         state.loading = true;
         state.error = null;
+        state.search = [];  
       })
       .addCase(searchAll.fulfilled, (state, action) => {
         state.loading = false;
-        state.search = action.payload;
+        state.search = Array.isArray(action.payload) ? action.payload : [];
       })
       .addCase(searchAll.rejected, (state, action) => {
         state.loading = false;

@@ -3,151 +3,79 @@ import {
   IconButton,
   Input,
   InputGroup,
-  InputRightElement,
-  useDisclosure,
   useBreakpointValue,
-  Slide,
 } from "@chakra-ui/react";
 import { FaSearch } from "react-icons/fa";
-import { useState, useEffect, useRef } from "react";
-import { motion } from "framer-motion";
 import { IoClose } from "react-icons/io5";
+import { useState, useRef, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 
 export function SearchBar() {
-  const { isOpen, onToggle, onClose } = useDisclosure();
-  const [searchValue, setSearchValue] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
-  const [hasSearched, setHasSearched] = useState(false);
   const isMobile = useBreakpointValue({ base: true, md: false });
 
-  const searchRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (isOpen && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isOpen]);
 
   const handleSearch = () => {
-    if (searchValue.trim()) {
-      navigate(`/search/${searchValue.trim()}`);
-      setHasSearched(true);
+    if (query.trim()) {
+      navigate(`/search/${query.trim()}`);
     }
   };
 
-  const handleClearSearch = () => {
-    setSearchValue("");
-    setHasSearched(false);
-    navigate("/");
-    onClose();
-  };
-
-  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter") {
-      handleSearch();
-    }
-  };
-
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (
-        isOpen &&
-        searchRef.current &&
-        !searchRef.current.contains(event.target as Node)
-      ) {
-        onClose();
-      }
-    }
-
+  const handleToggle = () => {
     if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
+      setQuery("");
     }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isOpen, onClose]);
-
-  useEffect(() => {
-    if (searchValue.trim() === "") {
-      setHasSearched(false);
-    }
-  }, [searchValue]);
+    setIsOpen(!isOpen);
+  };
 
   return (
-    <Box position="relative">
-      {isMobile ? (
-        <>
-          <IconButton
-            icon={isOpen ? <IoClose color="white" size="25px" /> : <FaSearch />}
-            onClick={onToggle}
-            aria-label="Toggle Search"
-            variant="ghost"
-            color="white"
-            zIndex={30}
-          />
-          <Slide direction="right" in={isOpen} style={{ zIndex: 20 }}>
-            <Box
-              position="fixed"
-              top="75px"
-              right="0"
-              w="58%"
-              px={4}
-              ref={searchRef}
-            >
-              <InputGroup size="md">
-                <Input
-                  value={searchValue}
-                  onChange={(e) => setSearchValue(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  placeholder="Search..."
-                  bgColor="#343434"
-                  color="white"
-                  focusBorderColor="transparent"
-                />
-                <InputRightElement
-                  onClick={hasSearched ? handleClearSearch : handleSearch}
-                  cursor="pointer"
-                >
-                  <motion.div
-                    animate={{ rotate: hasSearched ? 90 : 0 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    {hasSearched ? (
-                      <IoClose color="gray.400" size={20} />
-                    ) : (
-                      <FaSearch color="gray.400" />
-                    )}
-                  </motion.div>
-                </InputRightElement>
-              </InputGroup>
-            </Box>
-          </Slide>
-        </>
-      ) : (
-        <InputGroup w="250px" mr={4}>
-          <Input
-            value={searchValue}
-            onChange={(e) => setSearchValue(e.target.value)}
-            placeholder="Search..."
-            bgColor="#343434"
-            onKeyPress={handleKeyPress}
-            color="white"
-            border="none"
-            focusBorderColor="transparent"
-          />
-          <InputRightElement
-            onClick={hasSearched ? handleClearSearch : handleSearch}
-            cursor="pointer"
+    <Box display="flex" alignItems="center" position="relative">
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ width: 0, opacity: 0 }}
+            animate={{ width: isMobile ? 180 : 250, opacity: 1 }}
+            exit={{ width: 0, opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            style={{ overflow: "hidden" }}
           >
-            <motion.div
-              animate={{ rotate: hasSearched ? 90 : 0 }}
-              transition={{ duration: 0.2 }}
-            >
-              {hasSearched ? (
-                <IoClose color="gray.400" size={20} />
-              ) : (
-                <FaSearch color="gray.400" />
-              )}
-            </motion.div>
-          </InputRightElement>
-        </InputGroup>
-      )}
+            <InputGroup>
+              <Input
+                ref={inputRef}
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search..."
+                bgColor="#343434"
+                color="white"
+                border="none"
+                borderRadius="full"
+                px={4}
+                _focus={{ boxShadow: "none" }}
+                onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+              />
+            </InputGroup>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <IconButton
+        aria-label="Toggle search"
+        icon={isOpen ? <IoClose size={20} /> : <FaSearch size={18} />}
+        onClick={handleToggle}
+        variant="ghost"
+        color="white"
+        _hover={{ backgroundColor: "transparent" }}
+        ml={2}
+      />
     </Box>
   );
 }

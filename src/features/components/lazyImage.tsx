@@ -55,7 +55,7 @@ export const LazyImage: React.FC<LazyImageProps> = ({
       w={w}
       h={h}
       borderRadius={borderRadius}
-      objectFit="cover"
+      objectFit="inherit"
     />
   );
 };

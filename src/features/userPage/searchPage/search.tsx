@@ -1,24 +1,28 @@
-import { useAppDispatch, useAppSelector } from "../../../store";
 import {
   Box,
   Divider,
   Flex,
   Heading,
   Image,
+  Skeleton,
+  SkeletonText,
   Tag,
   Text,
-  VStack,
+  VStack
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import Pagination from "../Paggination";
 import { useNavigate, useParams } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../../store";
 import { searchAll } from "../../../store/search/async";
+import Pagination from "../Paggination";
 
 export function Search() {
   const { keyword } = useParams();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const searchResult = useAppSelector((state) => state.search.search);
+  const { search: searchResult, loading: isLoading } = useAppSelector(
+    (state) => state.search
+  );
   const [currentPage, setCurrentPage] = useState(1);
 
   const itemsPerPage = 10;
@@ -54,7 +58,37 @@ export function Search() {
       py={{ base: "30px", md: 20 }}
       color="white"
     >
-      {searchResult.length === 0 ? (
+      {isLoading ? (
+        <VStack spacing={6} align="stretch">
+          {Array.from({ length: 5 }).map((_, index) => (
+            <Box key={index}>
+              <Flex
+                direction="row"
+                gap={{ base: 3, md: 6 }}
+                pb={2}
+                align="flex-start"
+              >
+                <Skeleton
+                  w={{ base: "90px", md: "120px" }}
+                  h={{ base: "130px", md: "150px" }}
+                  borderRadius="3px"
+                />
+                <Box maxW="100%">
+                  <Skeleton height="20px" mb={2} w="120px" />
+                  <Skeleton height="16px" mb={2} w="200px" />
+                  <SkeletonText
+                    noOfLines={2}
+                    spacing="2"
+                    skeletonHeight="3"
+                    w="90%"
+                  />
+                </Box>
+              </Flex>
+              {index !== 4 && <Divider borderColor="gray.600" mt={4} />}
+            </Box>
+          ))}
+        </VStack>
+      ) : searchResult.length === 0 ? (
         <Box textAlign="center" mt={10}>
           <Text fontSize="xl" color="gray.400">
             Tidak ada movie atau series dengan keyword <b>"{keyword}"</b>
@@ -120,7 +154,6 @@ export function Search() {
             ))}
           </VStack>
 
-          {/* Pagination */}
           {searchResult.length > itemsPerPage && (
             <Pagination
               currentPage={currentPage}

@@ -7,23 +7,25 @@ import {
   Image,
   Input,
   Text,
-  VStack
+  VStack,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BiCheck, BiX } from "react-icons/bi";
 import { MdOutlineEdit } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
-
+import { PrimaryButton } from "../../../features/components/button";
 
 export function ProfileContent() {
   const navigate = useNavigate();
   const [name, setName] = useState("Apin Dwi");
-  // const [photo, setPhoto] = useState(avatarOptions[0]);
+  const [photo, setPhoto] = useState<string>("");
 
-  const handleSave = () => {
-    // alert(`Profile saved!\nName: ${name}\nPhoto: ${photo}`);
-  };
-
+  useEffect(() => {
+    const selectedAvatar = localStorage.getItem("selectedAvatar");
+    if (selectedAvatar) {
+      setPhoto(selectedAvatar);
+    }
+  }, []);
   return (
     <Flex minH="100vh" align="center" justify="center" p={4}>
       <Box
@@ -67,7 +69,7 @@ export function ProfileContent() {
             }}
           >
             <Image
-              // src={photo}
+              src={photo || ""}
               alt="Profile"
               w="full"
               h="full"
@@ -114,20 +116,18 @@ export function ProfileContent() {
           </Box>
 
           <Flex gap={3} w="full" pt={2}>
-            <Button
-              onClick={handleSave}
+            <PrimaryButton
               flex={1}
-              bg="red.600"
-              _hover={{ bg: "red.700" }}
               color="white"
               h="40px"
               fontSize="md"
               fontWeight="semibold"
               boxShadow="md"
               leftIcon={<BiCheck size={18} />}
+            
             >
               Save
-            </Button>
+            </PrimaryButton>
             <Button
               flex={1}
               variant="outline"
