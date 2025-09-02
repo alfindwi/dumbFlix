@@ -28,6 +28,7 @@ import { Search } from "../features/userPage/searchPage/search";
 import { LayoutUser } from "../layouts/layoutUser";
 import { ProfileContent } from "../features/userPage/Profile/profile";
 import { ProfileIconsPage } from "../features/userPage/Profile/profileIcons";
+import { Account } from "../features/userPage/Account/account";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -64,6 +65,10 @@ const routes: RouteObject[] = [
       {
         path: "/dashboard",
         element: <HomeContent />,
+      },
+      {
+        path: "/account",
+        element: <Account />,
       },
       {
         path: "/tvSeries",

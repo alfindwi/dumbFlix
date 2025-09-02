@@ -1,17 +1,18 @@
 import {
   AspectRatio,
   Box,
+  Button,
   Center,
   Divider,
   Flex,
   Img,
   Spinner,
   Text,
-  useBreakpointValue,
+  // useBreakpointValue,
   useToast,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { MdPlayArrow } from "react-icons/md";
+import { MdInfoOutline, MdPlayArrow } from "react-icons/md";
 import ReactPlayer from "react-player";
 import { useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../store";
@@ -26,8 +27,8 @@ export function DetailMovieContent() {
   const { user } = useAppSelector((state) => state.auth);
   const movie = Array.isArray(movies) ? movies[0] : movies;
 
-  const playIconSize = useBreakpointValue({ base: "40px", md: "60px" });
-  const playPadding = useBreakpointValue({ base: "8px", md: "12px" });
+  // const playIconSize = useBreakpointValue({ base: "40px", md: "60px" });
+  // const playPadding = useBreakpointValue({ base: "8px", md: "12px" });
 
   const extractYouTubeId = (url: string): string => {
     const regExp =
@@ -37,7 +38,7 @@ export function DetailMovieContent() {
   };
 
   useEffect(() => {
-  dispatch(getMovieBySlug(slug || ""));
+    dispatch(getMovieBySlug(slug || ""));
   }, [slug, dispatch]);
 
   useEffect(() => {
@@ -77,149 +78,132 @@ export function DetailMovieContent() {
   }
 
   return (
-    <Box>
-      <Flex
-        justifyContent="center"
-        alignItems="center"
-        height="auto"
-        width="100vw"
-        position="relative"
-        zIndex={0}
-        backgroundColor="black"
-      >
-        <Box>
-          <Flex
-            justifyContent="center"
-            alignItems="center"
-            height="auto"
-            width="100vw"
-            position="relative"
-            zIndex={0}
-            backgroundColor="black"
-          >
-            <Box width="100vw">
-              {isPlaying ? (
-                <AspectRatio ratio={2.2 / 1}>
-                  <ReactPlayer
-                    url={movie.video}
-                    width="100%"
-                    height="100%"
-                    playing
-                    controls
-                  />
-                </AspectRatio>
-              ) : (
-                <Box position="relative" width="100%" aspectRatio={2.2}>
-                  <Img
-                    src={movie.thumbnail}
-                    alt={movie.title}
-                    width="100%"
-                    height="100%"
-                    objectFit="cover"
-                    cursor="pointer"
-                    onClick={handlePlayClick}
-                  />
-                  <MdPlayArrow
-                    onClick={handlePlayClick}
-                    style={{
-                      color: "white",
-                      fontSize: playIconSize,
-                      backgroundColor: "rgba(0, 0, 0, 0.5)",
-                      border: "4px solid white",
-                      padding: playPadding,
-                      borderRadius: "50%",
-                      cursor: "pointer",
-                      position: "absolute",
-                      top: "50%",
-                      left: "50%",
-                      transform: "translate(-50%, -50%)",
-                    }}
-                  />
-                </Box>
-              )}
-            </Box>
-          </Flex>
-        </Box>
-      </Flex>
-      <Box
-        ml={{ base: "10px", md: "50px", lg: "40ppx" }}
-        mt={"30px"}
-        mb={"50px"}
-      >
-        <Flex align="flex-start" direction={"row"}>
-          <Img
-            src={movie.poster}
-            alt={movie.title}
-            w={{ base: "80px", md: "90px", lg: "100px" }}
-            h={{ base: "120px", md: "130px", lg: "150px" }}
-            mr="20px"
-          />
-          <Box>
-            <Text fontSize="lg" fontWeight="bold">
-              {movie.title}
-            </Text>
-
-            <Flex align="center" mt={2}>
-              <Text fontSize="sm" color="#929292" mr={4}>
+    <Box bg="black" color="white" minH="100vh">
+      {/* Hero Section */}
+      <Box position="relative" w="100%" h={{ base: "60vh", md: "80vh" }}>
+        {isPlaying ? (
+          <AspectRatio ratio={16 / 9} w="100%" h="100%">
+            <ReactPlayer
+              url={movie.video}
+              width="100%"
+              height="100%"
+              playing
+              controls
+            />
+          </AspectRatio>
+        ) : (
+          <>
+            <Img
+              src={movie.thumbnail}
+              alt={movie.title}
+              w="100%"
+              h="100%"
+              objectFit="cover"
+              objectPosition={"top"}
+            />
+            <Box
+              position="absolute"
+              top="0"
+              left="0"
+              w="100%"
+              h="100%"
+              bgGradient="linear(to-t, black 20%, transparent 80%)"
+            />
+            <Flex
+              position="absolute"
+              bottom="20%"
+              left={{ base: "5%", md: "10%" }}
+              direction="column"
+              align="flex-start"
+              gap={4}
+            >
+              <Text fontSize={{ base: "2xl", md: "4xl" }} fontWeight="bold">
+                {movie.title}
+              </Text>
+              <Text fontSize={{ base: "sm", md: "md" }} fontWeight="bold" color="gray.400">
                 {movie.year}
               </Text>
-              <Flex
-                bgColor="transparent"
-                border="1px solid #929292"
-                borderRadius="3px"
-                fontSize="14px"
-                w={"70px"}
-                h={"27px"}
-                justifyContent={"center"}
-                alignItems={"center"}
-                color={"#929292"}
-              >
-                Movies
-              </Flex>
-            </Flex>
-
-            <Flex gap={2} mt={2} flexWrap="wrap" fontSize="12px">
+              <Flex gap={2} mt={2} flexWrap="wrap" fontSize="sm" color="gray.400">
               {Array.isArray(movie.categories) &&
                 movie.categories.map((cat, index) => (
-                  <Flex key={cat.id} align="center" color="#929292">
+                  <Flex key={cat.id} align="center">
                     <Text>{cat.categoryName}</Text>
                     {index !== movie.categories.length - 1 && (
                       <Divider
                         ml={1}
                         orientation="vertical"
-                        borderColor="#363434"
+                        borderColor="gray.600"
                         height="10px"
                       />
                     )}
                   </Flex>
                 ))}
             </Flex>
+              <Flex gap={4}>
+                <Button
+                  leftIcon={<MdPlayArrow size={24} />}
+                  colorScheme="red"
+                  size="lg"
+                  onClick={handlePlayClick}
+                >
+                  Play
+                </Button>
+                <Button
+                  leftIcon={<MdInfoOutline size={24} />}
+                  variant="outline"
+                  color="white"
+                  borderColor="white"
+                  size="lg"
+                >
+                  More Info
+                </Button>
+              </Flex>
+            </Flex>
+          </>
+        )}
+      </Box>
 
-            <Text
-              fontSize={{ base: "11px", md: "14px", lg: "sm" }}
-              mt={3}
-              w={{ base: "250px", md: "500px", lg: "450px" }}
-              textAlign="justify"
-              lineHeight="1.6"
-            >
+      <Box px={{ base: 4, md: 10 }} py={8}>
+        <Flex gap={6} direction={{ base: "column", md: "row" }}>
+          <Img
+            src={movie.poster}
+            alt={movie.title}
+            w={{ base: "120px", md: "160px" }}
+            h={{ base: "180px", md: "220px" }}
+            borderRadius="md"
+          />
+          <Box flex="1">
+            <Flex align="center" gap={4}>
+              <Text
+                border="1px solid gray"
+                px={2}
+                py={1}
+                fontSize="xs"
+                borderRadius="md"
+              >
+                Movie
+              </Text>
+            </Flex>
+            
+            <Text mt={3} fontSize="md" maxW="800px" textAlign="justify">
               {movie.description}
             </Text>
           </Box>
-          <Box
-            ml={"150px"}
-            display={{ base: "none", md: "block", lg: "block" }}
-          >
-            <ReactPlayer
-              url={`https://www.youtube.com/watch?v=${extractYouTubeId(
-                movie.trailer
-              )}`}
-              width={"480px"}
-              height={"225px"}
-            />
-            <Text mt={2} fontSize={"14px"}>
-              Trailer: {movie.title}
-            </Text>
-          </Box>
+          {/* Trailer */}
+          {movie.trailer && (
+            <Box flexShrink={0}>
+              <ReactPlayer
+                url={`https://www.youtube.com/watch?v=${extractYouTubeId(
+                  movie.trailer
+                )}`}
+                width={"360px"}
+                height={"200px"}
+              />
+              <Text mt={2} fontSize="sm">
+                Trailer: {movie.title}
+              </Text>
+            </Box>
+          )}
         </Flex>
       </Box>
     </Box>

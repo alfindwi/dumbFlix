@@ -108,9 +108,9 @@ export function Navbar() {
             <SearchBar />
             <MenuButton as={Box} cursor="pointer">
               <Avatar
-                src={
-                  "https://i.pinimg.com/736x/4e/d1/c8/4ed1c8ae3c42f348db7eedb18abe2300.jpg"
-                }
+                src="https://i.pinimg.com/736x/4e/d1/c8/4ed1c8ae3c42f348db7eedb18abe2300.jpg"
+                borderRadius="md"
+                boxSize="40px"
               />
             </MenuButton>
             <MenuList bgColor="blackAlpha.600" zIndex="1000">
@@ -118,7 +118,7 @@ export function Navbar() {
                 <TiPencil style={{ marginRight: "10px" }} size={20} />
                 Manage Profile
               </MenuItem>
-              <MenuItem  bgColor={"blackAlpha.600"}>
+              <MenuItem as={Link} to="/account" bgColor={"blackAlpha.600"}>
                 <FaRegUser style={{ marginRight: "10px" }} size={20} />
                 Account
               </MenuItem>

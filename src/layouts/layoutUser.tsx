@@ -6,7 +6,7 @@ import { Outlet, useLocation } from "react-router-dom";
 export function LayoutUser() {
   const location = useLocation();
 
-  const hiddenRoutes = ["/", "/login", "/register", "/profile-icons"];
+  const hiddenRoutes = ["/", "/login", "/register", "/profile-icons", "/account"];
   const hideNavbar = hiddenRoutes.includes(location.pathname);
 
   return (
