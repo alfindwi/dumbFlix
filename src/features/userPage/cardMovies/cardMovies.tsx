@@ -46,7 +46,7 @@ export const CardMovies: React.FC<MoviesListProps> = ({ movies }) => {
         Movies
       </Text>
 
-      <Wrap spacing={4} mt={4} justify="flex-start" w="full">
+      <Wrap spacing={4} mt={4} justify={{ base: "center", md: "flex-start"}} w="full">
         {paginatedMovies.map((movie) => (
           <WrapItem key={movie.id}>
             <Box
@@ -63,7 +63,7 @@ export const CardMovies: React.FC<MoviesListProps> = ({ movies }) => {
               <Box
                 position="relative"
                 w="100%"
-                h="200px"
+                h="250px"
                 overflow="hidden"
                 _hover={{
                   ".image": {
@@ -76,7 +76,7 @@ export const CardMovies: React.FC<MoviesListProps> = ({ movies }) => {
                 <LazyImage
                   src={movie.poster}
                   w="100%"
-                  h="200px"
+                  h="100%"
                   className="image"
                   borderRadius="md"
                   alt={movie.title}

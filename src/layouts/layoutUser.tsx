@@ -6,8 +6,11 @@ import { Outlet, useLocation } from "react-router-dom";
 export function LayoutUser() {
   const location = useLocation();
 
-  const hiddenRoutes = ["/", "/login", "/register", "/profile-icons", "/account"];
-  const hideNavbar = hiddenRoutes.includes(location.pathname);
+  const hiddenRoutes = ["/", "/login", "/register", "/profile-icons", "/account", "/subscription"];
+
+  const isMovieDetail = location.pathname.startsWith("/movie/");
+
+  const hideNavbar = hiddenRoutes.includes(location.pathname) || isMovieDetail;
 
   return (
     <Flex direction="column" minH="100vh">

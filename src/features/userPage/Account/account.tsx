@@ -16,7 +16,6 @@ import {
   ModalFooter,
   Input,
   VStack,
-  useToast,
 } from "@chakra-ui/react";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { Link } from "react-router-dom";

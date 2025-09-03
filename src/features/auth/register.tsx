@@ -1,8 +1,74 @@
-import { Box, Flex, Image, Input, Text } from "@chakra-ui/react";
-import { Link } from "react-router-dom";
+import {
+  Box,
+  Flex,
+  FormControl,
+  FormErrorMessage,
+  Image,
+  Input,
+  Spinner,
+  Text,
+  useToast,
+} from "@chakra-ui/react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../store";
+import { registerAsync } from "../../store/auth/async";
+import {
+  registerSchema,
+  RegisterSchema,
+} from "../../validations/registerSchema";
 import { PrimaryButton } from "../components/button";
 
 export function Register() {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const toast = useToast();
+
+  const { loading } = useAppSelector((state) => state.auth);
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<RegisterSchema>({
+    resolver: zodResolver(registerSchema),
+    mode: "all",
+    reValidateMode: "onChange",
+  });
+
+  const onSubmit: SubmitHandler<RegisterSchema> = async (data) => {
+    console.log("Submit function called with data:", data);
+    try {
+      const res = await dispatch(registerAsync(data)).unwrap();
+      console.log("Registrasi berhasil:", res);
+      toast({
+        title: "Registrasi berhasil",
+        description: "Success register new account",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
+      reset();
+      navigate("/subscription");
+    } catch (error: any) {
+      console.error("Registrasi gagal:", error);
+      const errorMessage =
+        error?.message === "User already exists"
+          ? "Email sudah terdaftar, silakan gunakan email lain."
+          : error?.message || "Terjadi kesalahan saat registrasi";
+      toast({
+        title: "Registrasi gagal",
+        description: errorMessage,
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
+    }
+  };
   return (
     <Box
       w="100%"
@@ -61,49 +127,67 @@ export function Register() {
             Daftar
           </Text>
 
-          <Input
-            placeholder="Nama Lengkap"
-            type="text"
-            size="md"
-            mb={4}
-            border="1px solid #D2D2D2"
-            borderRadius="3px"
-            color="white"
-            bg="blackAlpha.500"
-            required
-            py={7}
-            _placeholder={{ color: "#B1B1B1", fontSize: "18px" }}
-          />
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <FormControl isInvalid={!!errors.fullName}>
+              <Input
+                placeholder="Nama Lengkap"
+                type="text"
+                size="md"
+                mb={4}
+                {...register("fullName")}
+                border="1px solid #D2D2D2"
+                borderRadius="3px"
+                color="white"
+                bg="blackAlpha.500"
+                required
+                py={7}
+                _placeholder={{ color: "#B1B1B1", fontSize: "18px" }}
+              />
+              <FormErrorMessage fontSize="sm" color="red.500">
+                {errors.fullName && errors.fullName.message}
+              </FormErrorMessage>
+            </FormControl>
 
-          <Input
-            placeholder="Email"
-            type="email"
-            size="md"
-            mb={4}
-            border="1px solid #D2D2D2"
-            borderRadius="3px"
-            color="white"
-            bg="blackAlpha.500"
-            py={7}
-            required
-            _placeholder={{ color: "#B1B1B1", fontSize: "18px" }}
-          />
+            <FormControl isInvalid={!!errors.email} mb={4}>
+              <Input
+                placeholder="Email"
+                {...register("email")}
+                type="email"
+                size="md"
+                border="1px solid #D2D2D2"
+                borderRadius="3px"
+                color="white"
+                bg="blackAlpha.500"
+                py={7}
+                _placeholder={{ color: "#B1B1B1", fontSize: "18px" }}
+              />
+              <FormErrorMessage fontSize="sm" color="red.500">
+                {errors.email && errors.email.message}
+              </FormErrorMessage>
+            </FormControl>
 
-          <Input
-            placeholder="Password"
-            type="password"
-            size="md"
-            mb={4}
-            border="1px solid #D2D2D2"
-            borderRadius="3px"
-            color="white"
-            bg="blackAlpha.500"
-            py={7}
-            required
-            _placeholder={{ color: "#B1B1B1", fontSize: "18px" }}
-          />
+            <FormControl isInvalid={!!errors.password} mb={4}>
+              <Input
+                placeholder="Password"
+                type="password"
+                {...register("password")}
+                size="md"
+                border="1px solid #D2D2D2"
+                borderRadius="3px"
+                color="white"
+                bg="blackAlpha.500"
+                py={7}
+                _placeholder={{ color: "#B1B1B1", fontSize: "18px" }}
+              />
+              <FormErrorMessage fontSize="sm" color="red.500">
+                {errors.password && errors.password.message}
+              </FormErrorMessage>
+            </FormControl>
 
-          <PrimaryButton w={"100%"}>Daftar</PrimaryButton>
+            <PrimaryButton w="100%" type="submit">
+              {loading ? <Spinner /> : "Masuk"}
+            </PrimaryButton>
+          </form>
 
           <Flex mt={8} justifyContent="center" align="center">
             <Text>Sudah punya akun?</Text>

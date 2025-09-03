@@ -23,10 +23,10 @@ export function TvShowContent() {
     <>
       <Box
         w="100%"
-        h="100vh"
+        h={{ base: "70vh", md: "90vh", lg: "100vh" }}
         bgImage="url('/src/assets/seriesHome.avif')"
         bgSize="cover"
-        bgPosition="top"
+        bgPosition={{ base: "center", md: "top" }}
         position="relative"
       >
         <Box
@@ -35,20 +35,24 @@ export function TvShowContent() {
           left={0}
           w="100%"
           h="100%"
-          bgGradient="linear(to-t, black 1%, transparent 5%)"
+          bgGradient={{
+            base: "linear(to-t, black 1%, transparent 10%)",
+            md: "linear(to-t, black 1%, transparent 5%)",
+          }}
         />
 
         <Box
           position="absolute"
-          bottom={{ base: "30px", md: "50px", lg: "80px" }}
+          bottom={{ base: "50px", md: "50px", lg: "80px" }}
           left={{ base: "20px", md: "60px", lg: "100px" }}
           maxW={{ base: "90%", md: "60%", lg: "40%" }}
           color="white"
-          transform="translateY(5%)"
+          transform={{ base: "translateY(-20%)", md: "translateY(5%)" }}
         >
           <Img
             src="/src/assets/seriesName.avif"
             w={{ base: "200px", md: "400px", lg: "500px" }}
+            mb={4}
           />
           <Text fontSize={{ base: "xs", md: "sm", lg: "md" }} mb={3}>
             Money Heist is a Spanish TV series about a group of robbers led by
@@ -58,7 +62,7 @@ export function TvShowContent() {
             facing off against police forces.
           </Text>
           <Flex gap={4} mb={3} align="center">
-            <Text fontSize={{ base: "xs", md: "sm" }}>2017</Text>
+            <Text fontSize={{ base: "md", md: "sm" }}>2017</Text>
             <Box border="1px solid white" px={2} py={1} borderRadius="md">
               Series
             </Box>
@@ -66,7 +70,7 @@ export function TvShowContent() {
           <Button
             sx={buttonStyle}
             as={Link}
-            to={`/series/${heroSeries?.seriesSlug}` || ""}
+            to={`/series/${heroSeries?.seriesSlug}`}
           >
             Watch Now !
           </Button>

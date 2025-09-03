@@ -1,8 +1,94 @@
-import { Box, Flex, Image, Input, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  FormControl,
+  FormErrorMessage,
+  Image,
+  Input,
+  Spinner,
+  Text,
+  useToast,
+} from "@chakra-ui/react";
 import { Link } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../store";
+import { useNavigate } from "react-router-dom";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { loginSchema } from "../../validations/loginSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { loginAsync } from "../../store/auth/async";
 import { PrimaryButton } from "../components/button";
 
 export function Login() {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const toast = useToast();
+
+  const { loading } = useAppSelector((state) => state.auth);
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(loginSchema),
+    mode: "all",
+    reValidateMode: "onChange",
+  });
+
+  const onSubmit: SubmitHandler<loginSchema> = async (data) => {
+    try {
+      console.log("Submit function called with data:", data);
+
+      const res = await dispatch(loginAsync(data));
+
+      console.log("Response:", res);
+
+      if (loginAsync.fulfilled.match(res) && res.payload) {
+        const role = res.payload.user.role;
+
+        toast({
+          title: "Login success",
+          description: "Welcome back",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+          position: "top",
+        });
+
+        reset();
+        navigate(role === "ADMIN" ? "/admin" : "/dashboard");
+      } else if (loginAsync.rejected.match(res)) {
+        const errorMessage =
+          typeof res.payload === "string"
+            ? res.payload
+            : "Terjadi kesalahan saat login";
+
+        console.error("Login failed:", errorMessage);
+
+        toast({
+          title: "Login failed",
+          description: errorMessage,
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+          position: "top",
+        });
+      }
+    } catch (error) {
+      console.error("Unexpected error during login:", error);
+
+      toast({
+        title: "Error",
+        description: "Terjadi kesalahan tidak terduga",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
+    }
+  };
+
   return (
     <Box
       w="100%"
@@ -35,7 +121,6 @@ export function Login() {
           src="/src/assets/alflix.png"
           h={{ base: "18px", md: "20px", lg: "30px" }}
           alt="Logo"
-          
         />
       </Flex>
 
@@ -61,32 +146,48 @@ export function Login() {
           >
             Masuk
           </Text>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <FormControl isInvalid={!!errors.email} mb={4}>
+              <Input
+                placeholder="Email"
+                {...register("email")}
+                type="email"
+                size="md"
+                border="1px solid #D2D2D2"
+                borderRadius="3px"
+                color="white"
+                bg="blackAlpha.500"
+                py={7}
+                _placeholder={{ color: "#B1B1B1", fontSize: "18px" }}
+              />
+              <FormErrorMessage fontSize="sm" color="red.500">
+                {errors.email && errors.email.message}
+              </FormErrorMessage>
+            </FormControl>
 
-          <Input
-            placeholder="Email"
-            type="email"
-            size="md"
-            mb={4}
-            border={"1px solid #D2D2D2"}
-            borderRadius={"3px"}
-            color="white"
-            bg="blackAlpha.500"
-            py={7}
-            _placeholder={{ color: "#B1B1B1", fontSize: "18px" }}
-          />
-          <Input
-            placeholder="Password"
-            type="password"
-            size="md"
-            mb={4}
-            border={"1px solid #D2D2D2"}
-            borderRadius={"3px"}
-            color="white"
-            bg="blackAlpha.500"
-            py={7}
-            _placeholder={{ color: "#B1B1B1", fontSize: "18px" }}
-          />
-          <PrimaryButton w={"100%"}>Masuk</PrimaryButton>
+            <FormControl isInvalid={!!errors.password} mb={4}>
+              <Input
+                placeholder="Password"
+                type="password"
+                {...register("password")}
+                size="md"
+                border="1px solid #D2D2D2"
+                borderRadius="3px"
+                color="white"
+                bg="blackAlpha.500"
+                py={7}
+                _placeholder={{ color: "#B1B1B1", fontSize: "18px" }}
+              />
+              <FormErrorMessage fontSize="sm" color="red.500">
+                {errors.password && errors.password.message}
+              </FormErrorMessage>
+            </FormControl>
+
+            <PrimaryButton w="100%" type="submit">
+              {loading ? <Spinner /> : "Masuk"}
+            </PrimaryButton>
+          </form>
+
           <Link to="/forgot-password">
             <Text mt={4} textAlign={"center"} textDecor={"underline"}>
               Lupa Password?

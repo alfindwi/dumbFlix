@@ -1,4 +1,4 @@
-import { Box, Center, Flex, Img, Spinner, Text } from "@chakra-ui/react";
+import { Badge, Box, Center, Flex, HStack, Img, Spinner, Text, VStack } from "@chakra-ui/react";
 import ReactPlayer from "react-player";
 import { useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../store";
@@ -32,62 +32,104 @@ export function DescTrailerMovie() {
     );
   }
   return (
-    <Box ml={{ base: "10px", md: "50px", lg: "40ppx" }} mt={"30px"} mb={"50px"}>
-      <Flex align="flex-start" direction={"row"}>
-        <Img
-          src="https://image.tmdb.org/t/p/w185/v31MsWhF9WFh7Qooq6xSBbmJxoG.jpg"
-          w={{ base: "80px", md: "90px", lg: "100px" }}
-          h={{ base: "120px", md: "130px", lg: "150px" }}
-          mr="20px"
-        />
-        <Box>
-          <Text fontSize="lg" fontWeight="bold">
-            {movie.title}
-          </Text>
+    <Box px={{ base: "20px", md: "60px" }} py={8}>
+      <Flex
+        direction={{ base: "column", lg: "row" }}
+        gap={8}
+        align="flex-start"
+      >
+        <Box flex={2}>
+          <Flex gap={6} mb={6}>
+            <Img
+              src={movie.poster}
+              alt={movie.title}
+              w={{ base: "120px", md: "150px" }}
+              h={{ base: "180px", md: "225px" }}
+              borderRadius="md"
+              objectFit="cover"
+            />
 
-          <Flex align="center" mt={2}>
-            <Text fontSize="sm" color="#929292" mr={4}>
-              {movie.year}
-            </Text>
-            <Flex
-              bgColor="transparent"
-              border="1px solid #929292"
-              borderRadius="3px"
-              fontSize="14px"
-              p={1}
-              w={"70px"}
-              h={"27px"}
-              justifyContent={"center"}
-              alignItems={"center"}
-              color={"#929292"}
-            >
-              Movies
-            </Flex>
+            <VStack align="flex-start" spacing={4} flex={1}>
+              <Box>
+                <Text fontSize="2xl" fontWeight="bold" mb={2}>
+                  {movie.title}
+                </Text>
+                <HStack spacing={4} mb={4}>
+                  <Text color="gray.400">{movie.year}</Text>
+                </HStack>
+              </Box>
+
+              <Box>
+                <Text fontSize="sm" color="gray.400" mb={2}>
+                  Genres:
+                </Text>
+                <Flex gap={2} flexWrap="wrap">
+                  {Array.isArray(movie.categories) &&
+                    movie.categories.map((cat) => (
+                      <Badge
+                        key={cat.id}
+                        variant="subtle"
+                        colorScheme="gray"
+                        fontSize="xs"
+                      >
+                        {cat.categoryName}
+                      </Badge>
+                    ))}
+                </Flex>
+              </Box>
+
+              <Box>
+                <Text fontSize="sm" color="gray.400" mb={2}>
+                  Synopsis:
+                </Text>
+                <Text fontSize="sm" lineHeight="1.6" color="gray.300">
+                  {movie.description}
+                </Text>
+              </Box>
+            </VStack>
           </Flex>
-
-          <Text
-            fontSize={{ base: "11px", md: "14px", lg: "sm" }}
-            mt={3}
-            w={{ base: "250px", md: "500px", lg: "450px" }}
-            textAlign="justify"
-            lineHeight="1.6"
-          >
-            {movie.description}
-          </Text>
         </Box>
-        <Box ml={"150px"} display={{ base: "none", md: "block", lg: "block" }}>
+
+        <Box
+          flex={1}
+          display={{ base: "none", lg: "block" }}
+          position="sticky"
+          top="20px"
+        >
+          <Box bg="gray.900" borderRadius="md" overflow="hidden">
+            <ReactPlayer
+              url={`https://www.youtube.com/watch?v=${extractYouTubeId(
+                movie.trailer
+              )}`}
+              width="100%"
+              height="250px"
+            />
+            <Box p={4}>
+              <Text fontSize="sm" fontWeight="semibold" mb={1}>
+                Official Trailer
+              </Text>
+              <Text fontSize="xs" color="gray.400">
+                {movie.title}
+              </Text>
+            </Box>
+          </Box>
+        </Box>
+      </Flex>
+
+      <Box display={{ base: "block", lg: "none" }} mt={8}>
+        <Text fontSize="lg" fontWeight="bold" mb={4}>
+          Trailer
+        </Text>
+        <Box bg="gray.900" borderRadius="md" overflow="hidden">
           <ReactPlayer
             url={`https://www.youtube.com/watch?v=${extractYouTubeId(
               movie.trailer
             )}`}
-            width={"480px"}
-            height={"225px"}
+            width="100%"
+            height="200px"
           />
-          <Text mt={2} fontSize={"14px"}>
-            {movie.title}
-          </Text>
         </Box>
-      </Flex>
+      </Box>
     </Box>
   );
 }

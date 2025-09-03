@@ -42,7 +42,7 @@ export const CardTvShow: React.FC<SeriesListProps> = ({ series }) => {
         Series
       </Text>
 
-      <Wrap spacing={4} mt={4} justify="flex-start" w="full">
+      <Wrap spacing={4} mt={4} justify={{ base: "center", md: "flex-start"}} w="full">
         {paginatedSeries.map((series) => (
           <WrapItem key={series.id}>
             <Box

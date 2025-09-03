@@ -29,6 +29,7 @@ import { LayoutUser } from "../layouts/layoutUser";
 import { ProfileContent } from "../features/userPage/Profile/profile";
 import { ProfileIconsPage } from "../features/userPage/Profile/profileIcons";
 import { Account } from "../features/userPage/Account/account";
+import { SubscriptionPlans } from "../features/auth/planSubs";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -65,6 +66,10 @@ const routes: RouteObject[] = [
       {
         path: "/dashboard",
         element: <HomeContent />,
+      },
+      {
+        path: "/subscription",
+        element: <SubscriptionPlans />,
       },
       {
         path: "/account",
