@@ -2,8 +2,10 @@ import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "./auth/slice";
 import categoryReducer from "./category/slice";
 import movieReducer from "./movie/slice";
+import paymentReducer from "./payment/slice";
 import seasonReducer from "./season/slice";
 import seriesReducer from "./series/slice";
+import planReducer from "./plans/slice";
 import episodeReducer from "./episode/slice";
 import searchReducer from "./search/slice";
 import { useDispatch, useSelector } from 'react-redux';
@@ -16,7 +18,9 @@ const store = configureStore({
         season: seasonReducer,
         series: seriesReducer,
         episode: episodeReducer,
-        search: searchReducer
+        search: searchReducer,
+        plan: planReducer,
+        payment: paymentReducer
     }
 })
 

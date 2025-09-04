@@ -1,7 +1,5 @@
-"use client";
-
+import { useAppDispatch, useAppSelector } from "../../store";
 import {
-  Badge,
   Box,
   Container,
   Divider,
@@ -10,63 +8,55 @@ import {
   Icon,
   Img,
   SimpleGrid,
+  Spinner,
   Text,
   VStack,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaRegCheckCircle } from "react-icons/fa";
+import { Link, useNavigate } from "react-router-dom";
 import { PrimaryButton } from "../components/button";
-import { Link } from "react-router-dom";
-
-const plans = [
-  {
-    name: "Ponsel",
-    resolution: "480p",
-    price: "Rp54.000",
-    quality: "Lumayan",
-    devices: "Ponsel, tablet",
-    screens: 1,
-    downloads: 1,
-    gradient: "linear(to-r, blue.600, blue.400)",
-  },
-  {
-    name: "Dasar",
-    resolution: "720p",
-    price: "Rp65.000",
-    quality: "Bagus",
-    devices: "TV, komputer, ponsel, tablet",
-    screens: 1,
-    downloads: 1,
-    gradient: "linear(to-r, purple.600, purple.400)",
-  },
-  {
-    name: "Standar",
-    resolution: "1080p",
-    price: "Rp120.000",
-    quality: "Luar biasa",
-    devices: "TV, komputer, ponsel, tablet",
-    screens: 2,
-    downloads: 2,
-    gradient: "linear(to-r, purple.500, pink.400)",
-  },
-  {
-    name: "Premium",
-    resolution: "4K + HDR",
-    price: "Rp186.000",
-    quality: "Terbaik",
-    devices: "TV, komputer, ponsel, tablet",
-    screens: 4,
-    downloads: 6,
-    gradient: "linear(to-r, blue.600, purple.600, red.500)",
-    popular: true,
-  },
-];
+import { getPlans } from "../../store/plans/async";
+import Cookies from "js-cookie";
+import { createPayment } from "../../store/payment/async";
 
 export function SubscriptionPlans() {
-  const [selected, setSelected] = useState("Ponsel");
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const [selected, setSelected] = useState<string>("Basic");
+
+  const { plans } = useAppSelector((state) => state.plan);
+  const { payment, loading, error } = useAppSelector((state) => state.payment);
+
+  useEffect(() => {
+    dispatch(getPlans());
+  }, [dispatch]);
+
+  const handleSubmit = async () => {
+    const token = Cookies.get("token");
+    const selectedPlan = plans.find((plan) => plan.name === selected);
+
+    if (!selectedPlan) return;
+
+    if (!token) {
+      navigate("/login");
+    } else {
+      try {
+        const result = await dispatch(
+          createPayment(selectedPlan.planId)
+        ).unwrap();
+
+        if (result.redirect_url) {
+          window.location.href = result.redirect_url;
+        }
+      } catch (err) {
+        console.error("Payment failed:", err);
+      }
+    }
+  };
+
   return (
     <Box minH="100vh" color="white">
-      {/* Header */}
       <Box borderBottom="1px solid" borderColor="gray.600" py={4}>
         <Container maxW="6xl">
           <Flex justify="space-between" as={Link} to="/" align="center">
@@ -75,7 +65,6 @@ export function SubscriptionPlans() {
         </Container>
       </Box>
 
-      {/* Title */}
       <Container maxW="6xl" py={10}>
         <VStack spacing={2} align="start">
           <Heading fontSize="2xl">Pilih paket yang tepat untukmu</Heading>
@@ -134,22 +123,6 @@ export function SubscriptionPlans() {
                     />
                   )}
                 </Box>
-
-                {plan.popular && (
-                  <Badge
-                    bg="blackAlpha.700"
-                    color="white"
-                    px={3}
-                    py={1}
-                    borderRadius="md"
-                    position="absolute"
-                    top={0}
-                    right={0}
-                    transform="translateY(-100%)"
-                  >
-                    Terpopuler
-                  </Badge>
-                )}
               </Box>
             );
           })}
@@ -200,31 +173,16 @@ export function SubscriptionPlans() {
                   )}
                 </Box>
 
-                {plan.popular && (
-                  <Badge
-                    bg="blackAlpha.700"
-                    color="white"
-                    px={3}
-                    py={1}
-                    borderRadius="md"
-                    position="absolute"
-                    top={0}
-                    right={0}
-                    transform="translateY(-100%)"
-                  >
-                    Terpopuler
-                  </Badge>
-                )}
-
                 <VStack align="start" spacing={4} p={6} fontSize="sm">
                   <Box w="100%">
                     <Text fontWeight="medium">Harga bulanan</Text>
-                    <Text>{plan.price}</Text>
-                  </Box>
-                  <Divider bgColor={"gray.300"} />
-                  <Box w="100%">
-                    <Text fontWeight="medium">Kualitas video dan suara</Text>
-                    <Text>{plan.quality}</Text>
+                    <Text>
+                      {new Intl.NumberFormat("id-ID", {
+                        style: "currency",
+                        currency: "IDR",
+                        minimumFractionDigits: 0,
+                      }).format(plan.price)}
+                    </Text>
                   </Box>
                   <Divider bgColor={"gray.300"} />
                   <Box w="100%">
@@ -238,13 +196,8 @@ export function SubscriptionPlans() {
                   </Box>
                   <Divider bgColor={"gray.300"} />
                   <Box w="100%">
-                    <Text fontWeight="medium">Perangkat di rumah tangga</Text>
-                    <Text>{plan.screens}</Text>
-                  </Box>
-                  <Divider bgColor={"gray.300"} />
-                  <Box w="100%">
-                    <Text fontWeight="medium">Perangkat Download</Text>
-                    <Text>{plan.downloads}</Text>
+                    <Text fontWeight="medium">Deskripsi</Text>
+                    <Text>{plan.description}</Text>
                   </Box>
                 </VStack>
               </Box>
@@ -265,12 +218,18 @@ export function SubscriptionPlans() {
               >
                 <Box w="100%">
                   <Text fontWeight="medium">Harga bulanan</Text>
-                  <Text>{plan.price}</Text>
+                  <Text>
+                    {new Intl.NumberFormat("id-ID", {
+                      style: "currency",
+                      currency: "IDR",
+                      minimumFractionDigits: 0,
+                    }).format(plan.price)}
+                  </Text>
                 </Box>
                 <Divider bgColor={"gray.300"} />
                 <Box w="100%">
                   <Text fontWeight="medium">Kualitas video dan suara</Text>
-                  <Text>{plan.quality}</Text>
+                  <Text>{plan.resolution}</Text>
                 </Box>
                 <Divider bgColor={"gray.300"} />
                 <Box w="100%">
@@ -282,24 +241,14 @@ export function SubscriptionPlans() {
                   <Text fontWeight="medium">Perangkat yang didukung</Text>
                   <Text>{plan.devices}</Text>
                 </Box>
-                <Divider bgColor={"gray.300"} />
-                <Box w="100%">
-                  <Text fontWeight="medium">Perangkat di rumah tangga</Text>
-                  <Text>{plan.screens}</Text>
-                </Box>
-                <Divider bgColor={"gray.300"} />
-                <Box w="100%">
-                  <Text fontWeight="medium">Perangkat Download</Text>
-                  <Text>{plan.downloads}</Text>
-                </Box>
               </VStack>
             ))}
         </Box>
       </Container>
 
       <Container maxW="6xl" textAlign="center" py={6}>
-        <PrimaryButton size="lg" px={12} py={6}>
-          Berikutnya
+        <PrimaryButton size="lg" px={12} onClick={handleSubmit} py={6}>
+          {loading ? <Spinner size="sm" /> : "Langganan"}
         </PrimaryButton>
       </Container>
     </Box>

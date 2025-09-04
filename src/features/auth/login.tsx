@@ -17,6 +17,7 @@ import { loginSchema } from "../../validations/loginSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginAsync } from "../../store/auth/async";
 import { PrimaryButton } from "../components/button";
+import Cookies from "js-cookie";
 
 export function Login() {
   const dispatch = useAppDispatch();
@@ -38,14 +39,10 @@ export function Login() {
 
   const onSubmit: SubmitHandler<loginSchema> = async (data) => {
     try {
-      console.log("Submit function called with data:", data);
-
       const res = await dispatch(loginAsync(data));
 
-      console.log("Response:", res);
-
       if (loginAsync.fulfilled.match(res) && res.payload) {
-        const role = res.payload.user.role;
+        const { role, status } = res.payload.user;
 
         toast({
           title: "Login success",
@@ -57,18 +54,27 @@ export function Login() {
         });
 
         reset();
-        navigate(role === "ADMIN" ? "/admin" : "/dashboard");
+
+        Cookies.set(
+          "isSubscriptionActive",
+          status === "Active" ? "true" : "false"
+        );
+        Cookies.set("token", res.payload.token);
+
+        if (role === "ADMIN") {
+          navigate("/admin");
+        } else if (status === "Active") {
+          navigate("/dashboard");
+        } else {
+          navigate("/subscription/plans");
+        }
       } else if (loginAsync.rejected.match(res)) {
-        const errorMessage =
-          typeof res.payload === "string"
-            ? res.payload
-            : "Terjadi kesalahan saat login";
-
-        console.error("Login failed:", errorMessage);
-
         toast({
           title: "Login failed",
-          description: errorMessage,
+          description:
+            typeof res.payload === "string"
+              ? res.payload
+              : "Terjadi kesalahan saat login",
           status: "error",
           duration: 3000,
           isClosable: true,
@@ -76,8 +82,6 @@ export function Login() {
         });
       }
     } catch (error) {
-      console.error("Unexpected error during login:", error);
-
       toast({
         title: "Error",
         description: "Terjadi kesalahan tidak terduga",

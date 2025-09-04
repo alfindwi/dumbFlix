@@ -27,7 +27,7 @@ import { FaRegUser, FaSignOutAlt } from "react-icons/fa";
 import { FaTv } from "react-icons/fa6";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { ImExit, ImHome } from "react-icons/im";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../store";
 import { logout } from "../../store/auth/slice";
 import { SearchBar } from "./searchBar";
@@ -35,6 +35,7 @@ import { SearchBar } from "./searchBar";
 export function Navbar() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const toast = useToast();
   const isMobile = useBreakpointValue({ base: true, md: false });
 
@@ -50,6 +51,8 @@ export function Navbar() {
       isClosable: true,
       position: "top",
     });
+
+    navigate("/login");
   };
 
   return (

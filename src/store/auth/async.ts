@@ -17,7 +17,7 @@ export const loginAsync = createAsyncThunk<
 
     return { token, user };
   } catch (error: any) {
-    console.error("Error:", error); // Log error lengkap
+    console.error("Error:", error);
     const errorMessage =
       error.response?.data?.message || "Login failed. Please check your email and password.";
     return thunkAPI.rejectWithValue(errorMessage);

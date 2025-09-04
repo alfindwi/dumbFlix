@@ -6,7 +6,7 @@ import { Outlet, useLocation } from "react-router-dom";
 export function LayoutUser() {
   const location = useLocation();
 
-  const hiddenRoutes = ["/", "/login", "/register", "/profile-icons", "/account", "/subscription"];
+  const hiddenRoutes = ["/", "/login", "/register", "/profile-icons", "/account", "/subscription/plans"];
 
   const isMovieDetail = location.pathname.startsWith("/movie/");
 

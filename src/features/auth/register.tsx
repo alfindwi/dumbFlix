@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Flex,
   FormControl,
   FormErrorMessage,
@@ -18,7 +19,6 @@ import {
   registerSchema,
   RegisterSchema,
 } from "../../validations/registerSchema";
-import { PrimaryButton } from "../components/button";
 
 export function Register() {
   const dispatch = useAppDispatch();
@@ -39,7 +39,7 @@ export function Register() {
   });
 
   const onSubmit: SubmitHandler<RegisterSchema> = async (data) => {
-    console.log("Submit function called with data:", data);
+
     try {
       const res = await dispatch(registerAsync(data)).unwrap();
       console.log("Registrasi berhasil:", res);
@@ -52,7 +52,7 @@ export function Register() {
         position: "top",
       });
       reset();
-      navigate("/subscription");
+      navigate("/login");
     } catch (error: any) {
       console.error("Registrasi gagal:", error);
       const errorMessage =
@@ -69,6 +69,14 @@ export function Register() {
       });
     }
   };
+
+  // Debug function untuk test button click
+  const handleButtonClick = () => {
+    console.log("Button clicked!");
+    console.log("Loading state:", loading);
+    console.log("Form errors:", errors);
+  };
+
   return (
     <Box
       w="100%"
@@ -184,9 +192,18 @@ export function Register() {
               </FormErrorMessage>
             </FormControl>
 
-            <PrimaryButton w="100%" type="submit">
-              {loading ? <Spinner /> : "Masuk"}
-            </PrimaryButton>
+            <Button
+              bgColor="#E50914"
+              _hover={{ bgColor: "#b30c14ff" }}
+              w="100%"
+              type="submit"
+              isLoading={loading}
+              loadingText="Mendaftar..."
+              onClick={handleButtonClick}
+              py={7}
+            >
+              {loading ? <Spinner /> : "Daftar"}
+            </Button>
           </form>
 
           <Flex mt={8} justifyContent="center" align="center">

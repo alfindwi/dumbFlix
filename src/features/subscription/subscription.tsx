@@ -4,23 +4,14 @@ import {
   Flex,
   Image,
   Input,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
-  Text,
+  Text
 } from "@chakra-ui/react";
-import { useTranslation } from "react-i18next";
-import { IoMdArrowDropdown } from "react-icons/io";
-import { MdTranslate } from "react-icons/md";
-import { PrimaryButton } from "../components/button";
 import { FaChevronRight } from "react-icons/fa";
-import { FeaturesSection } from "./featuresSection";
+import { PrimaryButton } from "../components/button";
 import { FAQ } from "./faqSection";
+import { FeaturesSection } from "./featuresSection";
 
 export function Subscription() {
-  const { t, i18n } = useTranslation();
-
   return (
     <Box
       w="100%"
@@ -34,7 +25,7 @@ export function Subscription() {
         top={0}
         left={0}
         w="100%"
-        h={i18n.language === "id" ? "780px" : "740px"}
+        h={"780px"}
         bg="blackAlpha.700"
       />
 
@@ -51,40 +42,7 @@ export function Subscription() {
           h={{ base: "18px", md: "20px", lg: "30px" }}
           alt="Logo"
         />
-
-        <Flex align="center" gap={2}>
-          <Menu>
-            <MenuButton
-              as={Button}
-              variant="outline"
-              color="white"
-              borderColor="white"
-              bg="black"
-              _hover={{ bg: "gray.800" }}
-              px={3}
-              rightIcon={<IoMdArrowDropdown />}
-              minW={{ base: "50px", md: "210px" }}
-              justifyContent="space-between"
-            >
-              <Flex align="center" gap={2}>
-                <MdTranslate />
-                <Text display={{ base: "none", md: "block" }}>
-                  {i18n.language === "id" ? "Bahasa Indonesia" : "English"}
-                </Text>
-              </Flex>
-            </MenuButton>
-            <MenuList>
-              <MenuItem onClick={() => i18n.changeLanguage("id")}>
-                Bahasa Indonesia
-              </MenuItem>
-              <MenuItem onClick={() => i18n.changeLanguage("en")}>
-                English
-              </MenuItem>
-            </MenuList>
-          </Menu>
-
-          <PrimaryButton to="/login">{t("button")}</PrimaryButton>
-        </Flex>
+        <PrimaryButton to="/login">Masuk</PrimaryButton>
       </Flex>
 
       <Flex
@@ -93,7 +51,7 @@ export function Subscription() {
         direction="column"
         justify="center"
         align="center"
-        minH={{ base: "450px", md: "400px", lg: "350px" }} 
+        minH={{ base: "450px", md: "400px", lg: "350px" }}
         w={{ base: "90%", md: "70%", lg: "40%" }}
         mx="auto"
         py={20}
@@ -104,17 +62,18 @@ export function Subscription() {
           fontWeight="extrabold"
           color="white"
         >
-          {t("title")}
+          Film, acara TV tak terbatas, dan banyak lagi
         </Text>
         <Text fontSize="xl" mt={2} color="white">
-          {t("subtitle")}
+          Harga mulai dari Rp54.000. Batalkan kapan pun.
         </Text>
         <Text
           fontSize={{ base: "md", md: "20px", lg: "lg" }}
           mt={2}
           color="white"
         >
-          {t("cta")}
+          Siap menonton? Masukkan email untuk membuat atau memulai lagi
+          keanggotaanmu.
         </Text>
 
         <Flex
@@ -147,7 +106,7 @@ export function Subscription() {
             _hover={{ bg: "#b20710" }}
             rightIcon={<FaChevronRight />}
           >
-            {t("button")}
+            Masuk
           </Button>
         </Flex>
       </Flex>

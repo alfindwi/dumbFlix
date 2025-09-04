@@ -29,26 +29,40 @@ import { LayoutUser } from "../layouts/layoutUser";
 import { ProfileContent } from "../features/userPage/Profile/profile";
 import { ProfileIconsPage } from "../features/userPage/Profile/profileIcons";
 import { Account } from "../features/userPage/Account/account";
-import { SubscriptionPlans } from "../features/auth/planSubs";
+import { SubscriptionPlans } from "../features/subscription/planSubs";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
   allowedRole: string[];
 }
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
-  children,
-  allowedRole,
-}) => {
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowedRole }) => {
   const token = Cookies.get("token");
   const role = Cookies.get("role");
+  const isSubscriptionActive = Cookies.get("isSubscriptionActive");
 
-  if (!token) {
-    return <Navigate to="/" />;
+  if (!token) return <Navigate to="/login" />;
+  if (!allowedRole.includes(role || "")) return <Navigate to="/" />;
+
+  // Hanya cek subscription untuk USER
+  if (role === "USER" && isSubscriptionActive !== "true") {
+    return <Navigate to="/subscription/plans" />;
   }
 
-  if (!allowedRole.includes(role || "")) {
-    return <Navigate to="/" />;
+  return children;
+};
+
+
+
+export const SubscriptionRoute: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const isSubscriptionActive = Cookies.get("status");
+
+  if (isSubscriptionActive === "Active") {
+    return <Navigate to="/dashboard" />;
+  } else if (isSubscriptionActive === "NotActive") {
+    return <Navigate to="/subscription/plans" />;
   }
 
   return children;
@@ -65,10 +79,14 @@ const routes: RouteObject[] = [
       },
       {
         path: "/dashboard",
-        element: <HomeContent />,
+        element: (
+          <ProtectedRoute allowedRole={["USER"]}>
+              <HomeContent />
+          </ProtectedRoute>
+        ),
       },
       {
-        path: "/subscription",
+        path: "/subscription/plans",
         element: <SubscriptionPlans />,
       },
       {
@@ -118,7 +136,7 @@ const routes: RouteObject[] = [
       {
         path: "/profile-icons",
         element: <ProfileIconsPage />,
-      }
+      },
     ],
   },
   {
