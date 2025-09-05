@@ -20,10 +20,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import DumbFlix.DumbFlix_BE.dto.helper.Views;
 import DumbFlix.DumbFlix_BE.dto.request.MovieRequest;
 import DumbFlix.DumbFlix_BE.dto.response.MovieResponse;
 import DumbFlix.DumbFlix_BE.service.MovieService;
@@ -49,21 +47,18 @@ public class MovieController {
     }
 
     @GetMapping("/category/{categoryId}")
-    @JsonView(Views.Simple.class)
     public ResponseEntity<List<MovieResponse>> getMoviesByCategory(@PathVariable("categoryId") Long categoryId) {
         List<MovieResponse> movieResponses = movieService.getMoviesByCategory(categoryId);
         return ResponseEntity.ok(movieResponses);
     }
 
     @GetMapping("/slug/{slug}")
-    @JsonView(Views.Full.class)
     public ResponseEntity<MovieResponse> getMovieBySlug(@PathVariable("slug") String slug) {
         MovieResponse movieResponse = movieService.getMovieBySlug(slug);
         return ResponseEntity.ok(movieResponse);
     }
 
     @GetMapping("/actors/{slug}")
-    @JsonView(Views.Simple.class)
     public ResponseEntity<List<MovieResponse>> getMovieByActors(@PathVariable("slug") String slug) {
         List<MovieResponse> movieResponses = movieService.getMovieByActors(slug);
         return ResponseEntity.ok(movieResponses);
@@ -71,7 +66,6 @@ public class MovieController {
    
 
     @PostMapping
-    
     public ResponseEntity<String> createMovie(
             @RequestParam("thumbnail") MultipartFile thumbnail,
             @RequestParam("video") MultipartFile video,

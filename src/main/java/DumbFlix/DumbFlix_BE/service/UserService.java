@@ -7,6 +7,7 @@ import DumbFlix.DumbFlix_BE.entity.user.User;
 import DumbFlix.DumbFlix_BE.exception.FuncErrorException;
 import DumbFlix.DumbFlix_BE.repository.UserRepository;
 import DumbFlix.DumbFlix_BE.security.model.CustomUserDetails;
+import DumbFlix.DumbFlix_BE.security.util.JwtUtil;
 
 import java.util.HashMap;
 import java.util.List;
@@ -19,14 +20,17 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+
 @Service
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final CloudinaryService cloudinaryService;
+    private final JwtUtil jwtUtil;
 
-    public UserService(UserRepository userRepository, CloudinaryService cloudinaryService) {
+    public UserService(UserRepository userRepository, CloudinaryService cloudinaryService, JwtUtil jwtUtil) {
         this.userRepository = userRepository;
+        this.jwtUtil = jwtUtil;
         this.cloudinaryService = cloudinaryService;
     }
 
@@ -53,6 +57,13 @@ public class UserService implements UserDetailsService {
                         .password(user.getPassword())
                         .build())
                 .toList();
+    }
+
+    public User getCurrentUser(String token) {
+        String email = jwtUtil.extractEmail(token);
+
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
     public UserResponse updateImage(User user, MultipartFile file) {

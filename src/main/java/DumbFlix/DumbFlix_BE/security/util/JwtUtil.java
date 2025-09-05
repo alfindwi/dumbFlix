@@ -13,7 +13,7 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 public class JwtUtil {
 
     private final String secretKey;
-    private static final long expirationMs = 86400000; // 1 day
+    private static final long expirationMs = 86400000;
 
     public JwtUtil(@Value("${jwt.secret}") String secretKey) {
         this.secretKey = secretKey;

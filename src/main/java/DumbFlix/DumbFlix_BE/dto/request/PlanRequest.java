@@ -16,5 +16,8 @@ public class PlanRequest {
     private String name;
     private BigDecimal price;
     private Integer durationDays;
+    private String resolution;
+    private String  devices;
     private String description;
+    private String gradient;
 }

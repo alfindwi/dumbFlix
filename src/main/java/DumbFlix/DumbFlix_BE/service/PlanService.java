@@ -25,7 +25,8 @@ public class PlanService {
     public ResponseEntity<List<PlanResponse>> getAllPlans() {
         List<Plan> planResponses = planRepository.findAll();
         List<PlanResponse> planResponse = planResponses.stream().map(plan -> new PlanResponse(plan.getPlanId(),
-                plan.getName(), plan.getPrice(), plan.getDurationDays(), plan.getDescription()))
+                plan.getName(), plan.getPrice(), plan.getDurationDays(), plan.getDescription(), plan.getResolution(),
+                plan.getDevices(), plan.getGradient()))
                 .collect(Collectors.toList());
         return ResponseEntity.ok(planResponse);
     }
@@ -42,21 +43,41 @@ public class PlanService {
 
         Plan savedPlan = planRepository.save(plan);
         return new PlanResponse(savedPlan.getPlanId(), savedPlan.getName(), savedPlan.getPrice(),
-                savedPlan.getDurationDays(), savedPlan.getDescription());
+                savedPlan.getDurationDays(), savedPlan.getDescription(), savedPlan.getResolution(),
+                savedPlan.getDevices(),
+                savedPlan.getGradient());
     }
 
     public PlanResponse updatePlan(Long planId, Plan plan) {
         Plan existingPlan = planRepository.findById(planId)
                 .orElseThrow(() -> new FuncErrorException("Plan not found"));
 
-        existingPlan.setName(plan.getName());
-        existingPlan.setPrice(plan.getPrice());
-        existingPlan.setDurationDays(plan.getDurationDays());
-        existingPlan.setDescription(plan.getDescription());
+        if (plan.getName() != null) {
+            existingPlan.setName(plan.getName());
+        }
+        if (plan.getPrice() != null) {
+            existingPlan.setPrice(plan.getPrice());
+        }
+        if (plan.getDurationDays() != null) {
+            existingPlan.setDurationDays(plan.getDurationDays());
+        }
+        if (plan.getDescription() != null) {
+            existingPlan.setDescription(plan.getDescription());
+        }
+        if (plan.getResolution() != null) {
+            existingPlan.setResolution(plan.getResolution());
+        }
+        if (plan.getDevices() != null) {
+            existingPlan.setDevices(plan.getDevices());
+        }
+        if (plan.getGradient() != null) {
+            existingPlan.setGradient(plan.getGradient());
+        }
 
         Plan updatedPlan = planRepository.save(existingPlan);
         return new PlanResponse(updatedPlan.getPlanId(), updatedPlan.getName(), updatedPlan.getPrice(),
-                updatedPlan.getDurationDays(), updatedPlan.getDescription());
+                updatedPlan.getDurationDays(), updatedPlan.getDescription(), updatedPlan.getResolution(),
+                updatedPlan.getDevices(), updatedPlan.getGradient());
     }
 
     public void deletePlan(Long planId) {

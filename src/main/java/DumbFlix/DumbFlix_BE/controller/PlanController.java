@@ -20,7 +20,7 @@ import DumbFlix.DumbFlix_BE.service.PlanService;
 
 @RestController
 @RequestMapping("/api/plan")
-public class PlanController {   
+public class PlanController {
 
     private final PlanService planService;
 
@@ -42,18 +42,24 @@ public class PlanController {
         plans.setPrice(request.getPrice());
         plans.setDurationDays(request.getDurationDays());
         plans.setDescription(request.getDescription());
+        plans.setResolution(request.getResolution());
+        plans.setDevices(request.getDevices());
+        plans.setGradient(request.getGradient());
 
         PlanResponse planResponse = planService.createPlan(plans);
         return ResponseEntity.ok(planResponse);
     }
 
     @PutMapping("/{planId}")
-    public ResponseEntity<PlanResponse> updatePlan(@PathVariable Long planId, @RequestBody PlanResponse request) {
+    public ResponseEntity<PlanResponse> updatePlan(@PathVariable Long planId, @RequestBody PlanRequest request) {
         Plan plans = new Plan();
         plans.setName(request.getName());
         plans.setPrice(request.getPrice());
         plans.setDurationDays(request.getDurationDays());
         plans.setDescription(request.getDescription());
+        plans.setResolution(request.getResolution());
+        plans.setDevices(request.getDevices());
+        plans.setGradient(request.getGradient());
 
         PlanResponse planResponse = planService.updatePlan(planId, plans);
         return ResponseEntity.ok(planResponse);

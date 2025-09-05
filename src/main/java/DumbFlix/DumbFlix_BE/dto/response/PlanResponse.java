@@ -12,10 +12,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PlanResponse {
-    private Long planId;       
+    private Long planId;
     private String name;
     private BigDecimal price;
-    private Integer durationDays;   
-    private String description; 
+    private Integer durationDays;
+    private String description;
+    private String resolution;
+    private String devices;
+    private String gradient;
 }
-

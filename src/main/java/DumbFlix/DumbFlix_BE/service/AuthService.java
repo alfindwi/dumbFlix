@@ -45,17 +45,14 @@ public class AuthService {
         Optional<User> userOptional = userRepository.findByEmail(request.getEmail());
         System.out.println("User found: " + userOptional.isPresent());
 
-        // cek user
         if (userOptional.isEmpty()) {
             throw new FuncErrorException("User not found");
         }
 
-        // cek password
         if (!passwordEncoder.matches(request.getPassword(), userOptional.get().getPassword())) {
             throw new FuncErrorException("Email or password is incorrect");
         }
 
-        // Authenticate user
         org.springframework.security.core.Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
 
@@ -74,7 +71,6 @@ public class AuthService {
                 user.getStatus().name(),
                 user.getRole().name());
 
-        // Return login response
         UserResponse userResponse = new UserResponse(
                 user.getId(),
                 user.getEmail(),
@@ -87,7 +83,6 @@ public class AuthService {
                 user.getRole().name(),
                 user.getStatus().name());
 
-        // Return login response
         return new LoginResponse(
                 token, userResponse);
     }
@@ -106,24 +101,11 @@ public class AuthService {
             throw new FuncErrorException("Full name is required");
         }
 
-        if (request.getPhone() == null || request.getPhone().isBlank()) {
-            throw new FuncErrorException("Phone number is required");
-        }
 
-        if (request.getAddress() == null || request.getAddress().isBlank()) {
-            throw new FuncErrorException("Address is required");
-        }
-
-        if (request.getGender() == null || request.getGender().isBlank()) {
-            throw new FuncErrorException("Gender is required");
-        }
-
-        // Check if user already exists
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new FuncErrorException("User already exists");
         }
 
-        // Create new user
         User user = new User();
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
@@ -135,10 +117,8 @@ public class AuthService {
         user.setStatus(Status.NotActive);
         user.setImage(request.getImage().orElse(null));
 
-        // Save user to database
         User savedUser = userRepository.save(user);
 
-        // Return register response
         return new RegisterResponse(
                 savedUser.getId(),
                 savedUser.getEmail(),

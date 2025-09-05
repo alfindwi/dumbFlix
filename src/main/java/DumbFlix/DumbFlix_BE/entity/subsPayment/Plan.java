@@ -24,4 +24,7 @@ public class Plan {
     private BigDecimal price;
     private Integer durationDays;
     private String description;
+    private String resolution;
+    private String devices;
+    private String gradient;
 }

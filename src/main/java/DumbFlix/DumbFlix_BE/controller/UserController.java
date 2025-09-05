@@ -5,6 +5,7 @@ import DumbFlix.DumbFlix_BE.dto.response.UserResponse;
 import DumbFlix.DumbFlix_BE.entity.user.User;
 import DumbFlix.DumbFlix_BE.security.model.CustomUserDetails;
 import DumbFlix.DumbFlix_BE.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.List;
 import java.util.Map;
@@ -31,6 +32,35 @@ public class UserController {
     public ResponseEntity<List<UserResponse>> getAllUsers() {
         List<UserResponse> users = userService.getAllUsers();
         return ResponseEntity.ok(users);
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<?> getCurrentUser(HttpServletRequest request) {
+        try {
+            String authHeader = request.getHeader("Authorization");
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(Map.of("error", "Unauthorized"));
+            }
+
+            String token = authHeader.substring(7);
+            User user = userService.getCurrentUser(token);
+
+            Map<String, Object> response = Map.of(
+                    "id", user.getId(),
+                    "fullName", user.getFullName(),
+                    "email", user.getEmail(),
+                    "image", user.getImage(),
+                    "role", user.getRole(),
+                    "status", user.getStatus()
+            );
+
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", e.getMessage()));
+        }
     }
 
     @PutMapping("/image")
