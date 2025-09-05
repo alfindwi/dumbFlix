@@ -19,6 +19,7 @@ import { PrimaryButton } from "../components/button";
 import { getPlans } from "../../store/plans/async";
 import Cookies from "js-cookie";
 import { createPayment } from "../../store/payment/async";
+import api from "../../libs/api";
 
 export function SubscriptionPlans() {
   const dispatch = useAppDispatch();
@@ -32,28 +33,41 @@ export function SubscriptionPlans() {
     dispatch(getPlans());
   }, [dispatch]);
 
-  const handleSubmit = async () => {
-    const token = Cookies.get("token");
-    const selectedPlan = plans.find((plan) => plan.name === selected);
+const handleSubmit = async () => {
+  const selectedPlan = plans.find((plan) => plan.name === selected);
+  if (!selectedPlan) return;
 
-    if (!selectedPlan) return;
+  try {
+    const result = await dispatch(createPayment(selectedPlan.planId)).unwrap();
 
-    if (!token) {
-      navigate("/login");
-    } else {
-      try {
-        const result = await dispatch(
-          createPayment(selectedPlan.planId)
-        ).unwrap();
+    if (result.token) {
+      (window as any).snap.pay(result.token, {
+        onSuccess: async function () {
+          const res = await api.get("/api/users/me", {
+            headers: { Authorization: `Bearer ${Cookies.get("token")}` },
+          });
 
-        if (result.redirect_url) {
-          window.location.href = result.redirect_url;
-        }
-      } catch (err) {
-        console.error("Payment failed:", err);
-      }
+          if (res.data.status === "Active") {
+            Cookies.set("status", "Active");
+            navigate("/dashboard");
+          }
+        },
+        onPending: function () {
+          console.log("Payment pending");
+        },
+        onError: function () {
+          console.log("Payment error");
+        },
+        onClose: function () {
+          console.log("Popup closed without finishing the payment");
+        },
+      });
     }
-  };
+  } catch (err) {
+    console.error("Payment failed:", err);
+  }
+};
+
 
   return (
     <Box minH="100vh" color="white">
