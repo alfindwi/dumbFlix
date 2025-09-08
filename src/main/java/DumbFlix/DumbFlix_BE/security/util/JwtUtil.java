@@ -18,6 +18,7 @@ public class JwtUtil {
     public JwtUtil(@Value("${jwt.secret}") String secretKey) {
         this.secretKey = secretKey;
     }
+    
 
     public String generateToken(Long id, String email, String fullName, String image, String address, String phone,
             String gender,

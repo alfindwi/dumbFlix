@@ -47,13 +47,12 @@ public class UserController {
             User user = userService.getCurrentUser(token);
 
             Map<String, Object> response = Map.of(
-                    "id", user.getId(),
-                    "fullName", user.getFullName(),
-                    "email", user.getEmail(),
-                    "image", user.getImage(),
-                    "role", user.getRole(),
-                    "status", user.getStatus()
-            );
+                    "id", user.getId() != null ? user.getId() : "",
+                    "fullName", user.getFullName() != null ? user.getFullName() : "",
+                    "email", user.getEmail() != null ? user.getEmail() : "",
+                    "image", user.getImage() != null ? user.getImage() : "",
+                    "role", user.getRole() != null ? user.getRole() : "",
+                    "status", user.getStatus() != null ? user.getStatus() : "");
 
             return ResponseEntity.ok(response);
 
@@ -92,13 +91,13 @@ public class UserController {
         }
     }
 
-    @PutMapping
+    @PutMapping("/me")
     public ResponseEntity<UserResponse> updateUser(
-            @AuthenticationPrincipal User user,
-            @ModelAttribute UserRequest request,
-            @RequestParam(value = "image", required = false) MultipartFile image) {
+            Authentication authentication,
+            @RequestBody UserRequest request) {
 
-        UserResponse updatedUser = userService.updateUser(user, request, image);
+        String email = authentication.getName();
+        UserResponse updatedUser = userService.updateUser(email, request);
         return ResponseEntity.ok(updatedUser);
     }
 

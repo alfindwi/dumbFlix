@@ -80,7 +80,7 @@ public class SeriesService {
     }
 
     @Cacheable(value = "seriesByNameCache", key = "#seriesSlug")
-    public SeriesResponse getSeriesByName(String seriesSlug) {
+    public SeriesResponse getSeriesBySlug(String seriesSlug) {
         Series series = seriesRepository.findBySeriesSlug(seriesSlug)
                 .orElseThrow(() -> new FuncErrorException("Series not found"));
 
@@ -109,13 +109,20 @@ public class SeriesService {
                     seasonDTO.setEpisodes(season.getEpisodes().stream()
                             .sorted(Comparator.comparingInt(Episode::getEpisodeNumber))
                             .map(episode -> {
+                                String slug = episode.getEpisodeSlug();
+                                if (slug == null || slug.trim().isEmpty()) {
+                                    slug = SlugGenerator.generateSlug(episode.getEpisodeName());
+                                    episode.setEpisodeSlug(slug);
+                                    seriesRepository.save(series);
+                                }
                                 return new EpisodeResponse(
                                         episode.getId(),
                                         episode.getEpisodeName(),
                                         episode.getEpisodeNumber(),
                                         episode.getEpisodeDescription(),
                                         episode.getEpisodeImage(),
-                                        episode.getEpisodeVideo(), episode.getEpisodeSlug());
+                                        episode.getEpisodeVideo(),
+                                        episode.getEpisodeSlug());
 
                             }).collect(Collectors.toList()));
                 }

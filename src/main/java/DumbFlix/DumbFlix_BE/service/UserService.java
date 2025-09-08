@@ -20,7 +20,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-
 @Service
 public class UserService implements UserDetailsService {
 
@@ -96,51 +95,36 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    public UserResponse updateUser(User user, UserRequest request, MultipartFile file) {
-        try {
-            User existingUser = userRepository.findById(user.getId())
-                    .orElseThrow(() -> new RuntimeException("User tidak ditemukan"));
+    public UserResponse updateUser(String email, UserRequest request) {
+        User existingUser = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User tidak ditemukan"));
 
-            if (file != null && !file.isEmpty()) {
-                String timeStamp = String.valueOf(System.currentTimeMillis());
-                CloudinaryResponse cloudinaryResponse = cloudinaryService.uploadImage(file, "Image_" + timeStamp);
-                existingUser.setImage(cloudinaryResponse.getUrl());
-            }
+        if (request.getImage() != null)
+            existingUser.setImage(request.getImage());
 
-            if (request.getFullName() != null) {
-                existingUser.setFullName(request.getFullName());
-            }
+        if (request.getFullName() != null)
+            existingUser.setFullName(request.getFullName());
+        if (request.getAddress() != null)
+            existingUser.setAddress(request.getAddress());
+        if (request.getPhone() != null)
+            existingUser.setPhone(request.getPhone());
+        if (request.getGender() != null)
+            existingUser.setGender(request.getGender());
 
-            if (request.getAddress() != null) {
-                existingUser.setAddress(request.getAddress());
-            }
+        userRepository.save(existingUser);
 
-            if (request.getPhone() != null) {
-                existingUser.setPhone(request.getPhone());
-            }
-
-            if (request.getGender() != null) {
-                existingUser.setGender(request.getGender());
-            }
-
-            userRepository.save(existingUser);
-
-            return UserResponse.builder()
-                    .id(existingUser.getId())
-                    .email(existingUser.getEmail())
-                    .fullName(existingUser.getFullName())
-                    .image(existingUser.getImage())
-                    .address(existingUser.getAddress())
-                    .phone(existingUser.getPhone())
-                    .gender(existingUser.getGender())
-                    .role(existingUser.getRole().toString())
-                    .status(existingUser.getStatus().toString())
-                    .password(existingUser.getPassword())
-                    .build();
-
-        } catch (Exception e) {
-            throw new FuncErrorException("Failed to update user: " + e.getMessage());
-        }
+        return UserResponse.builder()
+                .id(existingUser.getId())
+                .email(existingUser.getEmail())
+                .fullName(existingUser.getFullName())
+                .image(existingUser.getImage())
+                .address(existingUser.getAddress())
+                .phone(existingUser.getPhone())
+                .gender(existingUser.getGender())
+                .role(existingUser.getRole().toString())
+                .status(existingUser.getStatus().toString())
+                .password(existingUser.getPassword())
+                .build();
     }
 
     public Map<String, String> deleteUser(Long userId) {

@@ -11,8 +11,6 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import DumbFlix.DumbFlix_BE.dto.request.MovieRequest;
@@ -34,17 +32,15 @@ import DumbFlix.DumbFlix_BE.security.util.SlugGenerator;
 @Service
 public class MovieService {
         private final MovieRepository movieRepository;
-        private final SubcriptionService subscriptionService;
         private final CategoryRepository categoryRepository;
         private final ActorRepository actorRepository;
         private final DirectorRepository directorRepository;
 
         @Autowired
         public MovieService(MovieRepository movieRepository, CategoryRepository categoryRepository,
-                        SubcriptionService subscriptionService, ActorRepository actorRepository,
+                        ActorRepository actorRepository,
                         DirectorRepository directorRepository) {
                 this.movieRepository = movieRepository;
-                this.subscriptionService = subscriptionService;
                 this.categoryRepository = categoryRepository;
                 this.actorRepository = actorRepository;
                 this.directorRepository = directorRepository;
@@ -120,18 +116,6 @@ public class MovieService {
                 Movies movie = movieRepository.findBySlug(slug)
                                 .orElseThrow(() -> new FuncErrorException("Movie not found"));
 
-                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-                String fullName = null;
-
-                if (authentication != null && authentication.isAuthenticated()) {
-                        fullName = authentication.getName();
-                }
-
-                boolean isSubscribed = false;
-                if (fullName != null) {
-                        isSubscribed = subscriptionService.isUserSubscribed(fullName);
-                }
-
                 List<CategoryResponse> categoryResponses = movie.getCategories().stream()
                                 .map(category -> new CategoryResponse(category.getCategoryId(),
                                                 category.getCategoryName()))
@@ -147,12 +131,11 @@ public class MovieService {
                                                 director.getSlug()))
                                 .collect(Collectors.toList());
 
-                String videoUrl = isSubscribed ? movie.getVideo() : null;
 
                 return new MovieResponse(movie.getMovieId(), movie.getTitle(),
                                 movie.getDescription(),
                                 movie.getYear(), movie.getTrailer(), movie.getThumbnail(),
-                                videoUrl,
+                                movie.getVideo(),
                                 movie.getSlug(),
                                 movie.getPosters(),
                                 categoryResponses,

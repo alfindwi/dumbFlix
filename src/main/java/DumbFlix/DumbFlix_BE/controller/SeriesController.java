@@ -49,7 +49,7 @@ public class SeriesController {
 
     @GetMapping("/{seriesSlug}")
     public ResponseEntity<SeriesResponse> getSeriesByName(@PathVariable("seriesSlug") String seriesSlug) {
-        SeriesResponse seriesResponse = seriesService.getSeriesByName(seriesSlug);
+        SeriesResponse seriesResponse = seriesService.getSeriesBySlug(seriesSlug);
         return ResponseEntity.ok(seriesResponse);
     }
 

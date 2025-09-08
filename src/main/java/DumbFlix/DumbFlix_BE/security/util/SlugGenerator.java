@@ -4,8 +4,8 @@ public class SlugGenerator {
     public static String generateSlug(String input) {
         return input
                 .toLowerCase()
-                .replaceAll("[^a-z0-9\\s-]", "") // hapus karakter selain huruf/angka/spasi
-                .replaceAll("\\s+", "-");       // ganti spasi jadi tanda "-"
+                .replaceAll("[^a-z0-9\\s-]", "") 
+                .replaceAll("\\s+", "-");     
     }
 }
 
