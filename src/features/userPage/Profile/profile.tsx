@@ -12,20 +12,37 @@ import {
 import { useEffect, useState } from "react";
 import { BiCheck, BiX } from "react-icons/bi";
 import { MdOutlineEdit } from "react-icons/md";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { PrimaryButton } from "../../../features/components/button";
+import { useAppDispatch, useAppSelector } from "../../../store";
+import { updateUser } from "../../../store/user/async";
+import { IUser } from "../../../types/user";
 
 export function ProfileContent() {
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const [name, setName] = useState("Apin Dwi");
-  const [photo, setPhoto] = useState<string>("");
+  const location = useLocation();
+
+  const { users, loading } = useAppSelector((state) => state.user);
+
+  const [fullName, setFullName] = useState("");
+  const [image, setImage] = useState("");
+
+  
 
   useEffect(() => {
-    const selectedAvatar = localStorage.getItem("selectedAvatar");
-    if (selectedAvatar) {
-      setPhoto(selectedAvatar);
+    if (users) {
+      setFullName(users.fullName || "");
+      setImage(users.image || "");
     }
-  }, []);
+  }, [users]);
+
+  useEffect(() => {
+    if (location.state?.selectedAvatar) {
+      setImage(location.state.selectedAvatar);
+    }
+  }, [location.state]);
+
   return (
     <Flex minH="100vh" align="center" justify="center" p={4}>
       <Box
@@ -56,7 +73,7 @@ export function ProfileContent() {
             onClick={() => navigate("/profile-icons")}
             w="96px"
             h="96px"
-            borderRadius="md"
+            borderRadius="lg"
             overflow="hidden"
             border="3px solid"
             borderColor="red.600"
@@ -69,7 +86,7 @@ export function ProfileContent() {
             }}
           >
             <Image
-              src={photo || ""}
+              src={image || ""}
               alt="Profile"
               w="full"
               h="full"
@@ -99,9 +116,9 @@ export function ProfileContent() {
               Profile Name
             </Text>
             <Input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Enter profile name"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              placeholder="Name"
               bg="gray.800"
               borderColor="gray.600"
               color="white"
@@ -124,7 +141,12 @@ export function ProfileContent() {
               fontWeight="semibold"
               boxShadow="md"
               leftIcon={<BiCheck size={18} />}
-            
+              isLoading={loading}
+              onClick={() => {
+                dispatch(updateUser({ ...users, fullName, image } as IUser))
+                  .unwrap()
+                 
+              }}
             >
               Save
             </PrimaryButton>
@@ -137,6 +159,10 @@ export function ProfileContent() {
               h="40px"
               fontSize="md"
               fontWeight="semibold"
+              onClick={() => {
+                setFullName(users?.fullName || "");
+                setImage(users?.image || "");
+              }}
               leftIcon={<BiX size={18} />}
             >
               Cancel

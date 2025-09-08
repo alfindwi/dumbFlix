@@ -20,15 +20,15 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import { TiPencil } from "react-icons/ti";
 import Cookies from "js-cookie";
 import { BiSolidCameraMovie } from "react-icons/bi";
 import { FaRegUser, FaSignOutAlt } from "react-icons/fa";
 import { FaTv } from "react-icons/fa6";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { ImExit, ImHome } from "react-icons/im";
+import { TiPencil } from "react-icons/ti";
 import { Link, useNavigate } from "react-router-dom";
-import { useAppDispatch } from "../../store";
+import { useAppDispatch, useAppSelector } from "../../store";
 import { logout } from "../../store/auth/slice";
 import { SearchBar } from "./searchBar";
 
@@ -38,6 +38,8 @@ export function Navbar() {
   const navigate = useNavigate();
   const toast = useToast();
   const isMobile = useBreakpointValue({ base: true, md: false });
+
+  const { users } = useAppSelector((state) => state.user);
 
   const handleLogout = () => {
     Cookies.remove("token");
@@ -54,6 +56,8 @@ export function Navbar() {
 
     navigate("/login");
   };
+
+  
 
   return (
     <Flex
@@ -96,24 +100,15 @@ export function Navbar() {
         </Flex>
       )}
 
-      <Flex
-        justify="center"
-        position={{ base: "absolute", md: "relative" }}
-        left={{ base: "50%", md: "auto" }}
-        transform={{ base: "translateX(-50%)", md: "none" }}
-        as={Link}
-        to="/"
-      ></Flex>
-
       {!isMobile && (
         <Flex gap={2} mr={9} alignItems="center" zIndex={10}>
           <Menu>
             <SearchBar />
             <MenuButton as={Box} cursor="pointer">
               <Avatar
-                src="https://i.pinimg.com/736x/4e/d1/c8/4ed1c8ae3c42f348db7eedb18abe2300.jpg"
+                src={users?.image || ""}
                 borderRadius="md"
-                boxSize="40px"
+                boxSize="45px"
               />
             </MenuButton>
             <MenuList bgColor="blackAlpha.600" zIndex="1000">

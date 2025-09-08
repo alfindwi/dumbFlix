@@ -114,7 +114,6 @@ export function DetailMovieContent() {
         </Flex>
 
         {isPlaying ? (
-          <AspectRatio ratio={16 / 9} height="100%">
             <ReactPlayer
               url={movie.video}
               width="100%"
@@ -122,7 +121,7 @@ export function DetailMovieContent() {
               playing
               controls
             />
-          </AspectRatio>
+          
         ) : (
           <>
             <Img

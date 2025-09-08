@@ -8,6 +8,7 @@ import seriesReducer from "./series/slice";
 import planReducer from "./plans/slice";
 import episodeReducer from "./episode/slice";
 import searchReducer from "./search/slice";
+import userReducer from "./user/slice";
 import { useDispatch, useSelector } from 'react-redux';
 
 const store = configureStore({
@@ -20,7 +21,8 @@ const store = configureStore({
         episode: episodeReducer,
         search: searchReducer,
         plan: planReducer,
-        payment: paymentReducer
+        payment: paymentReducer,
+        user: userReducer
     }
 })
 

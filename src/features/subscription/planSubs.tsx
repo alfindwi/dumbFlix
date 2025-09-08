@@ -27,7 +27,7 @@ export function SubscriptionPlans() {
   const [selected, setSelected] = useState<string>("Basic");
 
   const { plans } = useAppSelector((state) => state.plan);
-  const { payment, loading, error } = useAppSelector((state) => state.payment);
+  const { loading } = useAppSelector((state) => state.payment);
 
   useEffect(() => {
     dispatch(getPlans());

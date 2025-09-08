@@ -18,11 +18,9 @@ export const PrimaryButton: React.FC<PrimaryButtonProps> = ({ to, children, ...p
     transition: "all 0.2s ease-in-out",
     _hover: {
       bgColor: "#c40b14",
-      transform: "scale(1.05)",
       boxShadow: "lg",
     },
     _active: {
-      transform: "scale(0.98)",
       bgColor: "#a1080f",
     },
   };

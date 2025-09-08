@@ -27,17 +27,21 @@ export const avatarData = [
     ],
   },
   {
-    title: "Stranger Things",
+    title: "Wednesday",
     images: [
-      "https://i.pinimg.com/736x/78/73/07/78730784e6335107f0af5cd57b40cf59.jpg",
-      "https://i.pinimg.com/1200x/90/9f/78/909f7811907f9add78b702e96508c166.jpg",
+      "https://i.pinimg.com/736x/52/53/2d/52532d62d8473f02b0f072cb74e7544e.jpg",
+      "https://i.pinimg.com/1200x/20/a9/c1/20a9c1f3d40082d427f7ae3bd3eb085c.jpg",
+      "https://i.pinimg.com/736x/fc/29/8d/fc298d14c33e45d49c5fc1f3c7fdd10a.jpg",
     ],
   },
   {
-    title: "Arcane",
+    title: "Money Heist",
     images: [
-      "https://i.pinimg.com/1200x/d7/14/89/d71489f4403159fa1b89350b72cf7ff6.jpg",
-      "https://i.pinimg.com/1200x/31/ce/54/31ce548706a44b8fa8413bf5d6081a46.jpg",
+      "https://res.cloudinary.com/db2rr1kej/image/upload/v1757314479/Untitled_design_w3k1zb.png",
+      "https://i.pinimg.com/736x/63/c0/b3/63c0b36bb297868b065477a55ff3231c.jpg",
+      "https://i.pinimg.com/736x/54/e2/f3/54e2f3f7c18cedcf64a7229cb2813c12.jpg",
+      "https://i.pinimg.com/736x/20/20/06/202006aa11f9425bcbfd2107947b0612.jpg",
+      "https://i.pinimg.com/1200x/cb/f8/22/cbf822237f6be98c56e9a4a77d6e239b.jpg",
     ],
   },
 ];

@@ -6,8 +6,7 @@ import { avatarData } from "./avatarRow";
 export function ProfileIconsPage() {
   const navigate = useNavigate();
   const handleSelected = (avatar: string) => {
-    localStorage.setItem("selectedAvatar", avatar);
-    navigate("/profile");
+    navigate("/profile", {state : {selectedAvatar : avatar}});
   };
 
   return (

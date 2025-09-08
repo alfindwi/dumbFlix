@@ -87,31 +87,59 @@ const routes: RouteObject[] = [
       },
       {
         path: "/subscription/plans",
-        element: <SubscriptionPlans />,
+        element: (
+          <ProtectedRoute allowedRole={["USER"]}>
+            <SubscriptionPlans />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/account",
-        element: <Account />,
+        element: (
+          <ProtectedRoute allowedRole={["USER"]}>
+            <Account />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/tvSeries",
-        element: <TvShowContent />,
+        element: (
+          <ProtectedRoute allowedRole={["USER"]}>
+            <TvShowContent />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/movies",
-        element: <MovieContent />,
+        element: (
+          <ProtectedRoute allowedRole={["USER"]}>
+            <MovieContent />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/series/:seriesSlug",
-        element: <DetailSeriesContent />,
+        element: (
+          <ProtectedRoute allowedRole={["USER"]}>
+            <DetailSeriesContent />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/movie/:slug",
-        element: <DetailMovieContent />,
+        element: (
+          <ProtectedRoute allowedRole={["USER"]}>
+            <DetailMovieContent />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/episode/:seriesSlug/:seasonNumber/:episodeSlug",
-        element: <EpisodeContent />,
+        element: (
+          <ProtectedRoute allowedRole={["USER"]}>
+            <EpisodeContent />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "*",
@@ -119,11 +147,19 @@ const routes: RouteObject[] = [
       },
       {
         path: "/search/:keyword",
-        element: <Search />,
+        element: (
+          <ProtectedRoute allowedRole={["USER"]}>
+            <Search />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/profile",
-        element: <ProfileContent />,
+        element: (
+          <ProtectedRoute allowedRole={["USER"]}>
+            <ProfileContent />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/login",
@@ -135,7 +171,11 @@ const routes: RouteObject[] = [
       },
       {
         path: "/profile-icons",
-        element: <ProfileIconsPage />,
+        element: (
+          <ProtectedRoute allowedRole={["USER"]}>
+            <ProfileIconsPage />
+          </ProtectedRoute>
+        ),
       },
     ],
   },
