@@ -5,6 +5,7 @@ import { Box, Flex } from "@chakra-ui/react";
 import { Outlet, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { getCurrentUser } from "../store/user/async";
+import Cookies from "js-cookie";
 
 export function LayoutUser() {
   const location = useLocation();
@@ -24,8 +25,11 @@ export function LayoutUser() {
   const hideNavbar = hiddenRoutes.includes(location.pathname) || isMovieDetail;
 
   useEffect(() => {
-    dispatch(getCurrentUser());
-  }, [dispatch]);
+    const token = Cookies.get("token");
+    if (token) {
+      dispatch(getCurrentUser());
+    }
+  }, [dispatch, Cookies.get("token")]);
 
   return (
     <Flex direction="column" minH="100vh">

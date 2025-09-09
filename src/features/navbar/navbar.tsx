@@ -57,8 +57,6 @@ export function Navbar() {
     navigate("/login");
   };
 
-  
-
   return (
     <Flex
       as="nav"
@@ -75,7 +73,8 @@ export function Navbar() {
       color="white"
     >
       {isMobile ? (
-        <>
+        <Flex w="100%">
+          {/* Left: Menu */}
           <IconButton
             icon={<GiHamburgerMenu />}
             aria-label="Open Menu"
@@ -84,8 +83,35 @@ export function Navbar() {
             fontSize="24px"
             onClick={onOpen}
           />
-          <SearchBar />
-        </>
+
+          <Flex w="100%" justify="end" gap={2} align="center">
+            <SearchBar />
+
+            <Menu>
+              <MenuButton as={Box} cursor="pointer">
+                <Avatar
+                  src={users?.image || ""}
+                  borderRadius="md"
+                  boxSize="45px"
+                />
+              </MenuButton>
+              <MenuList bgColor="blackAlpha.600" zIndex="1000">
+                <MenuItem as={Link} to="/profile" bgColor={"blackAlpha.600"}>
+                  <TiPencil style={{ marginRight: "10px" }} size={20} />
+                  Manage Profile
+                </MenuItem>
+                <MenuItem as={Link} to="/account" bgColor={"blackAlpha.600"}>
+                  <FaRegUser style={{ marginRight: "10px" }} size={20} />
+                  Account
+                </MenuItem>
+                <MenuItem onClick={handleLogout} bgColor={"blackAlpha.600"}>
+                  <ImExit style={{ marginRight: "10px" }} />
+                  Logout
+                </MenuItem>
+              </MenuList>
+            </Menu>
+          </Flex>
+        </Flex>
       ) : (
         <Flex alignItems="center" fontWeight="bold" gap={7} ml={8}>
           <Text as={Link} to="/dashboard" cursor="pointer" color="white">

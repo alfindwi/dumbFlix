@@ -44,7 +44,6 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowedRole }
   if (!token) return <Navigate to="/login" />;
   if (!allowedRole.includes(role || "")) return <Navigate to="/" />;
 
-  // Hanya cek subscription untuk USER
   if (role === "USER" && isSubscriptionActive !== "true") {
     return <Navigate to="/subscription/plans" />;
   }

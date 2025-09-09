@@ -20,7 +20,10 @@ export function Footer() {
 
   return (
     <Box bg="transparent" color="white" py={6}>
-      <Divider borderColor="gray.600" display={{ base: "block", md: "block" }} />
+      <Divider
+        borderColor="gray.600"
+        display={{ base: "block", md: "block" }}
+      />
 
       <Box
         mt={4}
@@ -43,11 +46,12 @@ export function Footer() {
           mt={2}
           color={"#929292"}
           w={{ base: "100%", md: "550px" }}
-          textAlign={{base: "center", md: "justify"}}
+          textAlign={{ base: "center", md: "justify" }}
         >
-          Platform ini tidak menampilkan film asli secara penuh. Untuk menonton
-          versi resmi, silakan gunakan layanan seperti Netflix, Hulu, Disney+
-          Hotstar, Amazon Prime Video, dan lainnya.
+          ALFLIX adalah platform streaming digital yang menghadirkan koleksi
+          film dan serial pilihan dari berbagai genre. Kami berkomitmen
+          memberikan pengalaman menonton terbaik, dengan kualitas tayangan
+          premium yang dapat diakses kapan saja dan di mana saja.
         </Text>
       </Box>
 

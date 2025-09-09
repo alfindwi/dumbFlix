@@ -1,13 +1,22 @@
+import { useAppDispatch, useAppSelector } from "../../../store";
+import { getAvatar } from "../../../store/avatar/async";
 import { Box, Flex, Img, Text } from "@chakra-ui/react";
+import { useEffect } from "react";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { Link, useNavigate } from "react-router-dom";
-import { avatarData } from "./avatarRow";
 
 export function ProfileIconsPage() {
+  const dispacth = useAppDispatch();
   const navigate = useNavigate();
   const handleSelected = (avatar: string) => {
-    navigate("/profile", {state : {selectedAvatar : avatar}});
+    navigate("/profile", { state: { selectedAvatar: avatar } });
   };
+
+  const { avatars } = useAppSelector((state) => state.avatar);
+
+  useEffect(() => {
+    dispacth(getAvatar());
+  }, [dispacth]);
 
   return (
     <Box position="relative" w="full" h="100vh" px={2} py={4} overflowY="auto">
@@ -42,14 +51,14 @@ export function ProfileIconsPage() {
         </Flex>
       </Flex>
 
-      {avatarData.map((group, i) => (
+      {avatars.map((group, i) => (
         <Box key={i} mb={8} px={8}>
           <Text fontSize="xl" fontWeight="bold" color="white" mb={4}>
             {group.title}
           </Text>
 
           <Flex wrap="wrap" gap={6}>
-            {group.images.map((src, idx) => (
+            {group.image.map((src, idx) => (
               <Box
                 key={idx}
                 w="140px"

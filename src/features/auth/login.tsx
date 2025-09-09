@@ -18,6 +18,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { loginAsync } from "../../store/auth/async";
 import { PrimaryButton } from "../components/button";
 import Cookies from "js-cookie";
+import { getCurrentUser } from "../../store/user/async";
 
 export function Login() {
   const dispatch = useAppDispatch();
@@ -68,6 +69,8 @@ export function Login() {
         } else {
           navigate("/subscription/plans");
         }
+
+        dispatch(getCurrentUser());
       } else if (loginAsync.rejected.match(res)) {
         toast({
           title: "Login failed",

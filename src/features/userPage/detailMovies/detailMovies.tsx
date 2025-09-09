@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  AspectRatio,
   Badge,
   Box,
   Button,
@@ -28,7 +27,7 @@ export function DetailMovieContent() {
   const toast = useToast();
   const [isPlaying, setIsPlaying] = useState(false);
   const { movies, loading } = useAppSelector((state) => state.movie);
-  const { user } = useAppSelector((state) => state.auth);
+  const { users } = useAppSelector((state) => state.user);
   const movie = Array.isArray(movies) ? movies[0] : movies;
 
   useEffect(() => {
@@ -45,7 +44,7 @@ export function DetailMovieContent() {
   }, [movie?.title]);
 
   const handlePlayClick = () => {
-    if (!user) {
+    if (!users) {
       toast({
         title: "Please login first",
         status: "info",
