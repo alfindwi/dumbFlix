@@ -278,7 +278,6 @@ public class MovieService {
                 Movies existingMovie = movieRepository.findById(movieId)
                                 .orElseThrow(() -> new FuncErrorException("Movie not found"));
 
-                // --- Basic fields ---
                 if (request.getTitle() != null)
                         existingMovie.setTitle(request.getTitle());
                 if (request.getDescription() != null)
@@ -295,7 +294,6 @@ public class MovieService {
                 if (videoUrl != null)
                         existingMovie.setVideo(videoUrl);
 
-                // --- Update Categories ---
                 if (request.getCategoryIds() != null) {
                         if (request.getCategoryIds().isEmpty()) {
                                 existingMovie.setCategories(Collections.emptySet());
@@ -309,7 +307,6 @@ public class MovieService {
                         }
                 }
 
-                // --- Update Actors ---
                 if (request.getActorsIds() != null) {
                         if (request.getActorsIds().isEmpty()) {
                                 existingMovie.setActors(Collections.emptySet());
@@ -323,7 +320,6 @@ public class MovieService {
                         }
                 }
 
-                // --- Update Directors ---
                 if (request.getDirectorsIds() != null) {
                         if (request.getDirectorsIds().isEmpty()) {
                                 existingMovie.setDirectors(Collections.emptySet());
@@ -339,7 +335,6 @@ public class MovieService {
 
                 Movies updatedMovie = movieRepository.save(existingMovie);
 
-                // --- Mapping ke Response ---
                 return new MovieResponse(
                                 updatedMovie.getMovieId(),
                                 updatedMovie.getTitle(),

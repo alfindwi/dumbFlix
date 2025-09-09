@@ -49,7 +49,7 @@ public class SecurityConfig {
                 }) 
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/payment/notification").permitAll()
+                        .requestMatchers("/api/payment/notification", "/api/avatar/**").permitAll()
                         .requestMatchers("/api/auth/**", "/api/category/**", "/api/movie/**", "/api/series/**",
                                 "/api/season/**", "/api/episode/**", "/api/search/**", "/api/plan/**",
                                 "/api/actor/**", "/api/director/**")

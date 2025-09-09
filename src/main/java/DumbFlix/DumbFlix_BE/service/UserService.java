@@ -65,6 +65,18 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
+    public UserResponse createAvatar(MultipartFile file) {
+        try {
+            CloudinaryResponse cloudinaryResponse = cloudinaryService.uploadImage(file, "Image");
+            return UserResponse.builder()
+                    .image(cloudinaryResponse.getUrl())
+                    .build();
+        } catch (Exception e) {
+            System.err.println("❌ Gagal memperbarui gambar: " + e.getMessage());
+            throw new RuntimeException("Gagal memperbarui gambar: " + e.getMessage());
+        }
+    }
+
     public UserResponse updateImage(User user, MultipartFile file) {
         try {
             User userInDb = userRepository.findById(user.getId())
