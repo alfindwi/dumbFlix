@@ -21,8 +21,9 @@ export function LayoutUser() {
   ];
 
   const isMovieDetail = location.pathname.startsWith("/movie/");
+  const isSeriesDetail = location.pathname.startsWith("/series/");
 
-  const hideNavbar = hiddenRoutes.includes(location.pathname) || isMovieDetail;
+  const hideNavbar = hiddenRoutes.includes(location.pathname) || isMovieDetail || isSeriesDetail;
 
   useEffect(() => {
     const token = Cookies.get("token");

@@ -10,12 +10,14 @@ import {
 interface movieState {
   movies: IMovie[];
   loading: boolean;
+  detailMovie: IMovie | null;
   error: string | null;
 }
 
 const initialState: movieState = {
   movies: [],
   loading: false,
+  detailMovie: null,
   error: null,
 };
 
@@ -64,7 +66,7 @@ const movieSlice = createSlice({
       })
       .addCase(getMovieBySlug.fulfilled, (state, action) => {
         state.loading = false;
-        state.movies = action.payload;
+        state.detailMovie = action.payload;
       })
       .addCase(getMovieBySlug.rejected, (state, action) => {
         state.loading = false;

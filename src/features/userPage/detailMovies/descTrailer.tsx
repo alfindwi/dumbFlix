@@ -1,4 +1,14 @@
-import { Badge, Box, Center, Flex, HStack, Img, Spinner, Text, VStack } from "@chakra-ui/react";
+import {
+  Badge,
+  Box,
+  Center,
+  Flex,
+  HStack,
+  Img,
+  Spinner,
+  Text,
+  VStack,
+} from "@chakra-ui/react";
 import ReactPlayer from "react-player";
 import { useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../store";
@@ -8,8 +18,8 @@ import { getMovieByName } from "../../../store/movie/async";
 export function DescTrailerMovie() {
   const { title } = useParams();
   const dispatch = useAppDispatch();
-  const { movies, loading } = useAppSelector((state) => state.movie);
-  const movie = Array.isArray(movies) ? movies[0] : movies;
+  const { loading, detailMovie } = useAppSelector((state) => state.movie);
+  const movie = Array.isArray(detailMovie) ? detailMovie[0] : detailMovie;
 
   const extractYouTubeId = (url: string): string => {
     const regExp =
@@ -55,7 +65,14 @@ export function DescTrailerMovie() {
                   {movie.title}
                 </Text>
                 <HStack spacing={4} mb={4}>
-                  <Text color="gray.400">{movie.year}</Text>
+                  <Box>
+                    <Text fontSize="sm" color="gray.400" mb={2}>
+                      Synopsis:
+                    </Text>
+                    <Text fontSize="sm" lineHeight="1.6" color="gray.300">
+                      {movie.description}
+                    </Text>
+                  </Box>
                 </HStack>
               </Box>
 
@@ -65,7 +82,7 @@ export function DescTrailerMovie() {
                 </Text>
                 <Flex gap={2} flexWrap="wrap">
                   {Array.isArray(movie.categories) &&
-                    movie.categories.map((cat) => (
+                    movie.categories.map((cat: { id: string | number; categoryName: string }) => (
                       <Badge
                         key={cat.id}
                         variant="subtle"
@@ -76,15 +93,6 @@ export function DescTrailerMovie() {
                       </Badge>
                     ))}
                 </Flex>
-              </Box>
-
-              <Box>
-                <Text fontSize="sm" color="gray.400" mb={2}>
-                  Synopsis:
-                </Text>
-                <Text fontSize="sm" lineHeight="1.6" color="gray.300">
-                  {movie.description}
-                </Text>
               </Box>
             </VStack>
           </Flex>

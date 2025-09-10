@@ -9,13 +9,9 @@ import {
 } from "@chakra-ui/react";
 import { useEffect } from "react";
 import ReactPlayer from "react-player";
-import { useParams } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../../../store";
-import { getSeriesByName } from "../../../store/series/async";
+import { useAppSelector } from "../../../store";
 
 export function DescTrailer() {
-  const { seriesSlug } = useParams();
-  const dispatch = useAppDispatch();
   const { selectedSeries: seriesDetail, loading } = useAppSelector(
     (state) => state.series
   );
@@ -27,13 +23,7 @@ export function DescTrailer() {
     return match ? match[1] : "";
   };
 
-  useEffect(() => {
-    if (seriesSlug) {
-      dispatch(getSeriesByName(seriesSlug));
-    }
 
-    window.scrollTo({ top: 0 });
-  }, [seriesSlug, dispatch]);
 
   useEffect(() => {
     if (seriesDetail?.seriesName) {
@@ -53,12 +43,12 @@ export function DescTrailer() {
   }
 
   return (
-    <Box ml={{ base: "10px", md: "50px", lg: "40ppx" }} mt={"30px"} mb={"50px"}>
+    <Box px={{ base: "20px", md: "60px" }} py={8}>
       <Flex align="flex-start" direction={"row"}>
         <Img
           src={seriesDetail.poster}
-          w={{ base: "80px", md: "90px", lg: "100px" }}
-          h={{ base: "120px", md: "130px", lg: "150px" }}
+          w={{ base: "80px", md: "90px", lg: "120px" }}
+          h={{ base: "120px", md: "130px", lg: "180px" }}
           mr="20px"
           loading="lazy"
           draggable="false"
@@ -125,7 +115,7 @@ export function DescTrailer() {
             {seriesDetail.description}
           </Text>
         </Box>
-        <Box ml={"150px"} display={{ base: "none", md: "block", lg: "block" }}>
+        <Flex ml={"100px"} display={{ base: "none", md: "block", lg: "block" }}>
           <ReactPlayer
             url={`https://www.youtube.com/watch?v=${extractYouTubeId(
               seriesDetail.trailer
@@ -136,7 +126,7 @@ export function DescTrailer() {
           <Text mt={2} fontSize={"14px"}>
             Trailer : {seriesDetail.seriesName}
           </Text>
-        </Box>
+        </Flex>
       </Flex>
     </Box>
   );

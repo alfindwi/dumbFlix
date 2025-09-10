@@ -1,4 +1,4 @@
-"use client";
+
 
 import {
   Badge,
@@ -10,7 +10,7 @@ import {
   Img,
   Spinner,
   Text,
-  useToast
+  useToast,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { FaArrowLeftLong } from "react-icons/fa6";
@@ -20,13 +20,16 @@ import { Link, useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { getMovieBySlug } from "../../../store/movie/async";
 import { DescTrailerMovie } from "./descTrailer";
+import { RecommendMovie } from "./recommendMovie";
 
 export function DetailMovieContent() {
   const { slug } = useParams();
   const dispatch = useAppDispatch();
   const toast = useToast();
   const [isPlaying, setIsPlaying] = useState(false);
-  const { movies, loading } = useAppSelector((state) => state.movie);
+  const { detailMovie: movies, loading } = useAppSelector(
+    (state) => state.movie
+  );
   const { users } = useAppSelector((state) => state.user);
   const movie = Array.isArray(movies) ? movies[0] : movies;
 
@@ -106,21 +109,19 @@ export function DetailMovieContent() {
               color="gray.200"
               textShadow="1px 1px 2px rgba(0,0,0,0.8)"
             >
-              {movie.year} •{" "}
-              {movie.categories?.map((c) => c.categoryName).join(", ")}
+              {movie.year}
             </Text>
           </Flex>
         </Flex>
 
         {isPlaying ? (
-            <ReactPlayer
-              url={movie.video}
-              width="100%"
-              height="100%"
-              playing
-              controls
-            />
-          
+          <ReactPlayer
+            url={movie.video}
+            width="100%"
+            height="100%"
+            playing
+            controls
+          />
         ) : (
           <>
             <Img
@@ -230,6 +231,7 @@ export function DetailMovieContent() {
       </Box>
 
       <DescTrailerMovie />
+      <RecommendMovie />
     </Box>
   );
 }

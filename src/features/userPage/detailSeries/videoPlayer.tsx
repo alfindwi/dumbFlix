@@ -1,9 +1,8 @@
 import {
-    AspectRatio,
-    Box,
-    Img,
-    useBreakpointValue,
-    useToast
+  AspectRatio,
+  Box,
+  Img,
+  useBreakpointValue
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { MdPlayArrow } from "react-icons/md";
@@ -11,26 +10,13 @@ import ReactPlayer from "react-player";
 import { useAppSelector } from "../../../store";
 
 export function VideoPlayer() {
-  const toast = useToast();
   const { episode } = useAppSelector((state) => state.episode);
-  const { user } = useAppSelector((state) => state.auth);
   const [isPlaying, setIsPlaying] = useState(false);
 
   const playIconSize = useBreakpointValue({ base: "40px", md: "60px" });
   const playPadding = useBreakpointValue({ base: "8px", md: "12px" });
 
   const handlePlayClick = () => {
-    if (!user) {
-      toast({
-        title: "Please login first",
-        status: "info",
-        duration: 3000,
-        isClosable: true,
-        position: "top",
-      });
-      return;
-    }
-
     setIsPlaying(true);
   };
 

@@ -1,16 +1,14 @@
 import {
   Box,
-  Divider,
+  Button,
   Flex,
-  Image,
-  List,
-  ListItem,
-  Text,
+  Img,
+  Select,
+  Text
 } from "@chakra-ui/react";
-import { AnimatePresence, motion } from "framer-motion";
 import React, { useState } from "react";
+import { BiPlay } from "react-icons/bi";
 import { Link } from "react-router-dom";
-import { IEpisode } from "../../../types/episode";
 import { ISeason } from "../../../types/season";
 
 interface SeasonProps {
@@ -19,113 +17,90 @@ interface SeasonProps {
 }
 
 export const Season: React.FC<SeasonProps> = ({ seasons, seriesSlug }) => {
-  const [openSeasons, setOpenSeasons] = useState<Record<number, boolean>>({});
+  const [selectedSeason, setSelectedSeason] = useState<number>(
+    seasons[0]?.seasonNumber || 1
+  );
 
-  const toggleSeason = (seasonNumber: number) => {
-    setOpenSeasons((prev) => ({
-      ...prev,
-      [seasonNumber]: !prev[seasonNumber],
-    }));
+  const handleSeasonChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedSeason(Number(e.target.value));
   };
 
+  const activeSeason = seasons.find(
+    (season) => season.seasonNumber === selectedSeason
+  );
+
   return (
-    <Box
-      bgColor="black"
-      ml="20px"
-      mr="20px"
-      p="10px"
-      borderRadius="8px"
-      cursor={"pointer"}
-    >
-      {seasons
-        .slice()
-        .reverse()
-        .map((season) => (
-          <div key={season.seasonNumber}>
-            <Box
-              cursor="pointer"
-              fontWeight="bold"
-              p="10px"
-              bg="black"
-              border="1px solid white"
-              borderRadius="8px"
-              onClick={() => toggleSeason(season.seasonNumber)}
-              mb="5px"
-            >
-              Season {season.seasonNumber}{" "}
-              {openSeasons[season.seasonNumber] ? "" : ""}
+    <Box px={{ base: "20px", md: "60px" }} py={8}>
+      <Flex justifyContent="space-between" alignItems="center" mb={4}>
+        <Text fontSize="2xl" fontWeight="bold">
+          Episodes
+        </Text>
+        <Select
+          maxW="250px"
+          value={selectedSeason}
+          onChange={handleSeasonChange}
+        >
+          {seasons.map((season) => (
+            <option key={season.seasonNumber} value={season.seasonNumber}>
+              Season {season.seasonNumber}
+            </option>
+          ))}
+        </Select>
+      </Flex>
+          
+      <Box>
+        {activeSeason?.episodes.map((episode, index) => (
+          <Flex
+            key={index + 1}
+            cursor={"pointer"}
+            gap={4}
+            p={4}
+            borderRadius="lg"
+            as={Link}
+            to={`/episode/${seriesSlug}/${selectedSeason}/${episode.episodeSlug}`}
+            _hover={{ bg: "gray.800" }}
+            transition="background-color 0.2s ease"
+            align="flex-start"
+            
+            mb={4}
+          >
+            <Text fontSize="2xl" fontWeight="bold" color="gray.400" w="32px">
+              {episode.episodeNumber}
+            </Text>
+
+            <Img
+              src={episode.episodeImage}
+              w="128px"
+              h="80px"
+              objectFit="cover"
+              borderRadius="md"
+            />
+
+            <Box flex="1">
+              <Flex align="center" justify="space-between" mb={2}>
+                <Text fontWeight="semibold">
+                  Chapter {episode.episodeName}: The Vanishing of Will Byers
+                </Text>
+              </Flex>
+
+              <Text fontSize="sm" color="gray.400" noOfLines={2}>
+                {episode.episodeDescription}
+              </Text>
             </Box>
 
-            <AnimatePresence>
-              {openSeasons[season.seasonNumber] && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: "auto", opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.4, ease: "easeInOut" }}
-                  style={{ overflow: "hidden" }}
-                >
-                  <List
-                    spacing={2}
-                    mt={2}
-                    p={2}
-                    bg="#0f0e0e"
-                    borderRadius="8px"
-                  >
-                    {season.episodes.map((episode: IEpisode) => {
-                      return (
-                        <Box
-                          as={Link}
-                          to={`/episode/${seriesSlug}/${season.seasonNumber}/${episode.episodeSlug}`}
-                        >
-                          <ListItem
-                            key={episode.episodeName}
-                            p={2}
-                            borderRadius="5px"
-                            as={Link}
-                            to={`/episode/${seriesSlug}/${season.seasonNumber}/${episode.episodeSlug}`}
-                          >
-                            <Flex align="center" role="group">
-                              <Image
-                                src={episode.episodeImage}
-                                alt={episode.episodeName}
-                                borderRadius="5px"
-                                w="100px"
-                                mr={3}
-                              />
-                              <Divider
-                                orientation="vertical"
-                                borderColor="#363434"
-                                height="30px"
-                                mr={3}
-                                ml={3}
-                              />
-                              <Box>
-                                <Text fontSize="sm" color="gray.400" mb={1}>
-                                  Season {season.seasonNumber} • Episode{" "}
-                                  {episode.episodeNumber}
-                                </Text>
-                                <Text
-                                  fontWeight="semibold"
-                                  fontSize="md"
-                                  transition="0.2s"
-                                  color="white"
-                                  _groupHover={{ color: "#cb0404" }}
-                                >
-                                  {episode.episodeName}
-                                </Text>
-                              </Box>
-                            </Flex>
-                          </ListItem>
-                        </Box>
-                      );
-                    })}
-                  </List>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              borderRadius="full"
+              _hover={{ bg: "gray.700" }}
+              minW="40px"
+              h="40px"
+            >
+              <BiPlay size={16} />
+            </Button>
+          </Flex>
         ))}
+      </Box>
     </Box>
   );
 };

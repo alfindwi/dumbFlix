@@ -62,7 +62,6 @@ export function EpisodeContent() {
             flexDirection="column"
           >
             <VideoPlayer/>
-
             <ButtonPrevNext />
           </Flex>
         </Box>
