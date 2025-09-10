@@ -1,6 +1,8 @@
 package DumbFlix.DumbFlix_BE.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -56,10 +58,59 @@ public class AvatarService {
             }).toList();
 
             categories.setAvatars(avatars);
+            categoryRepo.save(categories);
             return new AvatarResponse(categories.getTitle(), avatars.stream().map(Avatar::getImageUrl).toList());
 
         } catch (Exception e) {
             throw new FuncErrorException("Failed to create avatar: " + e.getMessage());
         }
     }
+
+    public AvatarResponse updateAvatar(Long avatarId, AvatarRequest avatarRequest, List<MultipartFile> image) {
+        try {
+            AvatarCategories existingCategories = categoryRepo.findById(avatarId)
+                    .orElseThrow(() -> new FuncErrorException("Avatar not found"));
+
+            existingCategories.setTitle(
+                    avatarRequest.getTitle() != null ? avatarRequest.getTitle() : existingCategories.getTitle());
+
+            if (image != null && !image.isEmpty()) {
+                List<Avatar> avatars = image.stream().map(file -> {
+                    try {
+                        CloudinaryResponse cloudinaryResponse = cloudinaryService.uploadImage(file, "Avatar");
+                        Avatar avatar = new Avatar();
+                        avatar.setImageUrl(cloudinaryResponse.getUrl());
+                        avatar.setCategories(existingCategories);
+                        return avatar;
+                    } catch (Exception e) {
+                        throw new RuntimeException("Upload gagal: " + file.getOriginalFilename(), e);
+                    }
+                }).toList();
+
+                existingCategories.getAvatars().addAll(avatars);
+            }
+
+            categoryRepo.save(existingCategories);
+
+            return new AvatarResponse(
+                    existingCategories.getTitle(),
+                    existingCategories.getAvatars().stream()
+                            .map(Avatar::getImageUrl)
+                            .toList());
+        } catch (Exception e) {
+            throw new FuncErrorException("Failed to update avatar: " + e.getMessage());
+        }
+    }
+
+    public Map<String, String> deleteAvatar(Long avatarId) {
+        try {
+            categoryRepo.deleteById(avatarId);
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Avatar deleted successfully");
+            return response;
+        } catch (Exception e) {
+            throw new FuncErrorException("Failed to delete avatar: " + e.getMessage());
+        }
+    }
+
 }

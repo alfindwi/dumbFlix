@@ -70,7 +70,7 @@ public class CloudinaryService {
 
             Map<String, Object> uploadParams = ObjectUtils.asMap(
                     "resource_type", "video",
-                    "type", "authenticated", // <-- Private mode
+                    "type", "authenticated", 
                     "public_id", "DumbFlix/Videos/" + timestamp,
                     "folder", "DumbFlix");
 
@@ -86,5 +86,6 @@ public class CloudinaryService {
             throw new RuntimeException("Gagal upload video");
         }
     }
+    
 
 }
