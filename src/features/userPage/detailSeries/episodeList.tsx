@@ -39,8 +39,6 @@ export default function EpisodeList({
     dispatch,
   ]);
 
-  const normalizeEpisodeName = (name: string) =>
-    name.toLowerCase().replace(/\s+/g, "-").trim();
 
   if (
     loading ||
@@ -57,9 +55,7 @@ export default function EpisodeList({
   return (
     <Box>
       {episodes.map((ep) => {
-        const isCurrentEpisode =
-          normalizeEpisodeName(decodeURIComponent(episodeName || "")) ===
-          normalizeEpisodeName(ep.episodeName);
+        const isCurrentEpisode = episodeName === ep.episodeSlug;
 
         return (
           <Flex

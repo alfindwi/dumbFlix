@@ -22,8 +22,9 @@ export function LayoutUser() {
 
   const isMovieDetail = location.pathname.startsWith("/movie/");
   const isSeriesDetail = location.pathname.startsWith("/series/");
+  const isEpisodeDetail = location.pathname.startsWith("/episode/");
 
-  const hideNavbar = hiddenRoutes.includes(location.pathname) || isMovieDetail || isSeriesDetail;
+  const hideNavbar = hiddenRoutes.includes(location.pathname) || isMovieDetail || isSeriesDetail || isEpisodeDetail;
 
   useEffect(() => {
     const token = Cookies.get("token");

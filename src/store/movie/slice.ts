@@ -34,7 +34,7 @@ const movieSlice = createSlice({
       })
       .addCase(getMovies.fulfilled, (state, action) => {
         state.loading = false;
-        state.movies = Array.isArray(action.payload) ? action.payload : [];
+        state.movies = action.payload;
       })
 
       .addCase(getMovies.rejected, (state, action) => {

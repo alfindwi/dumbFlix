@@ -9,22 +9,37 @@ import {
   Spinner,
   Text,
 } from "@chakra-ui/react";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { MdPlayArrow } from "react-icons/md";
 import { Link, useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../store";
-import { getSeriesByName } from "../../../store/series/async";
-import { DescTrailer } from "./descriptionTrailer";
+import { getSeries, getSeriesByName } from "../../../store/series/async";
 import { Season } from "./season";
+import { DescTrailer } from "../../components/DescTrailerComponent";
+import { SimiliarCorousel } from "../../components/Similiar";
 
 export function DetailSeriesContent() {
   const { seriesSlug } = useParams();
   const dispatch = useAppDispatch();
-  const { selectedSeries: series, loading } = useAppSelector(
+  const { selectedSeries, loading, series } = useAppSelector(
     (state) => state.series
   );
-  const seriesDetail = Array.isArray(series) ? series[0] : series;
+  const seriesDetail = Array.isArray(selectedSeries)
+    ? selectedSeries[0]
+    : selectedSeries;
+
+  const similiarSeries = useMemo(() => {
+    if (!selectedSeries || !series.length) return [];
+    const filtered = series.filter((s) => s.seriesSlug !== selectedSeries.seriesSlug);
+    return filtered.sort(() => Math.random() - 0.5).slice(0, 7);
+  }, [selectedSeries, series]);
+
+  useEffect(() => {
+    if (!series.length) {
+      dispatch(getSeries());
+    }
+  }, [dispatch, series.length]);
 
   useEffect(() => {
     dispatch(getSeriesByName(seriesSlug || ""));
@@ -193,13 +208,35 @@ export function DetailSeriesContent() {
         </>
       </Box>
 
-      <DescTrailer />
-      {seriesDetail && (
+      <DescTrailer
+        poster={seriesDetail.poster}
+        title={seriesDetail.title}
+        description={seriesDetail.description}
+        categories={seriesDetail.categories}
+        trailerUrl={seriesDetail.trailer}
+        loading={loading}
+        seriesName={seriesDetail.seriesName}
+      />
+      {seriesDetail?.seasons && seriesDetail.seasons.length > 0 && (
         <Season
           seasons={seriesDetail.seasons}
           seriesSlug={seriesDetail.seriesSlug}
         />
       )}
+      <SimiliarCorousel
+        title="Similiar Series"
+        items={similiarSeries.map((s) => ({
+          id: s.id,
+          slug: s.seriesSlug,
+          poster: s.poster,
+          title: s.seriesName,
+          year: s.seriesYear,
+        }))}
+        currentSlug={seriesDetail.seriesSlug}
+        loading={loading}
+        basePath="/series"
+        corouselType="series"
+      />
     </Box>
   );
 }

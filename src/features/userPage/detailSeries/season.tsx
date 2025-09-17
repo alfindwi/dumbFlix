@@ -58,7 +58,6 @@ export const Season: React.FC<SeasonProps> = ({ seasons, seriesSlug }) => {
             borderRadius="lg"
             as={Link}
             to={`/episode/${seriesSlug}/${selectedSeason}/${episode.episodeSlug}`}
-            _hover={{ bg: "gray.800" }}
             transition="background-color 0.2s ease"
             align="flex-start"
             
@@ -79,7 +78,7 @@ export const Season: React.FC<SeasonProps> = ({ seasons, seriesSlug }) => {
             <Box flex="1">
               <Flex align="center" justify="space-between" mb={2}>
                 <Text fontWeight="semibold">
-                  Chapter {episode.episodeName}: The Vanishing of Will Byers
+                  {episode.episodeName}
                 </Text>
               </Flex>
 

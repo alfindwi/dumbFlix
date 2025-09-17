@@ -1,61 +1,84 @@
 import {
-    Box,
-    Center,
-    Flex,
-    Icon,
-    Img,
-    Skeleton,
-    SkeletonText,
-    Spinner,
-    Text,
+  Box,
+  Flex,
+  Icon,
+  Img,
+  Skeleton,
+  SkeletonText,
+  Text,
 } from "@chakra-ui/react";
-import { useEffect } from "react";
-import { MdPlayArrow } from "react-icons/md";
+import { MdArrowBack, MdArrowForward, MdPlayArrow } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { useAppDispatch, useAppSelector } from "../../../store";
-import { getMovies } from "../../../store/movie/async";
 
-export function RecommendMovie() {
-  const dispatch = useAppDispatch();
-  const {
-    movies,
-    loading,
-    detailMovie: movie,
-  } = useAppSelector((state) => state.movie);
+type RecommendProps = {
+  title: string;
+  items: {
+    id: number;
+    title: string;
+    slug: string;
+    poster: string;
+    year: string;
+  }[];
+  currentSlug: string;
+  loading?: boolean;
+  basePath: string;
+  corouselType?: string;
+};
 
-  let similiarMovies = movies.filter((m) => m.id === movie?.id);
+export function SimiliarCorousel({
+  title,
+  items,
+  currentSlug,
+  loading = false,
+  basePath,
+  type = "movie",
+}: RecommendProps & { type?: "movie" | "series" } ) {
+  let filteredItems = items.filter((item) => item.slug !== currentSlug);
 
-  similiarMovies = similiarMovies.sort(() => Math.random() - 0.5).slice(0, 7);
+  filteredItems = filteredItems.sort(() => Math.random() - 0.5).slice(0, 7);
 
-  useEffect(() => {
-    if (!movies.length) {
-      dispatch(getMovies());
-    }
-  }, [dispatch, movies.length]);
-
-  if (!Array.isArray(movies)) {
-    return (
-      <Center h="100vh">
-        <Spinner size="xl" thickness="4px" speed="0.65s" color="red.500" />
-      </Center>
-    );
-  }
-
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "auto" });
-  }, []);
-
+  const nextClass = `swiper-button-next-${type}`;
+  const prevClass = `swiper-button-prev-${type}`;
   return (
     <Box px={{ base: "20px", md: "60px" }} py={8}>
       <Flex justifyContent="space-between" alignItems="center" w="100%">
         <Text fontSize="2xl" fontWeight="semibold">
-          Similar Movies
+          {title}
         </Text>
       </Flex>
 
       <Box position="relative" mt={10}>
+        <Box
+          className={nextClass}
+          position="absolute"
+          top="50%"
+          right="0"
+          transform="translateY(-50%)"
+          p={3}
+          borderRadius="full"
+          cursor="pointer"
+          zIndex="10"
+          display={{ base: "block", md: "none" }}
+        >
+          <Icon as={MdArrowForward} color="#e50914" boxSize={10} />
+        </Box>
+
+        <Box
+          className={prevClass}
+          position="absolute"
+          top="50%"
+          left="0"
+          transform="translateY(-50%)"
+          p={3}
+          borderRadius="full"
+          cursor="pointer"
+          zIndex="10"
+          display={{ base: "block", md: "none" }}
+        >
+          <Icon as={MdArrowBack} color="#e50914" boxSize={10} />
+        </Box>
         <Swiper
           slidesPerView="auto"
           spaceBetween={10}
@@ -66,8 +89,8 @@ export function RecommendMovie() {
             1024: { slidesPerView: 7 },
           }}
           navigation={{
-            nextEl: ".swiper-button-next-movie",
-            prevEl: ".swiper-button-prev-movie",
+            nextEl: `.${nextClass}`,
+            prevEl: `.${prevClass}`,
           }}
           modules={[Navigation]}
           style={{ padding: "10px" }}
@@ -87,8 +110,8 @@ export function RecommendMovie() {
                   </Box>
                 </SwiperSlide>
               ))
-            : similiarMovies.map((movie) => (
-                <SwiperSlide key={movie.id} style={{ width: "auto" }}>
+            : filteredItems.map((item) => (
+                <SwiperSlide key={item.id} style={{ width: "auto" }}>
                   <Box
                     mt={4}
                     bgColor="black"
@@ -98,7 +121,7 @@ export function RecommendMovie() {
                     transition="transform 0.5s ease, box-shadow 0.2s ease"
                     cursor="pointer"
                     as={Link}
-                    to={`/movie/${movie.slug}`}
+                    to={`${basePath}/${item.slug}`}
                     display="block"
                   >
                     <Box
@@ -116,15 +139,16 @@ export function RecommendMovie() {
                       }}
                     >
                       <Img
-                        src={movie.poster}
+                        src={item.poster}
                         w="100%"
                         h="100%"
                         objectFit="cover"
                         transition="transform 0.3s ease, filter 0.3s ease"
                         borderTopRadius="md"
                         className="image"
-                        alt={movie.title}
+                        alt={item.title}
                         loading="lazy"
+                        decoding="async"
                       />
                       <Box
                         className="play-icon"
@@ -151,7 +175,7 @@ export function RecommendMovie() {
                       mt={2}
                       fontWeight="semibold"
                     >
-                      {movie.title}
+                      {item.title}
                     </Text>
                     <Text
                       fontSize="12px"
@@ -159,7 +183,7 @@ export function RecommendMovie() {
                       fontWeight="medium"
                       color="#929292"
                     >
-                      {movie.year}
+                      {item.year}
                     </Text>
                   </Box>
                 </SwiperSlide>

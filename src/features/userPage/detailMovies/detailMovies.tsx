@@ -1,5 +1,3 @@
-
-
 import {
   Badge,
   Box,
@@ -12,30 +10,45 @@ import {
   Text,
   useToast,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { MdPlayArrow } from "react-icons/md";
 import ReactPlayer from "react-player";
 import { Link, useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../store";
-import { getMovieBySlug } from "../../../store/movie/async";
-import { DescTrailerMovie } from "./descTrailer";
-import { RecommendMovie } from "./recommendMovie";
+import { getMovieBySlug, getMovies } from "../../../store/movie/async";
+import { DescTrailer } from "../../components/DescTrailerComponent";
+import { SimiliarCorousel } from "../../components/Similiar";
 
 export function DetailMovieContent() {
   const { slug } = useParams();
   const dispatch = useAppDispatch();
   const toast = useToast();
   const [isPlaying, setIsPlaying] = useState(false);
-  const { detailMovie: movies, loading } = useAppSelector(
-    (state) => state.movie
-  );
+  const {
+    detailMovie,
+    loading,
+    movies,
+  } = useAppSelector((state) => state.movie);
   const { users } = useAppSelector((state) => state.user);
-  const movie = Array.isArray(movies) ? movies[0] : movies;
+
+  const movie = Array.isArray(detailMovie) ? detailMovie[0] : detailMovie;
 
   useEffect(() => {
     dispatch(getMovieBySlug(slug || ""));
   }, [slug, dispatch]);
+
+  const similiarMovies = useMemo(() => {
+    if (!detailMovie || !movies.length) return [];
+    const filtered = movies.filter((m) => m.slug !== detailMovie.slug);
+    return filtered.sort(() => Math.random() - 0.5).slice(0, 7);
+  }, [detailMovie, movies]);
+
+  useEffect(() => {
+    if (!movies.length) {
+      dispatch(getMovies());
+    }
+  }, [dispatch, movies.length]);
 
   useEffect(() => {
     if (movie?.title) {
@@ -45,6 +58,18 @@ export function DetailMovieContent() {
       document.title = "ALFLIX";
     };
   }, [movie?.title]);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
+  if (loading || !movie) {
+    return (
+      <Center h="100vh" bg="black">
+        <Spinner size="xl" thickness="4px" speed="0.65s" color="red.500" />
+      </Center>
+    );
+  }
 
   const handlePlayClick = () => {
     if (!users) {
@@ -61,17 +86,6 @@ export function DetailMovieContent() {
     setIsPlaying(true);
   };
 
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, []);
-
-  if (loading || !movie) {
-    return (
-      <Center h="100vh" bg="black">
-        <Spinner size="xl" thickness="4px" speed="0.65s" color="red.500" />
-      </Center>
-    );
-  }
 
   return (
     <Box bg="black" minH="100vh" color="white">
@@ -230,8 +244,28 @@ export function DetailMovieContent() {
         )}
       </Box>
 
-      <DescTrailerMovie />
-      <RecommendMovie />
+      <DescTrailer
+        poster={movie.poster}
+        title={movie.title}
+        description={movie.description}
+        categories={movie.categories}
+        trailerUrl={movie.trailer}
+        loading={loading}
+      />
+
+      <SimiliarCorousel
+        title="Similiar Movies"
+        items={similiarMovies.map((m) => ({
+          id: m.id,
+          slug: m.slug,
+          poster: m.poster,
+          title: m.title,
+          year: m.year,
+        }))}
+        currentSlug={movie.slug}
+        loading={loading}
+        basePath="/movie"
+      />
     </Box>
   );
 }

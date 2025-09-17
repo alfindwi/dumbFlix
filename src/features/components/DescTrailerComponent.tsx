@@ -1,26 +1,37 @@
 import {
-  Badge,
   Box,
-  Center,
   Flex,
+  VStack,
   HStack,
   Img,
-  Spinner,
   Text,
-  VStack,
+  Badge,
+  Center,
+  Spinner,
 } from "@chakra-ui/react";
 import ReactPlayer from "react-player";
-import { useParams } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../../../store";
-import { useEffect } from "react";
-import { getMovieByName } from "../../../store/movie/async";
 
-export function DescTrailerMovie() {
-  const { title } = useParams();
-  const dispatch = useAppDispatch();
-  const { loading, detailMovie } = useAppSelector((state) => state.movie);
-  const movie = Array.isArray(detailMovie) ? detailMovie[0] : detailMovie;
+type Category = { id: string | number; categoryName: string };
 
+type DescTrailerProps = {
+  poster: string;
+  title: string;
+  seriesName?: string; 
+  description: string;
+  categories?: Category[];
+  trailerUrl: string;
+  loading?: boolean;
+};
+
+export function DescTrailer({
+  poster,
+  title,
+  description,
+  categories = [],
+  trailerUrl,
+  seriesName,
+  loading = false,
+}: DescTrailerProps) {
   const extractYouTubeId = (url: string): string => {
     const regExp =
       /(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/))([\w-]{11})/;
@@ -28,31 +39,22 @@ export function DescTrailerMovie() {
     return match ? match[1] : "";
   };
 
-  useEffect(() => {
-    if (title) {
-      dispatch(getMovieByName(title));
-    }
-  }, [title, dispatch]);
-
-  if (loading || !movie) {
+  if (loading) {
     return (
       <Center h="100vh">
         <Spinner size="xl" thickness="4px" speed="0.65s" color="red.500" />
       </Center>
     );
   }
+
   return (
     <Box px={{ base: "20px", md: "60px" }} py={8}>
-      <Flex
-        direction={{ base: "column", lg: "row" }}
-        gap={8}
-        align="flex-start"
-      >
+      <Flex direction={{ base: "column", lg: "row" }} gap={8} align="flex-start">
         <Box flex={2}>
           <Flex gap={6} mb={6}>
             <Img
-              src={movie.poster}
-              alt={movie.title}
+              src={poster}
+              alt={title}
               w={{ base: "120px", md: "150px" }}
               h={{ base: "180px", md: "225px" }}
               borderRadius="md"
@@ -62,7 +64,7 @@ export function DescTrailerMovie() {
             <VStack align="flex-start" spacing={4} flex={1}>
               <Box>
                 <Text fontSize="2xl" fontWeight="bold" mb={2}>
-                  {movie.title}
+                  {title}
                 </Text>
                 <HStack spacing={4} mb={4}>
                   <Box>
@@ -70,19 +72,19 @@ export function DescTrailerMovie() {
                       Synopsis:
                     </Text>
                     <Text fontSize="sm" lineHeight="1.6" color="gray.300">
-                      {movie.description}
+                      {description}
                     </Text>
                   </Box>
                 </HStack>
               </Box>
 
-              <Box>
-                <Text fontSize="sm" color="gray.400" mb={2}>
-                  Genres:
-                </Text>
-                <Flex gap={2} flexWrap="wrap">
-                  {Array.isArray(movie.categories) &&
-                    movie.categories.map((cat: { id: string | number; categoryName: string }) => (
+              {Array.isArray(categories) && categories.length > 0 && (
+                <Box>
+                  <Text fontSize="sm" color="gray.400" mb={2}>
+                    Genres:
+                  </Text>
+                  <Flex gap={2} flexWrap="wrap">
+                    {categories.map((cat) => (
                       <Badge
                         key={cat.id}
                         variant="subtle"
@@ -92,8 +94,9 @@ export function DescTrailerMovie() {
                         {cat.categoryName}
                       </Badge>
                     ))}
-                </Flex>
-              </Box>
+                  </Flex>
+                </Box>
+              )}
             </VStack>
           </Flex>
         </Box>
@@ -107,7 +110,7 @@ export function DescTrailerMovie() {
           <Box bg="gray.900" borderRadius="md" overflow="hidden">
             <ReactPlayer
               url={`https://www.youtube.com/watch?v=${extractYouTubeId(
-                movie.trailer
+                trailerUrl
               )}`}
               width="100%"
               height="250px"
@@ -117,7 +120,7 @@ export function DescTrailerMovie() {
                 Official Trailer
               </Text>
               <Text fontSize="xs" color="gray.400">
-                {movie.title}
+                {title || seriesName}
               </Text>
             </Box>
           </Box>
@@ -130,9 +133,7 @@ export function DescTrailerMovie() {
         </Text>
         <Box bg="gray.900" borderRadius="md" overflow="hidden">
           <ReactPlayer
-            url={`https://www.youtube.com/watch?v=${extractYouTubeId(
-              movie.trailer
-            )}`}
+            url={`https://www.youtube.com/watch?v=${extractYouTubeId(trailerUrl)}`}
             width="100%"
             height="200px"
           />

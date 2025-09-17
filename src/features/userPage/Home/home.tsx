@@ -1,21 +1,9 @@
 import { Box, Button, Flex, Img, Text } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import { buttonStyle } from "../../../assets/style/buttonStyle";
-import { Navbar } from "../../navbar/navbar";
+import { useAppSelector } from "../../../store";
 import { CardMovie } from "../cardHome/cardMovie";
 import { CardSeries } from "../cardHome/cardSeries";
-import { Footer } from "../footer/footer";
-import { useAppSelector } from "../../../store";
-
-export function Home() {
-  return (
-    <Box>
-      <Navbar />
-      <HomeContent />
-      <Footer />
-    </Box>
-  );
-}
 
 export function HomeContent() {
   const { series } = useAppSelector((state) => state.series);

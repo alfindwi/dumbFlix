@@ -56,6 +56,8 @@ export const LazyImage: React.FC<LazyImageProps> = ({
       h={h}
       borderRadius={borderRadius}
       objectFit="cover"
+      loading="lazy"
+      decoding="async"
       objectPosition={"center"}
     />
   );
